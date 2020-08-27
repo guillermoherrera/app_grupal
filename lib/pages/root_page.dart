@@ -29,6 +29,8 @@ class _RootPageState extends State<RootPage> {
       case AuthStatus.signedIn:
         return HomePage();
         break;
+      default:
+        return Container();
     }
   }
 
