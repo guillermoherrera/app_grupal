@@ -7,13 +7,15 @@ class CustomRaisedButton extends StatelessWidget {
     @required this.label,
     this.borderColor,
     this.primaryColor,
-    this.textColor
+    this.textColor, 
+    this.action
   }) : super(key: key);
 
   final String label;
   final Color primaryColor;
   final Color borderColor;
   final Color textColor;
+  final VoidCallback action;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class CustomRaisedButton extends StatelessWidget {
           width: 2.0
         )
       ),
-      onPressed: (){},
+      onPressed: () => action(),
     );
   }
 }

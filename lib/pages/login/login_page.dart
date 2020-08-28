@@ -1,5 +1,8 @@
+import 'package:app_grupal/classes/auth_firebase.dart';
+import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/widgets/custom_fade_transition.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
+import 'package:app_grupal/widgets/custom_snack_bar.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
 import 'package:flutter/material.dart';
 
@@ -7,12 +10,47 @@ import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/widgets/custom_text_field.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({
+    Key key,
+    this.onSignIn
+  }) : super(key: key);
+
+  final VoidCallback onSignIn;
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final formKey = new GlobalKey<FormState>();
+  final AuthFirebase _authFirebase = new AuthFirebase();
+  final SharedActions _sharedActions = new SharedActions();
+  final CustomSnakBar _customSnakBar = new CustomSnakBar();
+  final _formKey = new GlobalKey<FormState>();
+  final _userController = TextEditingController();
+  final _passController = TextEditingController();
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  bool _buttonEnabled = true;
+
+  _loginSubmit() async{
+    if(_formKey.currentState.validate()){
+      _submitStatus();
+      FocusScope.of(context).requestFocus(FocusNode());
+      final authResult = await _authFirebase.signIn(_userController.text, _passController.text);
+      if(authResult.result){
+        _sharedActions.setUserAuth(authResult.email, _passController.text, authResult.uid);
+        widget.onSignIn();
+      }else{
+        _customSnakBar.showSnackBar(Constants.errorAuth(authResult.mensaje), Duration(milliseconds: 3000), Colors.pink, Icons.error_outline, _scaffoldKey);
+        await Future.delayed(Duration(seconds:3));
+        _submitStatus();
+      }
+    }
+  }
+
+  _submitStatus(){
+    setState(() {
+      _buttonEnabled = !_buttonEnabled;
+    });
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -20,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
     final _width = MediaQuery.of(context).size.width;
     
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      key: _scaffoldKey,
       body: Column(
         children: [
           _imagen(_height),
@@ -52,19 +90,27 @@ class _LoginPageState extends State<LoginPage> {
       ShakeTransition(
         axis: Axis.vertical,
         duration: Duration(milliseconds: 3000),
-        child: CustomTextField(
-          label: 'Usuario',
-          icon: Icons.account_circle,
+        child: Container(
+          margin: EdgeInsets.only(bottom: height / 16),
+          child: CustomTextField(
+            label: 'Usuario',
+            controller: _userController,
+            icon: Icons.account_circle,
+          ),
         ),
       ),
       ShakeTransition(
         axis: Axis.vertical,
         duration: Duration(milliseconds: 3000),
         offset: 280,
-        child: CustomTextField(
-          label: 'Password',
-          icon: Icons.lock,
-          isPassword: true,
+        child: Container(
+          margin: EdgeInsets.only(bottom: height / 16),
+          child: CustomTextField(
+            controller: _passController,
+            label: 'Password',
+            icon: Icons.lock,
+            isPassword: true,
+          ),
         ),
       ),
       ShakeTransition(
@@ -72,21 +118,22 @@ class _LoginPageState extends State<LoginPage> {
         duration: Duration(milliseconds: 3000),
         offset: 420,
         child: CustomRaisedButton(
-          label: 'Iniciar Sesión',
+          label: _buttonEnabled ? 'Iniciar Sesión' : 'Verificando porfavor espere ...',
+          action: _buttonEnabled ? _loginSubmit : (){}
         ),
       ),
       SizedBox(height: height / 16,)
     ];
 
     return Form(
-      key: formKey,
+      key: _formKey,
       child: Expanded(
         child: Container(
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: width / 16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            child: ListView(
+              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //crossAxisAlignment: CrossAxisAlignment.stretch,
               children: content,
             ),
           ),

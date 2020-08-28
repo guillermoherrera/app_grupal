@@ -8,7 +8,8 @@ class CustomTextField extends StatefulWidget {
     this.errorEmpty = 'Completa este campo',
     this.textType = TextInputType.emailAddress,
     this.checkEmpty = true,
-    this.isPassword = false
+    this.isPassword = false,
+    @required this.controller
   }) : super(key: key);
   
   final String label;
@@ -17,6 +18,7 @@ class CustomTextField extends StatefulWidget {
   final TextInputType textType;
   final bool checkEmpty;
   final bool isPassword;
+  final TextEditingController controller;
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
@@ -28,11 +30,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      //controller: 
+      controller: widget.controller, 
       decoration: _decorationField(widget.label),
       autocorrect: false,
       keyboardType: widget.textType,
-      obscureText: watchPassword,
+      obscureText: widget.isPassword ? !watchPassword : false,
       validator: (value){
         return _validations(value);
       },
@@ -56,7 +58,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         ),
       ),
       suffixIcon: widget.isPassword ? IconButton(
-        icon: Icon(watchPassword ? Icons.visibility : Icons.visibility_off),
+        icon: Icon(!watchPassword ? Icons.visibility : Icons.visibility_off),
         onPressed: (){setState(() {
           watchPassword = !watchPassword;
         });}
