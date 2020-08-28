@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "654482488376",
+    "firebase_url": "https://sgcc-57fde.firebaseio.com",
+    "project_id": "sgcc-57fde",
+    "storage_bucket": "sgcc-57fde.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:654482488376:android:ffe10fdc6ddabfed583acd",
+        "android_client_info": {
+          "package_name": "com.example.sgcartera_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "654482488376-39q5md55r20cot7pvcuua9pgq8j2tto7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzuruhQk87cytCKeFqIpJMRfFd5c3Dr9I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "654482488376-39q5md55r20cot7pvcuua9pgq8j2tto7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
