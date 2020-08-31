@@ -1,11 +1,12 @@
+import 'package:flutter/material.dart';
+
 import 'package:app_grupal/classes/auth_firebase.dart';
 import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/widgets/custom_fade_transition.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
 import 'package:app_grupal/widgets/custom_snack_bar.dart';
+import 'package:app_grupal/widgets/header.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
-import 'package:flutter/material.dart';
-
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/widgets/custom_text_field.dart';
 
@@ -37,7 +38,8 @@ class _LoginPageState extends State<LoginPage> {
       final authResult = await _authFirebase.signIn(_userController.text, _passController.text);
       if(authResult.result){
         _sharedActions.setUserAuth(authResult.email, _passController.text, authResult.uid);
-        widget.onSignIn();
+        //widget.onSignIn();
+        Navigator.pushReplacementNamed(context, Constants.homePage);
       }else{
         _customSnakBar.showSnackBar(Constants.errorAuth(authResult.mensaje), Duration(milliseconds: 3000), Colors.pink, Icons.error_outline, _scaffoldKey);
         await Future.delayed(Duration(seconds:3));
@@ -59,10 +61,15 @@ class _LoginPageState extends State<LoginPage> {
     
     return Scaffold(
       key: _scaffoldKey,
-      body: Column(
+      body: Stack(
         children: [
-          _imagen(_height),
-          _formulario(_height, _width)
+           HeaderCurvo(height: _height),
+           Column(
+            children: [
+              _imagen(_height),
+              _formulario(_height, _width)
+            ],
+          )
         ],
       )
     );
@@ -71,15 +78,18 @@ class _LoginPageState extends State<LoginPage> {
   Widget _imagen(double height){
     return Container(
       padding: EdgeInsets.symmetric(vertical: height / 16),
-      color: Constants.primaryColor,
+      color: Colors.transparent,
       width: double.infinity,
       child: CustomFadeTransition(
         duration: Duration(milliseconds: 3000),
-        child: Image(
-          image: AssetImage(Constants.logo),
-          color: Colors.white,
-          height: height / 5,
-          fit: BoxFit.contain,
+        child: Hero(
+          tag: 'logo',
+          child: Image(
+            image: AssetImage(Constants.logo),
+            color: Colors.white,
+            height: height / 4.4,
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );
@@ -142,3 +152,5 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
+

@@ -31,6 +31,9 @@ class MyApp extends StatelessWidget {
             title: 'Asesores App',
             debugShowCheckedModeBanner: false,
             initialRoute: Constants.rootPage,
+            theme: ThemeData(
+              primaryColor: Constants.primaryColor
+            ),
             routes: {
               Constants.rootPage  : (BuildContext context) => RootPage(),
               Constants.loginPage : (BuildContext context) => LoginPage(),

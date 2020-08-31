@@ -10,6 +10,10 @@ class Constants{
   static final Color defaultColor = Color(0xfff2f2f2);
 
   static final String logo = 'assets/adminconfia.png';
+  static final String homeImage = 'assets/analysis.png';
+
+
+  static final String homeText = 'Puedes comenzar a capturar nuevas solicitudes de crédito grupal o revisar la información de los grupos con los que ya estas trabajando, solo ve a la barra de navegación inferior y selecciona la opción que necesites.';
 
   static String errorAuth(error){
     if(error.contains("invalid-email")){
