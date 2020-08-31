@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:app_grupal/helpers/constants.dart';
+
 class Encabezado extends StatelessWidget {
   const Encabezado({
     Key key,
@@ -29,12 +31,12 @@ class Encabezado extends StatelessWidget {
               Text(
                 encabezado.toUpperCase(),
                 overflow: TextOverflow.ellipsis, 
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, color: Colors.white)
+                style: Constants.encabezadoStyle
               ),
               Text(
                 subtitulo.toUpperCase(),
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.white70)
+                style: Constants.subtituloStyle
               ),
             ],
           )

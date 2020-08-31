@@ -56,6 +56,8 @@ class _LoginPageState extends State<LoginPage> {
   
   @override
   Widget build(BuildContext context) {
+
+    final bool _isLogout = ModalRoute.of(context).settings.arguments;
     final _height = MediaQuery.of(context).size.height;
     final _width = MediaQuery.of(context).size.width;
     
@@ -66,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
            HeaderCurvo(height: _height),
            Column(
             children: [
-              _imagen(_height),
+              _imagen(_height, _isLogout == null ? false : _isLogout),
               _formulario(_height, _width)
             ],
           )
@@ -75,12 +77,13 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _imagen(double height){
+  Widget _imagen(double height, bool isLogout){
     return Container(
       padding: EdgeInsets.symmetric(vertical: height / 16),
       color: Colors.transparent,
       width: double.infinity,
       child: CustomFadeTransition(
+        tweenBegin: isLogout ? 1.0 : 0.0,
         duration: Duration(milliseconds: 3000),
         child: Hero(
           tag: 'logo',

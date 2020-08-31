@@ -1,8 +1,7 @@
-import 'package:app_grupal/components/body_content.dart';
 import 'package:flutter/material.dart';
 
-import 'package:app_grupal/classes/auth_firebase.dart';
-import 'package:app_grupal/classes/shared_preferences.dart';
+import 'package:app_grupal/components/body_content.dart';
+import 'package:app_grupal/components/custom_drawer.dart';
 import 'package:app_grupal/helpers/constants.dart';
 
 class HomePage extends StatelessWidget {
@@ -12,14 +11,14 @@ class HomePage extends StatelessWidget {
   }) : super(key: key);
 
   final VoidCallback onSignIOut;
-  final AuthFirebase _authFirebase = new AuthFirebase();
-  final SharedActions _sharedActions = new SharedActions();
 
   @override
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
+    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
         elevation: 0.0,
@@ -35,20 +34,12 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.account_circle, color: Colors.white, size: 30.0),
-            onPressed: (){}
+            onPressed: () => _scaffoldKey.currentState.openDrawer()
           ),
-          IconButton(
-            icon: Icon(Icons.close),
-            onPressed: ()async{
-              await _authFirebase.signOut();
-              _sharedActions.clear();
-              Navigator.pushReplacementNamed(context, Constants.loginPage);
-              //onSignIOut();
-              //Navigator.of(context).pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
-            }
-          )
         ],
+        leading: Container(),
       ),
+      drawer: CustomDrawer(),
       body: BodyContent(
         icon: Icons.check_circle,
         encabezado: 'Encabezado Texto', 

@@ -4,11 +4,14 @@ class CustomFadeTransition extends StatefulWidget {
   const CustomFadeTransition({
     Key key,
     @required this.child,
-    this.duration = const Duration(milliseconds: 900),
+    this.duration = const Duration(milliseconds: 900), 
+    this.tweenBegin = 0.0,
+
   }) : super(key: key);
 
   final Widget child;
   final Duration duration; 
+  final double tweenBegin;
 
   @override
   _CustomFadeTransitionState createState() => _CustomFadeTransitionState();
@@ -22,7 +25,7 @@ class _CustomFadeTransitionState extends State<CustomFadeTransition> with Single
   @override
   void initState() {
     _animationController = AnimationController(vsync: this, duration: widget.duration);
-    _opacity = Tween(begin: 0.0, end: 1.0).animate(_animationController);
+    _opacity = Tween(begin: widget.tweenBegin, end: 1.0).animate(_animationController);
     _animationController.forward();
     super.initState();
   }
