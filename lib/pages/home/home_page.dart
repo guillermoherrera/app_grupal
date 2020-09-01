@@ -1,16 +1,32 @@
+import 'package:app_grupal/components/encabezado.dart';
+import 'package:app_grupal/pages/renovaciones/renovaciones.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_grupal/pages/home/home_empty_page.dart';
 import 'package:app_grupal/components/body_content.dart';
 import 'package:app_grupal/components/custom_drawer.dart';
 import 'package:app_grupal/helpers/constants.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({
     Key key,
     this.onSignIOut
   }) : super(key: key);
 
   final VoidCallback onSignIOut;
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+  TabController _tabController;
+  
+  @override
+  void initState() {
+    _tabController = TabController(length: 2, vsync: this);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,63 +57,57 @@ class HomePage extends StatelessWidget {
       ),
       drawer: CustomDrawer(),
       body: BodyContent(
-        icon: Icons.check_circle,
-        encabezado: 'Encabezado Texto', 
-        subtitulo: 'Subtitulo Texto',
-        contenido: _contenidoHome()
+        encabezado: _createTabViewHead(_height),
+        contenido: _createTabView()
       ),
-      bottomNavigationBar: _bottomNavigationBar(context),
+      
+      bottomNavigationBar: TabBar(
+        labelStyle: TextStyle(fontWeight: FontWeight.bold),
+        labelColor: Colors.blue,
+        unselectedLabelColor: Color.fromRGBO(116, 117, 152, 1.0),
+        controller: _tabController,
+        tabs: _createTabs()
+      ),//_bottomNavigationBar(context),
     );
   }
 
-  Widget _contenidoHome(){
-    return ListView(
-      children: [
-        Image(
-          image: AssetImage(Constants.homeImage),
-          fit: BoxFit.contain,
-        ),
-        Container(
-          padding: EdgeInsets.all(20),
-          child:Text(
-            'Bienvenido a Asesores App.',
-            textAlign: TextAlign.start,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 35)
-          )
-        ),
-        Container(
-          padding: EdgeInsets.all(20),
-          child:Text(
-            Constants.homeText,
-            textAlign: TextAlign.justify,
-            style: TextStyle(fontSize: 15),
-          )
-        )
-      ],
-    );
-  }
-
-  _bottomNavigationBar(BuildContext context){
-    return Theme(
-      data: Theme.of(context).copyWith(
-        canvasColor: Colors.white10,
-        primaryColor: Constants.primaryColor,
-        textTheme: Theme.of(context).textTheme.copyWith(caption: TextStyle(color: Color.fromRGBO(116, 117, 152, 1.0)))
+  List<Widget> _createTabs() {
+    return [
+      Tab(
+        icon: Icon(Icons.home),
+        text: 'INICIO',
+        iconMargin: EdgeInsets.all(0),
       ),
-      child: BottomNavigationBar(
-        elevation: 40.0,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, size: 30.0,),
-            title: Container()
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.cached, size: 30.0,),
-            title: Container()
-          )
-        ] 
+      Tab(
+        icon: Icon(Icons.cached),
+        text: 'RENOVACIÓNES',
+        iconMargin: EdgeInsets.all(0),
       )
+    ];
+  }
+
+  Widget _createTabView() {
+    return TabBarView(
+      physics: NeverScrollableScrollPhysics(),
+      children: [
+        HomeEmptyPage(),
+        RenovacionesPage()
+      ],
+      controller: _tabController,
     );
   }
 
+  Widget _createTabViewHead(double height) {
+    return SizedBox(
+      height: height / 13,
+      child: TabBarView(
+        physics: NeverScrollableScrollPhysics(),
+        children: [
+          Encabezado(icon: Icons.check_circle, encabezado: 'Bienvenido', subtitulo: 'Subtitulos'),
+          Encabezado(icon: Icons.archive, encabezado: 'Renovaciones', subtitulo: 'Subtitulos'),
+        ],
+        controller: _tabController,
+      ),
+    );
+  }
 }

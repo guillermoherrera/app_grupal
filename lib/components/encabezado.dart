@@ -20,7 +20,7 @@ class Encabezado extends StatelessWidget {
     final _width = MediaQuery.of(context).size.width;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: _width / 16, vertical: _width / 16),
+      padding: EdgeInsets.symmetric(horizontal: _width / 16, vertical: _width / 32),
       child: Row(
         children: [
           Icon(icon, color: Colors.white ,size: 40.0),

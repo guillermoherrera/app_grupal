@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
 
 import 'card_content.dart';
-import 'encabezado.dart';
 import 'fondo.dart';
 
 class BodyContent extends StatelessWidget {
   const BodyContent({
     Key key,
-    @required this.icon,
-    @required this.encabezado,
-    @required this.subtitulo,
-    @required this.contenido
+    @required this.contenido,
+    this.encabezado
   }) : super(key: key);
   
-  final IconData icon;
-  final String encabezado;
-  final String subtitulo;
   final Widget contenido;
+  final Widget encabezado;
   
   @override
   Widget build(BuildContext context) {
@@ -25,11 +20,7 @@ class BodyContent extends StatelessWidget {
         Fondo(),
         Column(
           children: [
-            Encabezado(
-              icon: icon, 
-              encabezado: encabezado,
-              subtitulo: subtitulo,
-            ),
+            encabezado == null ? Container() : encabezado,
             CardContent(
               contenido: contenido
             )
