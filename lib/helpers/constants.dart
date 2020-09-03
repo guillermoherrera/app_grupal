@@ -12,12 +12,17 @@ class Constants{
 
   static final String logo = 'assets/adminconfia.png';
   static final String homeImage = 'assets/analysis.png';
+  static final String emptyImage = 'assets/empty.png';
 
+  static final String baseURL = 'test.api.asesores.fconfia.com';
+  static final String apiKey = 'doCLjcd9FIABAzXhF49AMDTPJqo608M5Wau';
+  static final String consultaContratos = 'contratosAsesor';
 
   static final String homeText = 'Puedes comenzar a capturar nuevas solicitudes de crédito grupal o revisar la información de los grupos con los que ya estas trabajando, solo ve a la barra de navegación inferior y selecciona la opción que necesites.';
 
   static final TextStyle encabezadoStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, color: Colors.white);
   static final TextStyle subtituloStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.white70);
+  static final TextStyle mensajeCentral = TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0);
 
   static String errorAuth(error){
     if(error.contains("invalid-email")){

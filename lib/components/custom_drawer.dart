@@ -16,7 +16,7 @@ class CustomDrawer extends StatelessWidget {
     final _height = MediaQuery.of(context).size.height;
     
     return SizedBox(
-      width: _width * .99,
+      width: _width * 1.0,
       child: Theme(
         data: Theme.of(context).copyWith(
           canvasColor: Colors.transparent
@@ -97,13 +97,13 @@ class CustomDrawer extends StatelessWidget {
         TableRow(
           children: [
             ShakeTransition(child: _creaBoton(Constants.primaryColor, Icons.home, 'Inicio', ()=>_actions(context, 0) )),
-            ShakeTransition(offset: 35, child: _creaBoton(Constants.primaryColor, Icons.lock, 'Contraseña', ()=>_actions(context, 1)))
+            ShakeTransition(child: _creaBoton(Constants.primaryColor, Icons.lock, 'Contraseña', ()=>_actions(context, 1)))
           ]
         ),
         TableRow(
           children: [
             ShakeTransition(child: _creaBoton(Constants.primaryColor, Icons.info, 'Acerca de ...', ()=>_actions(context, 2))),
-            ShakeTransition(offset: 35, child: _creaBoton(Constants.primaryColor, Icons.exit_to_app, 'Cerrar Sesión', ()=>_actions(context, 3)))
+            ShakeTransition(child: _creaBoton(Constants.primaryColor, Icons.exit_to_app, 'Cerrar Sesión', ()=>_actions(context, 3)))
           ]
         )
       ],

@@ -21,7 +21,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   TabController _tabController;
-  
+
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
@@ -56,6 +56,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         leading: Container(),
       ),
       drawer: CustomDrawer(),
+      drawerEnableOpenDragGesture: false,
       body: BodyContent(
         encabezado: _createTabViewHead(_height),
         contenido: _createTabView()
@@ -104,7 +105,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         physics: NeverScrollableScrollPhysics(),
         children: [
           Encabezado(icon: Icons.check_circle, encabezado: 'Bienvenido', subtitulo: 'Subtitulos'),
-          Encabezado(icon: Icons.archive, encabezado: 'Renovaciones', subtitulo: 'Subtitulos'),
+          Encabezado(icon: Icons.assignment, encabezado: 'Renovaciones', subtitulo: 'Grupos proximos a liquidar.'),
         ],
         controller: _tabController,
       ),

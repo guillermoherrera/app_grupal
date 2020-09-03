@@ -31,6 +31,9 @@ dependencies:
   firebase_core: ^0.5.0
   firebase_auth: ^0.18.0+1
   shared_preferences: ^0.5.10
+  http: ^0.12.2
+  date_range_picker: ^1.0.6
+  date_format: ^1.0.8
 
 dev_dependencies:
   flutter_test:

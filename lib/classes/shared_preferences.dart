@@ -15,6 +15,11 @@ class SharedActions{
 
   }
 
+  Future<String> getUserId() async{
+    await init();
+    return preferences.getString('uid');
+  }
+
   clear() async{
     await init();
     preferences.clear();
