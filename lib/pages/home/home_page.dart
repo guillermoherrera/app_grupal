@@ -1,4 +1,5 @@
 import 'package:app_grupal/components/encabezado.dart';
+import 'package:app_grupal/pages/home/home_content.dart';
 import 'package:app_grupal/pages/renovaciones/renovaciones.dart';
 import 'package:flutter/material.dart';
 
@@ -19,15 +20,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
-  TabController _tabController;
-
-  @override
-  void initState() {
-    _tabController = TabController(length: 2, vsync: this);
-    super.initState();
-  }
-
+class _HomePageState extends State<HomePage>{
   @override
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
@@ -57,58 +50,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       ),
       drawer: CustomDrawer(),
       drawerEnableOpenDragGesture: false,
-      body: BodyContent(
-        encabezado: _createTabViewHead(_height),
-        contenido: _createTabView()
-      ),
-      
-      bottomNavigationBar: TabBar(
-        labelStyle: TextStyle(fontWeight: FontWeight.bold),
-        labelColor: Colors.blue,
-        unselectedLabelColor: Color.fromRGBO(116, 117, 152, 1.0),
-        controller: _tabController,
-        tabs: _createTabs()
-      ),//_bottomNavigationBar(context),
-    );
-  }
-
-  List<Widget> _createTabs() {
-    return [
-      Tab(
-        icon: Icon(Icons.home),
-        text: 'INICIO',
-        iconMargin: EdgeInsets.all(0),
-      ),
-      Tab(
-        icon: Icon(Icons.cached),
-        text: 'RENOVACIÓNES',
-        iconMargin: EdgeInsets.all(0),
-      )
-    ];
-  }
-
-  Widget _createTabView() {
-    return TabBarView(
-      physics: NeverScrollableScrollPhysics(),
-      children: [
-        HomeEmptyPage(),
-        RenovacionesPage()
-      ],
-      controller: _tabController,
-    );
-  }
-
-  Widget _createTabViewHead(double height) {
-    return SizedBox(
-      height: height / 13,
-      child: TabBarView(
-        physics: NeverScrollableScrollPhysics(),
-        children: [
-          Encabezado(icon: Icons.check_circle, encabezado: 'Bienvenido', subtitulo: 'Subtitulos'),
-          Encabezado(icon: Icons.assignment, encabezado: 'Renovaciones', subtitulo: 'Grupos proximos a liquidar.'),
-        ],
-        controller: _tabController,
-      ),
+      body: HomeContent(),
     );
   }
 }

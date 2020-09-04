@@ -1,6 +1,9 @@
+import 'package:app_grupal/widgets/animator.dart';
+import 'package:app_grupal/widgets/custom_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
 import 'package:date_format/date_format.dart';
+
 
 import 'package:app_grupal/components/empty_image.dart';
 import 'package:app_grupal/helpers/constants.dart';
@@ -74,14 +77,18 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
   }
 
   Widget _lista(){
-    
     List<ListTileModel> listTiles = List();
     contratos.forEach((contrato) {
       final listTile = ListTileModel(
         title: contrato.nombreGeneral,
         subtitle: 'Contrato: ${contrato.contratoId} | Status: ${contrato.status}\nFecha termino: ${contrato.fechaTermina.substring(3, 5)}/${contrato.fechaTermina.substring(0, 2)}'.toUpperCase(),
         leading: Icon(Icons.group,),
-        trailing: Icon(Icons.arrow_forward_ios)
+        trailing: GestureDetector(
+          onTap: (){
+            Navigator.pushNamed(context, 'renovacionGrupo');
+          },
+          child: Icon(Icons.arrow_forward_ios)
+        )
       );
       listTiles.add(listTile);
     });
@@ -100,7 +107,22 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
             ]
           )
         ),
-        Expanded(child: CustomAnimatedList(lista: listTiles)),
+        Expanded(
+          child: ListView.builder(
+            itemCount: contratos.length,
+            itemBuilder: (context, index){
+              return WidgetANimator(
+                CustomListTile(
+                  title: listTiles[index].title,
+                  subtitle: listTiles[index].subtitle,
+                  leading: listTiles[index].leading,
+                  trailing: listTiles[index].trailing,
+                )
+              );
+            }
+          )
+        )
+        //Expanded(child: CustomAnimatedList(lista: listTiles)),
       ],
     );
   }

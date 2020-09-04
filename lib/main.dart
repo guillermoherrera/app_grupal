@@ -1,3 +1,4 @@
+import 'package:app_grupal/pages/renovaciones/renovaciones_grupo.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
  
@@ -37,7 +38,8 @@ class MyApp extends StatelessWidget {
             routes: {
               Constants.rootPage  : (BuildContext context) => RootPage(),
               Constants.loginPage : (BuildContext context) => LoginPage(),
-              Constants.homePage  : (BuildContext context) => HomePage()
+              Constants.homePage  : (BuildContext context) => HomePage(),
+              Constants.renGrupo  : (BuildContext context) => RenovacionesGrupoPage()
             },
           );
         }

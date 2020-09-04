@@ -7,11 +7,13 @@ class BodyContent extends StatelessWidget {
   const BodyContent({
     Key key,
     @required this.contenido,
-    this.encabezado
+    this.encabezado,
+    this.bottom
   }) : super(key: key);
   
   final Widget contenido;
   final Widget encabezado;
+  final Widget bottom;
   
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,8 @@ class BodyContent extends StatelessWidget {
             encabezado == null ? Container() : encabezado,
             CardContent(
               contenido: contenido
-            )
+            ),
+            bottom
           ],
         )
       ],

@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 
 import 'package:app_grupal/helpers/constants.dart';
 
-class HomeEmptyPage extends StatelessWidget {
+class HomeEmptyPage extends StatefulWidget {
+  @override
+  _HomeEmptyPageState createState() => _HomeEmptyPageState();
+}
+
+class _HomeEmptyPageState extends State<HomeEmptyPage> with AutomaticKeepAliveClientMixin{
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ListView(
       children: [
         Image(
@@ -30,4 +36,7 @@ class HomeEmptyPage extends StatelessWidget {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
