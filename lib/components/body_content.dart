@@ -26,7 +26,7 @@ class BodyContent extends StatelessWidget {
             CardContent(
               contenido: contenido
             ),
-            bottom
+            bottom == null ? Container() : bottom
           ],
         )
       ],

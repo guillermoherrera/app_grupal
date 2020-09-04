@@ -18,6 +18,7 @@ class Constants{
   static final String baseURL = 'test.api.asesores.fconfia.com';
   static final String apiKey = 'doCLjcd9FIABAzXhF49AMDTPJqo608M5Wau';
   static final String consultaContratos = 'contratosAsesor';
+  static final String consultaIntegrantes = 'contratoDetalle';
 
   static final String homeText = 'Puedes comenzar a capturar nuevas solicitudes de crédito grupal o revisar la información de los grupos con los que ya estas trabajando, solo ve a la barra de navegación inferior y selecciona la opción que necesites.';
 

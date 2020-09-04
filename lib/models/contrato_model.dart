@@ -3,13 +3,14 @@ class Contratos{
   
   Contratos();
   
-  Contratos.fromJsonList(List<dynamic> jsonList){
-    if(jsonList == null) return;
+  List<Contrato> fromJsonList(List<dynamic> jsonList){
+    if(jsonList == null) return List();
 
     for(var item in jsonList){
       final contrato = new Contrato.jsonMap(item);
       items.add(contrato);
     }
+    return items;
   }
 }
 

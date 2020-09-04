@@ -22,6 +22,7 @@ class CustomRaisedButton extends StatelessWidget {
     return RaisedButton(
       color: primaryColor != null ? primaryColor : Constants.defaultColor,
       textColor: textColor != null ? textColor : Constants.primaryColor,
+      elevation: 0.0,
       child: FittedBox(
         child: Text(
           label.toUpperCase(),

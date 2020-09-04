@@ -1,4 +1,6 @@
+import 'package:app_grupal/components/page_route_builder.dart';
 import 'package:app_grupal/widgets/animator.dart';
+import 'package:app_grupal/widgets/custom_fade_transition.dart';
 import 'package:app_grupal/widgets/custom_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
@@ -20,6 +22,7 @@ class RenovacionesPage extends StatefulWidget {
 
 class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepAliveClientMixin{
   final _asesoresProvider = AsesoresProvider();
+  final _customRoute = CustomRouteTransition();
   List<Contrato> contratos = List();
   bool cargando = true;
   GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -54,7 +57,7 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
 
   Widget _bodyContent(){
     return cargando ? 
-    CustomCenterLoading(texto: 'Cargando renovaciones') : 
+    CustomCenterLoading(texto: 'Cargando grupos') : 
     RefreshIndicator(
       key: _refreshKey,
       onRefresh: () =>_getRenovaciones(),
@@ -85,7 +88,8 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
         leading: Icon(Icons.group,),
         trailing: GestureDetector(
           onTap: (){
-            Navigator.pushNamed(context, 'renovacionGrupo');
+            final json = {'nombre': contrato.nombreGeneral, 'contrato': contrato.contratoId};
+            Navigator.push(context, _customRoute.crearRutaSlide(Constants.renGrupo, json));
           },
           child: Icon(Icons.arrow_forward_ios)
         )
@@ -95,22 +99,26 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
 
     return Column(
       children: [
-        Container(
-          height: 70,
-          width: double.infinity,
-          color: Colors.blue,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Contratos por Terminar: ${contratos.length}'.toUpperCase(), style: Constants.encabezadoStyle),
-              Text('Entre el ${formatDate(startDate, [dd, '/', mm, '/', yyyy])} y el ${formatDate(endDate, [dd, '/', mm, '/', yyyy])}'.toUpperCase(), style: Constants.subtituloStyle)
-            ]
-          )
+        CustomFadeTransition(
+          child: Container(
+            height: 70,
+            width: double.infinity,
+            color: Colors.blueAccent,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Contratos por Terminar: ${contratos.length}'.toUpperCase(), style: Constants.encabezadoStyle),
+                Text('Entre el ${formatDate(startDate, [dd, '/', mm, '/', yyyy])} y el ${formatDate(endDate, [dd, '/', mm, '/', yyyy])}'.toUpperCase(), style: Constants.subtituloStyle)
+              ]
+            )
+          ),
         ),
         Expanded(
           child: ListView.builder(
-            itemCount: contratos.length,
+            itemCount: contratos.length + 1,
             itemBuilder: (context, index){
+              if(index == contratos.length)
+                return SizedBox(height: 50.0);
               return WidgetANimator(
                 CustomListTile(
                   title: listTiles[index].title,
