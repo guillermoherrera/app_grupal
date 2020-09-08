@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ListTileModel{
   Key key;
-  String title;
+  Widget title;
   String subtitle;
   Widget leading;
   Widget trailing;

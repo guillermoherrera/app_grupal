@@ -74,7 +74,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
 
   Widget _createTabViewHead(double height) {
     return SizedBox(
-      height: height / 13,
+      height: 85,
       child: TabBarView(
         physics: NeverScrollableScrollPhysics(),
         children: [

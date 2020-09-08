@@ -1,3 +1,4 @@
+import 'package:app_grupal/pages/renovaciones/renovaciones_integrante.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
 import 'package:flutter/material.dart';
@@ -30,9 +31,10 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   List<Integrante> _integrantes = List();
   final _asesoresProvider = AsesoresProvider();
   final _customRoute = CustomRouteTransition();
+  List<bool> _integranteCheck = new List<bool>();
   GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
-  bool cargando = true;
-  double capital = 0.0;
+  bool _cargando = true;
+  double _capital = 0.0;
 
   @override
   void initState() {
@@ -42,11 +44,15 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
 
   _getIntegrantes() async{
     _integrantes.clear();
-    cargando = true;
+    _integranteCheck.add(true);
+    _cargando = true;
     await Future.delayed(Duration(milliseconds: 1000));
     _integrantes = await _asesoresProvider.consultaIntegrantesRenovacion(widget.params['contrato']);
-    _integrantes.forEach((element) {capital += element.capital;});
-    cargando = false;
+    _integrantes.forEach((element) {
+      _capital += element.capital;
+      _integranteCheck.add(true);
+    });
+    _cargando = false;
     setState((){});
   }
 
@@ -65,7 +71,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
           height: _height / 16,
           fit: BoxFit.contain,
         ),
-        leading: cargando ? Container():
+        leading: _cargando ? Container():
          ShakeTransition(child: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context))),
       ),
       body: BodyContent(
@@ -79,7 +85,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('${widget.params['nombre']} | ${widget.params['contrato']}'.toUpperCase(), style:  Constants.encabezadoStyle),
-                  Text('Integrantes: ${_integrantes.length} | Total: \$ ${capital.toStringAsFixed(2)}'.toUpperCase(), style: Constants.subtituloStyle)
+                  Text('Integrantes: ${_integrantes.length} | Total: \$ ${_capital.toStringAsFixed(2)}'.toUpperCase(), style: Constants.subtituloStyle)
                 ]
               )
             ),
@@ -88,8 +94,21 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
             )
           ] 
         ),
-        bottom: cargando ? Container() : _buttonRenovacion(),
-      )
+        bottom: _cargando ? Container() : _buttonRenovacion(),
+      ),
+      floatingActionButton: _cargando ? null : 
+      ShakeTransition(axis: Axis.vertical, duration: Duration(milliseconds: 2000) ,child: _floatingButton(_height))
+    );
+  }
+
+  Widget _floatingButton(double height){
+    return Container(
+      padding: EdgeInsets.only(bottom: height / 16),
+      child: FloatingActionButton(
+        backgroundColor: Constants.primaryColor,
+        onPressed: (){},
+        child: Icon(Icons.person_add),
+      ),
     );
   }
 
@@ -109,7 +128,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   }
 
   _bodyContent(){
-    return cargando ? 
+    return _cargando ? 
     CustomCenterLoading(texto: 'Cargando integrantes') : 
     RefreshIndicator(
       key: _refreshKey,
@@ -134,34 +153,61 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
 
   Widget _lista(){
     List<ListTileModel> listTiles = List();
-    _integrantes.forEach((integrante) {
+    _integrantes.asMap().forEach((index, integrante) {
       final listTile = ListTileModel(
-        title: integrante.nombreCom,
+        title: Text(
+          integrante.nombreCom, 
+          style: _integranteCheck[index] ? Constants.mensajeCentral : Constants.mensajeCentralNot, 
+          overflow: TextOverflow.ellipsis
+        ),
         subtitle: '${integrante.tesorero ? 'tesorero\n' : integrante.presidente ? 'presidente\n' : ''}capital: ${integrante.capital}'.toUpperCase(),
-        leading: Icon(Icons.person,),
-        trailing: GestureDetector(
-          onTap: (){
-            //Navigator.push(context, _customRoute.crearRutaSlide(Constants.renGrupo));
-          },
-          child: Icon(Icons.arrow_forward_ios)
-        )
+        leading: Checkbox(
+          value: _integranteCheck[index],
+          onChanged: (bool val){
+            itemChange(val, index);
+          }
+        ),
+        trailing: Hero( tag: integrante.cveCli,  child: Icon(Icons.person, color: _integranteCheck[index] ? Colors.blue : Colors.grey)),
       );
       listTiles.add(listTile);
     });
     
     return  ListView.builder(
-            itemCount: _integrantes.length,
-            itemBuilder: (context, index){
-              return WidgetANimator(
-                CustomListTile(
-                  title: listTiles[index].title,
-                  subtitle: listTiles[index].subtitle,
-                  leading: listTiles[index].leading,
-                  trailing: listTiles[index].trailing,
-                )
-              );
-            }
-          );
-        
+      itemCount: _integrantes.length + 1,
+      itemBuilder: (context, index){
+        if(index == _integrantes.length)
+          return SizedBox(height: 50.0);
+        return WidgetANimator(
+          GestureDetector(
+            onTap: (){
+              final json = {
+                'nombreCom'  : _integrantes[index].nombreCom,
+                'cveCli'     : _integrantes[index].cveCli,
+                'telefonoCel': _integrantes[index].telefonoCel,
+                'importeT'   : _integrantes[index].importeT,
+                'diaAtr'     : _integrantes[index].diaAtr,
+                'capital'    : _integrantes[index].capital,
+                'noCda'      : _integrantes[index].noCda,
+                'tesorero'   : _integrantes[index].tesorero,
+                'presidente' : _integrantes[index].presidente
+              };
+              Navigator.push(context, _customRoute.crearRutaSlide(Constants.renIntegrante, json));
+            },
+            child: CustomListTile(
+              title: listTiles[index].title,
+              subtitle: listTiles[index].subtitle,
+              leading: listTiles[index].leading,
+              trailing: listTiles[index].trailing,
+            ),
+          )
+        );
+      }
+    );
+  }
+  
+  void itemChange(bool val,int index){
+    setState(() {
+      _integranteCheck[index] = val;
+    });
   }
 }

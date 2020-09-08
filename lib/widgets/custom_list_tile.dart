@@ -1,4 +1,3 @@
-import 'package:app_grupal/helpers/constants.dart';
 import 'package:flutter/material.dart';
 
 class CustomListTile extends StatelessWidget {
@@ -11,29 +10,31 @@ class CustomListTile extends StatelessWidget {
     this.trailing
   }) : super(key: key);
   
-  final String title;
+  final Widget title;
   final String subtitle;
   final Widget leading;
   final Widget trailing;
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(title, style: Constants.mensajeCentral, overflow: TextOverflow.ellipsis),
-      subtitle: Text(subtitle, overflow: TextOverflow.ellipsis),
-      leading: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          leading
-        ],
+    return Card(
+      child: ListTile(
+        title: title,
+        subtitle: Text(subtitle, overflow: TextOverflow.ellipsis),
+        leading: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            leading
+          ],
+        ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            trailing == null ? SizedBox(): trailing
+          ],
+        ),
+        isThreeLine: true,
       ),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          trailing
-        ],
-      ),
-      isThreeLine: true,
     );
   }
 }

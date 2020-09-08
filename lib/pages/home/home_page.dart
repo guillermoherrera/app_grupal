@@ -1,10 +1,6 @@
-import 'package:app_grupal/components/encabezado.dart';
-import 'package:app_grupal/pages/home/home_content.dart';
-import 'package:app_grupal/pages/renovaciones/renovaciones.dart';
 import 'package:flutter/material.dart';
 
-import 'package:app_grupal/pages/home/home_empty_page.dart';
-import 'package:app_grupal/components/body_content.dart';
+import 'package:app_grupal/pages/home/home_content.dart';
 import 'package:app_grupal/components/custom_drawer.dart';
 import 'package:app_grupal/helpers/constants.dart';
 

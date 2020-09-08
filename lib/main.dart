@@ -1,6 +1,7 @@
 import 'package:app_grupal/pages/renovaciones/renovaciones_grupo.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
  
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/pages/root_page.dart';
@@ -39,8 +40,20 @@ class MyApp extends StatelessWidget {
               Constants.rootPage  : (BuildContext context) => RootPage(),
               Constants.loginPage : (BuildContext context) => LoginPage(),
               Constants.homePage  : (BuildContext context) => HomePage(),
-              Constants.renGrupo  : (BuildContext context) => RenovacionesGrupoPage()
+              Constants.renGrupo  : (BuildContext context) => RenovacionesGrupoPage(params: null)
             },
+            localizationsDelegates: [
+              // ... app-specific localization delegate[s] here
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: [
+                const Locale('en'), // English
+                const Locale('es'), // Español
+                const Locale.fromSubtags(languageCode: 'zh'), // Chinese *See Advanced Locales below*
+                // ... other locales the app supports
+            ],
           );
         }
         

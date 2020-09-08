@@ -1,18 +1,18 @@
-import 'package:app_grupal/components/page_route_builder.dart';
-import 'package:app_grupal/widgets/animator.dart';
-import 'package:app_grupal/widgets/custom_fade_transition.dart';
-import 'package:app_grupal/widgets/custom_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
 import 'package:date_format/date_format.dart';
 
 
+import 'package:app_grupal/components/page_route_builder.dart';
+import 'package:app_grupal/widgets/animator.dart';
+import 'package:app_grupal/widgets/custom_fade_transition.dart';
+import 'package:app_grupal/widgets/custom_list_tile.dart';
+import 'package:app_grupal/widgets/shake_transition.dart';
 import 'package:app_grupal/components/empty_image.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/contrato_model.dart';
 import 'package:app_grupal/models/list_tile_model.dart';
 import 'package:app_grupal/providers/asesores_provider.dart';
-import 'package:app_grupal/widgets/custom_animated_list.dart';
 import 'package:app_grupal/widgets/custom_center_loading.dart';
 
 class RenovacionesPage extends StatefulWidget {
@@ -51,7 +51,8 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
     super.build(context);
     return Scaffold(
       body: _bodyContent(), 
-      floatingActionButton: _floatingButton(),
+      floatingActionButton: cargando ? null : 
+      ShakeTransition(axis: Axis.vertical, duration: Duration(milliseconds: 2000) ,child: _floatingButton()),
     );
   }
 
@@ -83,16 +84,10 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
     List<ListTileModel> listTiles = List();
     contratos.forEach((contrato) {
       final listTile = ListTileModel(
-        title: contrato.nombreGeneral,
+        title: Text(contrato.nombreGeneral, style: Constants.mensajeCentral, overflow: TextOverflow.ellipsis),
         subtitle: 'Contrato: ${contrato.contratoId} | Status: ${contrato.status}\nFecha termino: ${contrato.fechaTermina.substring(3, 5)}/${contrato.fechaTermina.substring(0, 2)}'.toUpperCase(),
         leading: Icon(Icons.group,),
-        trailing: GestureDetector(
-          onTap: (){
-            final json = {'nombre': contrato.nombreGeneral, 'contrato': contrato.contratoId};
-            Navigator.push(context, _customRoute.crearRutaSlide(Constants.renGrupo, json));
-          },
-          child: Icon(Icons.arrow_forward_ios)
-        )
+        trailing: Icon(Icons.arrow_forward_ios)
       );
       listTiles.add(listTile);
     });
@@ -103,7 +98,13 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
           child: Container(
             height: 70,
             width: double.infinity,
-            color: Colors.blueAccent,
+            decoration: BoxDecoration(
+              color: Colors.blueAccent,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0),
+              )
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -120,11 +121,17 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
               if(index == contratos.length)
                 return SizedBox(height: 50.0);
               return WidgetANimator(
-                CustomListTile(
-                  title: listTiles[index].title,
-                  subtitle: listTiles[index].subtitle,
-                  leading: listTiles[index].leading,
-                  trailing: listTiles[index].trailing,
+                GestureDetector(
+                  onTap: (){
+                    final json = {'nombre': contratos[index].nombreGeneral, 'contrato': contratos[index].contratoId};
+                    Navigator.push(context, _customRoute.crearRutaSlide(Constants.renGrupo, json));
+                  },
+                  child: CustomListTile(
+                    title: listTiles[index].title,
+                    subtitle: listTiles[index].subtitle,
+                    leading: listTiles[index].leading,
+                    trailing: listTiles[index].trailing,
+                  ),
                 )
               );
             }

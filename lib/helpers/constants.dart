@@ -7,6 +7,7 @@ class Constants{
   static final String loginPage = 'login';
   static final String homePage = 'home';
   static final String renGrupo = 'renovacionGrupo';
+  static final String renIntegrante = 'renovacionIntegrante';
 
   static final Color primaryColor = Color(0xff76BD21);
   static final Color defaultColor = Color(0xfff2f2f2);
@@ -14,6 +15,7 @@ class Constants{
   static final String logo = 'assets/adminconfia.png';
   static final String homeImage = 'assets/analysis.png';
   static final String emptyImage = 'assets/empty.png';
+  static final String confiashop = 'assets/confiashop.png';
 
   static final String baseURL = 'test.api.asesores.fconfia.com';
   static final String apiKey = 'doCLjcd9FIABAzXhF49AMDTPJqo608M5Wau';
@@ -25,6 +27,9 @@ class Constants{
   static final TextStyle encabezadoStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, color: Colors.white);
   static final TextStyle subtituloStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.white70);
   static final TextStyle mensajeCentral = TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0);
+  static final TextStyle mensajeCentralNot = TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, color: Colors.grey);
+  static final TextStyle mensajeCentralNotMedium = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.grey);
+  static final TextStyle mensajeMonto = TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, color: Colors.blue);
 
   static String errorAuth(error){
     if(error.contains("invalid-email")){

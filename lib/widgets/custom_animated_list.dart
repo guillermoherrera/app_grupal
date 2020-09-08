@@ -1,6 +1,7 @@
-import 'package:app_grupal/helpers/constants.dart';
-import 'package:app_grupal/models/list_tile_model.dart';
+
 import 'package:flutter/material.dart';
+
+import 'package:app_grupal/models/list_tile_model.dart';
 
 class CustomAnimatedList extends StatelessWidget {
   const CustomAnimatedList({
@@ -35,7 +36,7 @@ class CustomAnimatedList extends StatelessWidget {
   Widget _listTile(ListTileModel item){
     return Card(
       child: ListTile(
-        title: Text(item.title, style: Constants.mensajeCentral, overflow: TextOverflow.ellipsis),
+        title: item.title,
         subtitle: Text(item.subtitle, overflow: TextOverflow.ellipsis),
         leading: Column(
           mainAxisAlignment: MainAxisAlignment.center,
