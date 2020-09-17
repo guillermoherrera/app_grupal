@@ -8,6 +8,7 @@ class Constants{
   static final String homePage = 'home';
   static final String renGrupo = 'renovacionGrupo';
   static final String renIntegrante = 'renovacionIntegrante';
+  static final String confiashopPage = 'confiashop';
 
   static final Color primaryColor = Color(0xff76BD21);
   static final Color defaultColor = Color(0xfff2f2f2);
@@ -26,10 +27,12 @@ class Constants{
 
   static final TextStyle encabezadoStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, color: Colors.white);
   static final TextStyle subtituloStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.white70);
-  static final TextStyle mensajeCentral = TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0);
-  static final TextStyle mensajeCentralNot = TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, color: Colors.grey);
+  static final TextStyle mensajeCentral = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.grey[600]);
+  static final TextStyle mensajeCentral2 = TextStyle(fontSize: 11.0, color: Colors.grey);
+  static final TextStyle mensajeCentral3 = TextStyle(fontSize: 11.0);
+  static final TextStyle mensajeCentralNot = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.grey);
   static final TextStyle mensajeCentralNotMedium = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.grey);
-  static final TextStyle mensajeMonto = TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, color: Colors.blue);
+  static final TextStyle mensajeMonto = TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0);
 
   static String errorAuth(error){
     if(error.contains("invalid-email")){

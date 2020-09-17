@@ -87,58 +87,76 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
         title: Text(contrato.nombreGeneral, style: Constants.mensajeCentral, overflow: TextOverflow.ellipsis),
         subtitle: 'Contrato: ${contrato.contratoId} | Status: ${contrato.status}\nFecha termino: ${contrato.fechaTermina.substring(3, 5)}/${contrato.fechaTermina.substring(0, 2)}'.toUpperCase(),
         leading: Icon(Icons.group,),
-        trailing: Icon(Icons.arrow_forward_ios)
+        trailing: Icon(Icons.arrow_forward_ios, color: Constants.primaryColor,)
       );
       listTiles.add(listTile);
     });
 
-    return Column(
-      children: [
-        CustomFadeTransition(
-          child: Container(
-            height: 70,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.blueAccent,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30.0),
-                topRight: Radius.circular(30.0),
+    return Container(
+      color: Colors.white,
+      child: Column(
+        children: [
+          CustomFadeTransition(
+            child: Container(
+              padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                  topRight: Radius.circular(30.0),
+                )
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Contratos por Terminar'.toUpperCase(), style: Constants.mensajeCentral),
+                      Text('Consulta realizada'.toUpperCase(), style: Constants.mensajeCentral2),
+                      Text('Entre el ${formatDate(startDate, [dd, '/', mm, '/', yyyy])} y el ${formatDate(endDate, [dd, '/', mm, '/', yyyy])}'.toUpperCase(), style: Constants.mensajeCentral3),
+                    ]
+                  ),
+                  Column(
+                    children: [
+                      Icon(Icons.group, color: Constants.primaryColor,),
+                      Text('${contratos.length}', style: TextStyle(fontSize: 11.0, color: Constants.primaryColor))
+                    ],
+                  )
+                ],
               )
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Contratos por Terminar: ${contratos.length}'.toUpperCase(), style: Constants.encabezadoStyle),
-                Text('Entre el ${formatDate(startDate, [dd, '/', mm, '/', yyyy])} y el ${formatDate(endDate, [dd, '/', mm, '/', yyyy])}'.toUpperCase(), style: Constants.subtituloStyle)
-              ]
-            )
           ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: contratos.length + 1,
-            itemBuilder: (context, index){
-              if(index == contratos.length)
-                return SizedBox(height: 50.0);
-              return WidgetANimator(
-                GestureDetector(
-                  onTap: (){
-                    final json = {'nombre': contratos[index].nombreGeneral, 'contrato': contratos[index].contratoId};
-                    Navigator.push(context, _customRoute.crearRutaSlide(Constants.renGrupo, json));
-                  },
-                  child: CustomListTile(
-                    title: listTiles[index].title,
-                    subtitle: listTiles[index].subtitle,
-                    leading: listTiles[index].leading,
-                    trailing: listTiles[index].trailing,
-                  ),
-                )
-              );
-            }
+          Divider(),
+          Expanded(
+            child: ListView.builder(
+              physics: BouncingScrollPhysics(),
+              itemCount: contratos.length + 1,
+              itemBuilder: (context, index){
+                if(index == contratos.length)
+                  return SizedBox(height: 50.0);
+                return WidgetANimator(
+                  GestureDetector(
+                    onTap: (){
+                      final json = {'nombre': contratos[index].nombreGeneral, 'contrato': contratos[index].contratoId, 'status': contratos[index].status};
+                      Navigator.push(context, _customRoute.crearRutaSlide(Constants.renGrupo, json));
+                    },
+                    child: CustomListTile(
+                      title: listTiles[index].title,
+                      subtitle: listTiles[index].subtitle,
+                      //leading: listTiles[index].leading,
+                      trailing: listTiles[index].trailing,
+                    ),
+                  )
+                );
+              }
+            )
           )
-        )
-        //Expanded(child: CustomAnimatedList(lista: listTiles)),
-      ],
+          //Expanded(child: CustomAnimatedList(lista: listTiles)),
+        ],
+      ),
     );
   }
 

@@ -20,8 +20,8 @@ class CustomListTile extends StatelessWidget {
     return Card(
       child: ListTile(
         title: title,
-        subtitle: Text(subtitle, overflow: TextOverflow.ellipsis),
-        leading: Column(
+        subtitle: Text(subtitle, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 11.0)),
+        leading: leading == null ? null : Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             leading

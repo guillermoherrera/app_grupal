@@ -1,17 +1,26 @@
+import 'package:flutter/material.dart';
+
 import 'package:app_grupal/components/body_content.dart';
+import 'package:app_grupal/components/page_route_builder.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
-import 'package:flutter/material.dart';
 
-class RenovacionesIntegrentePage extends StatelessWidget {
+class RenovacionesIntegrentePage extends StatefulWidget {
   const RenovacionesIntegrentePage({
     Key key, 
     this.params
   }) : super(key: key);
 
   final Map<String, dynamic> params;
-  
+
+  @override
+  _RenovacionesIntegrentePageState createState() => _RenovacionesIntegrentePageState();
+}
+
+class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage> {
+  final _customRoute = CustomRouteTransition();
+
   @override
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
@@ -34,7 +43,7 @@ class RenovacionesIntegrentePage extends StatelessWidget {
           child: Column(
             children: [
               _encabezado(_height),
-              _capital(_height)
+              _capital(_height, context)
             ] 
           ),
         ),
@@ -53,7 +62,7 @@ class RenovacionesIntegrentePage extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(_height / 128),
             child: Hero(
-              tag: params['cveCli'],
+              tag: widget.params['cveCli'],
               child: Icon(
                 Icons.person,
                 color: Constants.primaryColor,
@@ -66,20 +75,20 @@ class RenovacionesIntegrentePage extends StatelessWidget {
             ),
           ),
           SizedBox(height: _height / 64),
-          Text( params['nombreCom'] , style: Constants.encabezadoStyle),
-          params['tesorero'] ? Text( 'Tesorero'.toUpperCase() , style: Constants.subtituloStyle) : SizedBox(),
-          params['presidente'] ? Text( 'Presidente'.toUpperCase() , style: Constants.subtituloStyle) : SizedBox()
+          Text( widget.params['nombreCom'] , style: Constants.encabezadoStyle),
+          widget.params['tesorero'] ? Text( 'Tesorero'.toUpperCase() , style: Constants.subtituloStyle) : SizedBox(),
+          widget.params['presidente'] ? Text( 'Presidente'.toUpperCase() , style: Constants.subtituloStyle) : SizedBox()
         ]
       )
     );
   }
 
-  Widget _capital(double _height){
+  Widget _capital(double _height, BuildContext context){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _subtitulo('ConfiaShop'),
-        _confiashop(_height),
+        _confiashop(_height, context),
         SizedBox(height: 30.0),
         _subtitulo('Capital (Renovación)'),
         _monto(),
@@ -90,7 +99,7 @@ class RenovacionesIntegrentePage extends StatelessWidget {
     );
   }
 
-  Widget _confiashop(double _height){
+  Widget _confiashop(double _height, BuildContext context){
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(
@@ -105,8 +114,10 @@ class RenovacionesIntegrentePage extends StatelessWidget {
           ShakeTransition(
             child: CustomRaisedButton(
               label: 'ir a tienda',
-              primaryColor: Colors.blue[900],
-              textColor: Colors.white
+              borderColor: Colors.blue,
+              primaryColor: Colors.blue,
+              textColor: Colors.white,
+              action: ()=>Navigator.push(context, _customRoute.crearRutaSlide(Constants.confiashopPage, {})),
             ),
           )
         ],
@@ -120,10 +131,19 @@ class RenovacionesIntegrentePage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('\$ ${params['capital']}', style: Constants.mensajeMonto),
+          Container(
+            decoration: BoxDecoration(
+              color: Color(0xffBCEA84),
+              borderRadius: BorderRadius.all(Radius.circular(10.0))
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0), 
+            child: Text('\$ ${widget.params['capital']}', style: Constants.mensajeMonto)),
           ShakeTransition(
             child: CustomRaisedButton(
-              label: 'Actualizar'
+              label: 'Actualizar',
+              borderColor: Colors.blue,
+              primaryColor: Colors.blue,
+              textColor: Colors.white,
             ),
           )
         ],
@@ -140,7 +160,7 @@ class RenovacionesIntegrentePage extends StatelessWidget {
 
   Widget _tablaInformacion(){
     List<TableRow> rowTable = [];
-    params.forEach((key, value) {
+    widget.params.forEach((key, value) {
       rowTable.add(_creaTableRow(key));
     });
 
@@ -175,7 +195,7 @@ class RenovacionesIntegrentePage extends StatelessWidget {
     return mostrar == null ? Container() :
       Container(
         padding: EdgeInsets.only(left: 50.0),
-        child: Text('${params[data]}', overflow: TextOverflow.ellipsis, style: Constants.mensajeCentralNotMedium)
+        child: Text('${widget.params[data]}', overflow: TextOverflow.ellipsis, style: Constants.mensajeCentralNotMedium)
       );
   }
 

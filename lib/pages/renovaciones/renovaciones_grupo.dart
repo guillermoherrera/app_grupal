@@ -1,4 +1,3 @@
-import 'package:app_grupal/pages/renovaciones/renovaciones_integrante.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +52,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
       _integranteCheck.add(true);
     });
     _cargando = false;
-    setState((){});
+    if(this.mounted) setState((){});
   }
 
   @override
@@ -78,17 +77,31 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
         contenido: Column(
           children: [
             Container(
-              height: 70,
+              padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
+              //height: 70,
               width: double.infinity,
-              color: Colors.deepPurple,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('${widget.params['nombre']} | ${widget.params['contrato']}'.toUpperCase(), style:  Constants.encabezadoStyle),
-                  Text('Integrantes: ${_integrantes.length} | Total: \$ ${_capital.toStringAsFixed(2)}'.toUpperCase(), style: Constants.subtituloStyle)
-                ]
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('${widget.params['nombre']} | ${widget.params['contrato']}'.toUpperCase(), style: Constants.mensajeCentral),
+                      Text('Integrantes: ${_integrantes.length}'.toUpperCase(), style: Constants.mensajeCentral2),
+                      Text('Total: \$ ${_capital.toStringAsFixed(2)}'.toUpperCase(), style: Constants.mensajeCentral3),
+                    ]
+                  ),
+                  Column(
+                    children: [
+                      Icon(Icons.group, color: Constants.primaryColor),
+                      Text('Estatus: ${widget.params['status']}'.toUpperCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor)),
+                    ],
+                  ),
+                ],
               )
             ),
+            Divider(),
             Expanded(
               child: _bodyContent()
             )
@@ -113,17 +126,34 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   }
 
   Widget _buttonRenovacion(){
-    return ShakeTransition(
-      child: Container(
-        width: double.infinity,
-        child: CustomRaisedButton(
-          action: (){},
-          borderColor: Colors.blue,
-          primaryColor: Colors.blue,
-          textColor: Colors.white,
-          label: 'Solicitar Renovacion'
+    return Stack(
+      children: [
+        Container(
+          color: Colors.white,
+          width: double.infinity,
+          height: 50,
         ),
-      ),
+        ShakeTransition(
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                  topRight: Radius.circular(30.0),
+                )
+              ),
+            width: double.infinity,
+            height: 50,
+            child: CustomRaisedButton(
+              action: (){},
+              borderColor: Colors.blue,
+              primaryColor: Colors.blue,
+              textColor: Colors.white,
+              label: 'Solicitar Renovacion'
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -167,12 +197,13 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
             itemChange(val, index);
           }
         ),
-        trailing: Hero( tag: integrante.cveCli,  child: Icon(Icons.person, color: _integranteCheck[index] ? Colors.blue : Colors.grey)),
+        trailing: Icon(_integranteCheck[index] ? Icons.arrow_forward_ios : Icons.highlight_off, color: _integranteCheck[index] ? Constants.primaryColor : Colors.grey),
       );
       listTiles.add(listTile);
     });
     
     return  ListView.builder(
+      physics: BouncingScrollPhysics(),
       itemCount: _integrantes.length + 1,
       itemBuilder: (context, index){
         if(index == _integrantes.length)
@@ -191,7 +222,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
                 'tesorero'   : _integrantes[index].tesorero,
                 'presidente' : _integrantes[index].presidente
               };
-              Navigator.push(context, _customRoute.crearRutaSlide(Constants.renIntegrante, json));
+              if(_integranteCheck[index]) Navigator.push(context, _customRoute.crearRutaSlide(Constants.renIntegrante, json));
             },
             child: CustomListTile(
               title: listTiles[index].title,

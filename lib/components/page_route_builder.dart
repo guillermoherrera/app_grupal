@@ -1,3 +1,4 @@
+import 'package:app_grupal/pages/confiashop/confiashop_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_grupal/helpers/constants.dart';
@@ -16,7 +17,7 @@ class CustomRouteTransition{
       transitionDuration: Duration(milliseconds: 500),
       transitionsBuilder: ( context, animation, sencondaryAnimation, child ) {
         final curveAnimation = CurvedAnimation(parent: animation, curve: Curves.ease);
-        if(route == Constants.renIntegrante){
+        if(route == "Constants.renIntegrante"){
           return FadeTransition(
             child: child,
             opacity: Tween<double>(begin: 0.0, end: 1.0).animate(curveAnimation)
@@ -36,6 +37,8 @@ class CustomRouteTransition{
       return RenovacionesGrupoPage(params: params);
     }else if(ruta == Constants.renIntegrante){
       return RenovacionesIntegrentePage(params: params);
+    }else if(ruta == Constants.confiashopPage){
+      return ConfiashopPage();
     }
     return RootPage();
   }
