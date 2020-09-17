@@ -131,27 +131,31 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
           ),
           Divider(),
           Expanded(
-            child: ListView.builder(
-              physics: BouncingScrollPhysics(),
-              itemCount: contratos.length + 1,
-              itemBuilder: (context, index){
-                if(index == contratos.length)
-                  return SizedBox(height: 50.0);
-                return WidgetANimator(
-                  GestureDetector(
-                    onTap: (){
-                      final json = {'nombre': contratos[index].nombreGeneral, 'contrato': contratos[index].contratoId, 'status': contratos[index].status};
-                      Navigator.push(context, _customRoute.crearRutaSlide(Constants.renGrupo, json));
-                    },
-                    child: CustomListTile(
-                      title: listTiles[index].title,
-                      subtitle: listTiles[index].subtitle,
-                      //leading: listTiles[index].leading,
-                      trailing: listTiles[index].trailing,
-                    ),
-                  )
-                );
-              }
+            child: MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: ListView.builder(
+                physics: BouncingScrollPhysics(),
+                itemCount: contratos.length + 1,
+                itemBuilder: (context, index){
+                  if(index == contratos.length)
+                    return SizedBox(height: 50.0);
+                  return WidgetANimator(
+                    GestureDetector(
+                      onTap: (){
+                        final json = {'nombre': contratos[index].nombreGeneral, 'contrato': contratos[index].contratoId, 'status': contratos[index].status};
+                        Navigator.push(context, _customRoute.crearRutaSlide(Constants.renGrupo, json));
+                      },
+                      child: CustomListTile(
+                        title: listTiles[index].title,
+                        subtitle: listTiles[index].subtitle,
+                        //leading: listTiles[index].leading,
+                        trailing: listTiles[index].trailing,
+                      ),
+                    )
+                  );
+                }
+              ),
             )
           )
           //Expanded(child: CustomAnimatedList(lista: listTiles)),

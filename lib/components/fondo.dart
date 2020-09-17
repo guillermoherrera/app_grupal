@@ -8,7 +8,15 @@ class Fondo extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      color: Constants.primaryColor,
-    );
+      //color: Constants.primaryColor,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: FractionalOffset(1.0, 0.0),
+          end: FractionalOffset(0.01, 0.0),
+          colors: [Color.fromRGBO(118, 189, 33, 1.0), Color.fromRGBO(98, 169, 13, 1.0)]
+        )
+      ),
+    )
+    ;
   }
 }

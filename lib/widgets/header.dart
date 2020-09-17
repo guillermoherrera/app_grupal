@@ -30,7 +30,15 @@ class _HeaderCurvoPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     
-    final lapiz = new Paint();
+    final lapiz = new Paint()..shader = RadialGradient(
+    colors: [
+      Color.fromRGBO(98, 169, 13, 1.0),
+      Color.fromRGBO(118, 189, 33, 1.0),
+    ],
+  ).createShader(Rect.fromCircle(
+    center: Offset(1.0, 1.0),
+    radius: 500.0,
+  ));
 
     // Propiedades
     lapiz.color = Constants.primaryColor;

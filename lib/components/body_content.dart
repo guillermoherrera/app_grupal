@@ -8,9 +8,11 @@ class BodyContent extends StatelessWidget {
     Key key,
     @required this.contenido,
     this.encabezado,
-    this.bottom
+    this.bottom,
+    this.appBar
   }) : super(key: key);
   
+  final Widget appBar;
   final Widget contenido;
   final Widget encabezado;
   final Widget bottom;
@@ -22,6 +24,7 @@ class BodyContent extends StatelessWidget {
         Fondo(),
         Column(
           children: [
+            appBar == null ? Container() : appBar,
             encabezado == null ? Container() : encabezado,
             CardContent(
               contenido: contenido

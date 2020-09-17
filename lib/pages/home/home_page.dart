@@ -24,29 +24,29 @@ class _HomePageState extends State<HomePage>{
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 0.0,
-        title: Hero(
-          tag: 'logo',
-          child: Image(
-            image: AssetImage(Constants.logo),
-            color: Colors.white,
-            height: _height / 16,
-            fit: BoxFit.contain,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.account_circle, color: Colors.white, size: 30.0),
-            onPressed: () => _scaffoldKey.currentState.openDrawer()
-          ),
-        ],
-        leading: Container(),
-      ),
+      //appBar: AppBar(
+      //  centerTitle: true,
+      //  elevation: 0.0,
+      //  title: Hero(
+      //    tag: 'logo',
+      //    child: Image(
+      //      image: AssetImage(Constants.logo),
+      //      color: Colors.white,
+      //      height: _height / 16,
+      //      fit: BoxFit.contain,
+      //    ),
+      //  ),
+      //  actions: [
+      //    IconButton(
+      //      icon: Icon(Icons.account_circle, color: Colors.white, size: 30.0),
+      //      onPressed: () => _scaffoldKey.currentState.openDrawer()
+      //    ),
+      //  ],
+      //  leading: Container(),
+      //),
       drawer: CustomDrawer(),
       drawerEnableOpenDragGesture: false,
-      body: HomeContent(),
+      body: HomeContent(scaffoldKey: _scaffoldKey),
     );
   }
 }

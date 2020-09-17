@@ -7,7 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:app_grupal/components/body_content.dart';
 
 class HomeContent extends StatefulWidget {
-  @override
+  
+  const HomeContent({
+    Key key, 
+    this.scaffoldKey
+  }) : super(key: key);@override
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
   _HomeContentState createState() => _HomeContentState();
 }
 
@@ -31,6 +37,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
     final _height = MediaQuery.of(context).size.height;
 
     return BodyContent(
+      appBar: _appBar(_height),
       encabezado: _createTabViewHead(_height),
       contenido: _createTabView(),
       bottom: Container(
@@ -43,6 +50,30 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
           tabs: _createTabs()
         ),
       )
+    );
+  }
+
+  Widget _appBar(double _height){
+    return AppBar(
+      centerTitle: true,
+      elevation: 0.0,
+      backgroundColor: Colors.transparent,
+      title: Hero(
+        tag: 'logo',
+        child: Image(
+          image: AssetImage(Constants.logo),
+          color: Colors.white,
+          height: _height / 16,
+          fit: BoxFit.contain,
+        ),
+      ),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.account_circle, color: Colors.white, size: 30.0),
+          onPressed: () => widget.scaffoldKey.currentState.openDrawer()
+        ),
+      ],
+      leading: Container(),
     );
   }
 

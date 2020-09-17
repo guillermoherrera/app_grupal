@@ -60,9 +60,11 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
     final _height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      appBar: AppBar(
+      body: BodyContent(
+        appBar: AppBar(
         centerTitle: true,
         elevation: 0.0,
+        backgroundColor: Colors.transparent,
         iconTheme: IconThemeData(color: Colors.white),
         title: Image(
           image: AssetImage(Constants.logo),
@@ -73,7 +75,6 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
         leading: _cargando ? Container():
          ShakeTransition(child: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context))),
       ),
-      body: BodyContent(
         contenido: Column(
           children: [
             Container(
@@ -202,37 +203,41 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
       listTiles.add(listTile);
     });
     
-    return  ListView.builder(
-      physics: BouncingScrollPhysics(),
-      itemCount: _integrantes.length + 1,
-      itemBuilder: (context, index){
-        if(index == _integrantes.length)
-          return SizedBox(height: 50.0);
-        return WidgetANimator(
-          GestureDetector(
-            onTap: (){
-              final json = {
-                'nombreCom'  : _integrantes[index].nombreCom,
-                'cveCli'     : _integrantes[index].cveCli,
-                'telefonoCel': _integrantes[index].telefonoCel,
-                'importeT'   : _integrantes[index].importeT,
-                'diaAtr'     : _integrantes[index].diaAtr,
-                'capital'    : _integrantes[index].capital,
-                'noCda'      : _integrantes[index].noCda,
-                'tesorero'   : _integrantes[index].tesorero,
-                'presidente' : _integrantes[index].presidente
-              };
-              if(_integranteCheck[index]) Navigator.push(context, _customRoute.crearRutaSlide(Constants.renIntegrante, json));
-            },
-            child: CustomListTile(
-              title: listTiles[index].title,
-              subtitle: listTiles[index].subtitle,
-              leading: listTiles[index].leading,
-              trailing: listTiles[index].trailing,
-            ),
-          )
-        );
-      }
+    return  MediaQuery.removePadding(
+      context: context,
+      removeTop: true,
+      child: ListView.builder(
+        physics: BouncingScrollPhysics(),
+        itemCount: _integrantes.length + 1,
+        itemBuilder: (context, index){
+          if(index == _integrantes.length)
+            return SizedBox(height: 50.0);
+          return WidgetANimator(
+            GestureDetector(
+              onTap: (){
+                final json = {
+                  'nombreCom'  : _integrantes[index].nombreCom,
+                  'cveCli'     : _integrantes[index].cveCli,
+                  'telefonoCel': _integrantes[index].telefonoCel,
+                  'importeT'   : _integrantes[index].importeT,
+                  'diaAtr'     : _integrantes[index].diaAtr,
+                  'capital'    : _integrantes[index].capital,
+                  'noCda'      : _integrantes[index].noCda,
+                  'tesorero'   : _integrantes[index].tesorero,
+                  'presidente' : _integrantes[index].presidente
+                };
+                if(_integranteCheck[index]) Navigator.push(context, _customRoute.crearRutaSlide(Constants.renIntegrante, json));
+              },
+              child: CustomListTile(
+                title: listTiles[index].title,
+                subtitle: listTiles[index].subtitle,
+                leading: listTiles[index].leading,
+                trailing: listTiles[index].trailing,
+              ),
+            )
+          );
+        }
+      ),
     );
   }
   

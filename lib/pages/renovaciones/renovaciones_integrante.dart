@@ -26,19 +26,32 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
     final _height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 0.0,
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Image(
-          image: AssetImage(Constants.logo),
-          color: Colors.white,
-          height: _height / 16,
-          fit: BoxFit.contain,
-        ),
-        leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context)),
-      ),
+      //appBar: AppBar(
+      //  centerTitle: true,
+      //  elevation: 0.0,
+      //  iconTheme: IconThemeData(color: Colors.white),
+      //  title: Image(
+      //    image: AssetImage(Constants.logo),
+      //    color: Colors.white,
+      //    height: _height / 16,
+      //    fit: BoxFit.contain,
+      //  ),
+      //  leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context)),
+      //),
       body: BodyContent(
+        appBar: AppBar(
+          centerTitle: true,
+          elevation: 0.0,
+          iconTheme: IconThemeData(color: Colors.white),
+          backgroundColor: Colors.transparent,
+          title: Image(
+            image: AssetImage(Constants.logo),
+            color: Colors.white,
+            height: _height / 16,
+            fit: BoxFit.contain,
+          ),
+          leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context)),
+        ),
         contenido: SingleChildScrollView(
           child: Column(
             children: [
@@ -55,7 +68,13 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
     return Container(
       padding: EdgeInsets.symmetric(vertical: _height / 32),
       width: double.infinity,
-      color: Constants.primaryColor,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: FractionalOffset(1.0, 0.0),
+          end: FractionalOffset(0.01, 0.0),
+          colors: [Color.fromRGBO(118, 189, 33, 1.0), Color.fromRGBO(98, 169, 13, 1.0)]
+        )
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
