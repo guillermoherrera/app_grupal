@@ -34,6 +34,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
   bool _cargando = true;
   double _capital = 0.0;
+  bool _renovadoCheck = true;
 
   @override
   void initState() {
@@ -47,6 +48,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
     _cargando = true;
     await Future.delayed(Duration(milliseconds: 1000));
     _integrantes = await _asesoresProvider.consultaIntegrantesRenovacion(widget.params['contrato']);
+    if(_integrantes.length > 0) _renovadoCheck = _integrantes[0].renovado; 
     _integrantes.forEach((element) {
       _capital += element.capital;
       _integranteCheck.add(true);
@@ -116,10 +118,19 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   }
 
   Widget _floatingButton(double height){
-    return Container(
+    return _renovadoCheck ? 
+    Container(
       padding: EdgeInsets.only(bottom: height / 16),
       child: FloatingActionButton(
         backgroundColor: Constants.primaryColor,
+        onPressed: null,
+        child: Icon(Icons.check),
+      ),
+    ):
+    Container(
+      padding: EdgeInsets.only(bottom: height / 16),
+      child: FloatingActionButton(
+        //backgroundColor: Constants.primaryColor,
         onPressed: (){},
         child: Icon(Icons.person_add),
       ),
@@ -137,7 +148,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
         ShakeTransition(
           child: Container(
             decoration: BoxDecoration(
-                color: Colors.blue,
+                color: _renovadoCheck ? Constants.primaryColor : Colors.blue,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30.0),
                   topRight: Radius.circular(30.0),
@@ -147,10 +158,10 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
             height: 50,
             child: CustomRaisedButton(
               action: (){},
-              borderColor: Colors.blue,
-              primaryColor: Colors.blue,
+              borderColor: _renovadoCheck ? Constants.primaryColor : Colors.blue,
+              primaryColor: _renovadoCheck ? Constants.primaryColor : Colors.blue,
               textColor: Colors.white,
-              label: 'Solicitar Renovacion'
+              label: _renovadoCheck ? 'Renovado' : 'Solicitar Renovación'
             ),
           ),
         ),
@@ -231,8 +242,8 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
               child: CustomListTile(
                 title: listTiles[index].title,
                 subtitle: listTiles[index].subtitle,
-                leading: listTiles[index].leading,
-                trailing: listTiles[index].trailing,
+                leading: _renovadoCheck ? null : listTiles[index].leading,
+                trailing: _renovadoCheck ? null : listTiles[index].trailing,
               ),
             )
           );

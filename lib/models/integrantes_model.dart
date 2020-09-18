@@ -8,6 +8,7 @@ class Integrantes{
     if(jsonList == null) return List();
     for(var item in jsonList['integrantes']){
       final integrante = Integrante.jsonMap(item);
+      integrante.renovado = jsonList['renovado'];
       items.add(integrante);
     }
 
@@ -25,6 +26,7 @@ class Integrante{
   int noCda;
   bool tesorero;
   bool presidente;
+  bool renovado;
 
   Integrante({
     this.cveCli,
@@ -35,7 +37,8 @@ class Integrante{
     this.capital,
     this.noCda,
     this.tesorero,
-    this.presidente
+    this.presidente,
+    this.renovado
   });
 
   Integrante.jsonMap(Map<String, dynamic> json){

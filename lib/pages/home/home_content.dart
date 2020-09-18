@@ -11,7 +11,7 @@ class HomeContent extends StatefulWidget {
   const HomeContent({
     Key key, 
     this.scaffoldKey
-  }) : super(key: key);@override
+  }) : super(key: key);
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   _HomeContentState createState() => _HomeContentState();

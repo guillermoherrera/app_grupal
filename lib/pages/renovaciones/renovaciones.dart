@@ -166,7 +166,7 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
 
   Widget _floatingButton(){
     return FloatingActionButton(
-      backgroundColor: Constants.primaryColor,
+      //backgroundColor: Constants.primaryColor,
       onPressed: ()async => await _displayPicker(context),
       child: Icon(Icons.date_range),
     );
