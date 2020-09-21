@@ -52,4 +52,72 @@ class Constants{
       return "Correo y/o contraseña incorrectos.";
     }
   }
+
+  //SQFLITE
+  //catalogo documentos
+  static const catDocumentosTable = 'catDocumentos';
+  static const tipo = 'tipo';
+  static const descDocumento = 'descDocumento';
+
+  //catalogo integrantes
+  static const catIntegrantesTable = 'catIntegrantes';
+  static const cantidadIntegrantes = 'cantidadIntegrantes';
+
+  //catalogo estados
+  static const catEstadosTable = 'catEstados';
+  static const codigo = 'codigo';
+
+  //solicitudes (integrante)
+  static const solicitudesTable = 'solicitudes';
+  static const idSolicitud = 'idSolicitud'; //documentos
+  static const idGrupo = 'idGrupo'; //grupos
+  static const nombreGrupo = 'nombreGrupo'; //grupos
+  static const importe = 'importe'; //renovaciones
+  static const nombrePrimero = 'nombrePrimero';
+  static const nombreSegundo = 'nombreSegundo';
+  static const apellidoPrimero = 'apellidoPrimero';
+  static const apellidoSegundo = 'apellidoSegundo';
+  static const fechaNacimiento = 'fechaNacimiento';
+  static const fechaCaptura = 'fechaCaptura';
+  static const curp = 'curp';
+  static const rfc = 'rfc';
+  static const telefono = 'telefono';
+  static const tipoContrato = 'tipoContrato'; //renovaciones
+  static const documentID = 'documentID';
+  static const direccion1 = 'direccion1';
+  static const coloniaPoblacion = 'coloniaPoblacion';
+  static const delegacionMunicipio = 'delegacionMunicipio';
+  static const ciudad = 'ciudad';
+  static const estado = 'estado'; //catalogo estados
+  static const cp = 'cp';
+  static const pais = 'pais';
+
+  //documentos solicitudes (integrante)
+  static const documentoSolicitudesTable = 'documentosSolicitudes';
+  static const idDocumentoSolicitudes = 'idDocumentoSolicitudes';
+  static const tipoDocumento = 'tipoDocumento';
+  static const documento = 'documento';
+  static const version = 'version';
+  static const cambioDoc = 'cambioDoc';
+  static const observacionCambio = 'observacionCambio';
+
+  //grupos
+  static const gruposTable = 'grupos';
+  static const importeGrupo = 'importeGrupo';
+  static const cantidadSolicitudes = 'cantidadSolicitudes';
+  static const grupoID = 'grupoID';
+
+  //renovaciones (integrante)
+  static const renovacionesTable = "renovaciones";
+  static const idRenovacion = "idRenovacion";
+  static const creditoID = "creditoID";
+  static const clienteID = "clienteID";
+  static const nombreCompleto = "nombreCompleto";
+  static const capital = "capital";
+  static const diasAtraso = "diasAtraso";
+  static const beneficio = "beneficio";
+  static const ticket = "ticket";
+  static const nuevoImporte = "nuevoImporte";
+  static const status = 'status';
+  static const userID = 'userID';
 }

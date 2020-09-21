@@ -1,4 +1,8 @@
+import 'package:app_grupal/classes/shared_preferences.dart';
+import 'package:app_grupal/providers/db_provider.dart';
+import 'package:app_grupal/widgets/custom_dialog.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
+import 'package:app_grupal/widgets/custom_snack_bar.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
 import 'package:flutter/material.dart';
 
@@ -27,25 +31,31 @@ class RenovacionesGrupoPage extends StatefulWidget {
 }
 
 class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
-  List<Integrante> _integrantes = List();
   final _asesoresProvider = AsesoresProvider();
   final _customRoute = CustomRouteTransition();
-  List<bool> _integranteCheck = new List<bool>();
+  final _sharedActions = SharedActions();
+  final _customSnakBar = new CustomSnakBar();
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
   GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
+  List<Integrante> _integrantes = List();
+  List<bool> _integranteCheck = new List<bool>();
   bool _cargando = true;
   double _capital = 0.0;
   bool _renovadoCheck = true;
+  String userID;
 
   @override
-  void initState() {
-    _getIntegrantes();
+  void initState(){
+    _getIntegrantesFromConfia();
     super.initState();
   }
 
-  _getIntegrantes() async{
+  _getIntegrantesFromConfia() async{
     _integrantes.clear();
     _integranteCheck.add(true);
     _cargando = true;
+    _capital = 0.0;
+
     await Future.delayed(Duration(milliseconds: 1000));
     _integrantes = await _asesoresProvider.consultaIntegrantesRenovacion(widget.params['contrato']);
     if(_integrantes.length > 0) _renovadoCheck = _integrantes[0].renovado; 
@@ -53,6 +63,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
       _capital += element.capital;
       _integranteCheck.add(true);
     });
+    
     _cargando = false;
     if(this.mounted) setState((){});
   }
@@ -62,6 +73,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
     final _height = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      key: _scaffoldKey,
       body: BodyContent(
         appBar: AppBar(
         centerTitle: true,
@@ -157,7 +169,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
             width: double.infinity,
             height: 50,
             child: CustomRaisedButton(
-              action: (){},
+              action: _renovadoCheck ? null : () async => _solicitarRenovacion(),
               borderColor: _renovadoCheck ? Constants.primaryColor : Colors.blue,
               primaryColor: _renovadoCheck ? Constants.primaryColor : Colors.blue,
               textColor: Colors.white,
@@ -172,9 +184,9 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   _bodyContent(){
     return _cargando ? 
     CustomCenterLoading(texto: 'Cargando integrantes') : 
-    RefreshIndicator(
+    _renovadoCheck ? _showResult() :RefreshIndicator(
       key: _refreshKey,
-      onRefresh: () =>_getIntegrantes(),
+      onRefresh: () => _getIntegrantesFromConfia(),
       child: _showResult()
     );
   }
@@ -225,7 +237,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
             return SizedBox(height: 50.0);
           return WidgetANimator(
             GestureDetector(
-              onTap: (){
+              onTap: _renovadoCheck ? null : (){
                 final json = {
                   'nombreCom'  : _integrantes[index].nombreCom,
                   'cveCli'     : _integrantes[index].cveCli,
@@ -256,5 +268,51 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
     setState(() {
       _integranteCheck[index] = val;
     });
+  }
+
+  _solicitarRenovacion() async{
+    CustomDialog customDialog = CustomDialog();
+    customDialog.showCustomDialog(
+      context,
+      title: 'Solicitar Renovación',
+      icon: Icons.error_outline,
+      textContent: '¿Desea solicitar la renovacion del grupo \'${widget.params['nombre']}\'?',
+      cancel: 'No, cancelar',
+      cntinue: 'Si, solicitar renovación',
+      action: _renovar
+    ); 
+  }
+
+  _renovar() async{
+    //validacion numero de integrantes
+    if(false){
+      userID = await _sharedActions.getUserId();
+      Grupo grupo = Grupo(
+        cantidadSolicitudes: _integrantes.length,
+        idGrupo: widget.params['contrato'],
+        importeGrupo: _capital,
+        nombreGrupo: widget.params['nombre'],
+        status: 1,
+        userID: userID,
+      );
+      try{
+        await DBProvider.db.nuevoGrupo(grupo);
+        setState((){_renovadoCheck = true;});
+      }catch(e){
+        _error('$e');
+      }
+    }else{
+      _error('No pudo solicitarse la renovación.\nDebe tener al menos X integrantes.');
+    }
+  }
+
+  _error(String error){
+    _customSnakBar.showSnackBar(
+        error, 
+        Duration(milliseconds: 3000), 
+        Colors.pink, 
+        Icons.error_outline, 
+        _scaffoldKey
+      );
   }
 }

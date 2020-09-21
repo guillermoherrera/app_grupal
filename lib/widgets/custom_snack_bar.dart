@@ -4,12 +4,14 @@ class CustomSnakBar{
   showSnackBar(String mensaje, Duration duration, Color color, IconData icon, GlobalKey<ScaffoldState> scaffoldKey){
     
     final snackBar = SnackBar(
-      content: Row(
+      content: Wrap(
+        direction: Axis.horizontal,
         children: [
           Icon(icon),
           SizedBox(width: 20.0,),
           Text(
-            mensaje,
+            mensaje.toUpperCase(),
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontWeight: FontWeight.bold
             ),
