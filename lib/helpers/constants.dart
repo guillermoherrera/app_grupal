@@ -91,6 +91,8 @@ class Constants{
   static const estado = 'estado'; //catalogo estados
   static const cp = 'cp';
   static const pais = 'pais';
+  static const presidente = 'presidente';
+  static const tesorero = 'tesorero';
 
   //documentos solicitudes (integrante)
   static const documentoSolicitudesTable = 'documentosSolicitudes';
@@ -106,18 +108,19 @@ class Constants{
   static const importeGrupo = 'importeGrupo';
   static const cantidadSolicitudes = 'cantidadSolicitudes';
   static const grupoID = 'grupoID';
+  static const contratoId = 'contratoId';
 
   //renovaciones (integrante)
   static const renovacionesTable = "renovaciones";
   static const idRenovacion = "idRenovacion";
-  static const creditoID = "creditoID";
-  static const clienteID = "clienteID";
+  static const noCda = "noCda";
+  static const cveCli = "cveCli";
   static const nombreCompleto = "nombreCompleto";
   static const capital = "capital";
   static const diasAtraso = "diasAtraso";
   static const beneficio = "beneficio";
   static const ticket = "ticket";
-  static const nuevoImporte = "nuevoImporte";
+  static const nuevoCapital = "nuevoCapital";
   static const status = 'status';
   static const userID = 'userID';
 }

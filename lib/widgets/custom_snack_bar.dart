@@ -11,7 +11,7 @@ class CustomSnakBar{
           SizedBox(width: 20.0,),
           Text(
             mensaje.toUpperCase(),
-            overflow: TextOverflow.ellipsis,
+            //overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontWeight: FontWeight.bold
             ),

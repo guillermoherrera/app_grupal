@@ -68,9 +68,12 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
         ),
       ),
       actions: [
-        IconButton(
-          icon: Icon(Icons.account_circle, color: Colors.white, size: 30.0),
-          onPressed: () => widget.scaffoldKey.currentState.openDrawer()
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 10.0),
+          child: IconButton(
+            icon: Icon(Icons.account_circle, color: Colors.white, size: 30.0),
+            onPressed: () => widget.scaffoldKey.currentState.openDrawer()
+          ),
         ),
       ],
       leading: Container(),

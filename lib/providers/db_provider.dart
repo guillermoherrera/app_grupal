@@ -1,11 +1,13 @@
 import 'dart:io';
-import 'package:app_grupal/helpers/constants.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/grupos_model.dart';
 export 'package:app_grupal/models/grupos_model.dart';
+import 'package:app_grupal/models/renovacion_model.dart';
+export 'package:app_grupal/models/renovacion_model.dart';
 
 class DBProvider{
   static Database _database;
@@ -85,6 +87,8 @@ class DBProvider{
       ${Constants.tipoContrato} INTEGER,
       ${Constants.userID} TEXT,
       ${Constants.documentID} TEXT,
+      ${Constants.presidente} INTEGER,
+      ${Constants.tesorero} INTEGER,
       
       ${Constants.direccion1} TEXT,
       ${Constants.coloniaPoblacion} TEXT,
@@ -121,7 +125,8 @@ class DBProvider{
       ${Constants.userID} TEXT,
       ${Constants.grupoID} TEXT,
       ${Constants.importeGrupo} DOUBLE,
-      ${Constants.cantidadSolicitudes} INTEGER
+      ${Constants.cantidadSolicitudes} INTEGER,
+      ${Constants.contratoId} INTEGER
     )''';
     
     await db.execute(solicitudesSql);
@@ -134,8 +139,8 @@ class DBProvider{
       ${Constants.nombreGrupo} TEXT,
       ${Constants.importe} DOUBLE,
       ${Constants.nombreCompleto} TEXT,
-      ${Constants.creditoID} INT,
-      ${Constants.clienteID} TEXT,
+      ${Constants.noCda} INT,
+      ${Constants.cveCli} TEXT,
       ${Constants.capital} DOUBLE,
       ${Constants.diasAtraso} INT,
       ${Constants.beneficio} TEXT,
@@ -143,14 +148,17 @@ class DBProvider{
       ${Constants.status} INT,
       ${Constants.userID} TEXT,
       ${Constants.tipoContrato} INT,
-      ${Constants.nuevoImporte} DOUBLE
+      ${Constants.nuevoCapital} DOUBLE,
+      ${Constants.telefono} TEXT,
+      ${Constants.presidente} INTEGER,
+      ${Constants.tesorero} INTEGER
     )''';
 
     await db.execute(sql);
   }
   
   //Repositorio Grupos
-  Future<void> nuevoGrupo( Grupo grupo) async{
+  Future<int> nuevoGrupo( Grupo grupo) async{
     //validar nombre del grupo
     final db = await database;
     final res = await db.insert(Constants.gruposTable, grupo.toJson());
@@ -168,5 +176,20 @@ class DBProvider{
     final res = await db.query(Constants.gruposTable);
     List<Grupo> list = res.isNotEmpty ? res.map((e) => Grupo.fromjson(e)).toList() : [];
     return list;
+  }
+
+  //Repositorio Renovaciones
+  Future<void> nuevasRenovaciones (List<Renovacion> renovaciones)async{
+    final db = await database;
+    List<int> res = List();
+    renovaciones.forEach((r)async{
+      try{
+        final id = await db.insert(Constants.renovacionesTable,  r.toJson());
+        res.add(id);
+      }catch(e){
+        print('Error al agregar nueva Renovacion $e');
+      }
+    });
+    return res;
   }
 }

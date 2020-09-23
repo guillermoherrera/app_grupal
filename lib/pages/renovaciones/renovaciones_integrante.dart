@@ -95,8 +95,8 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
           ),
           SizedBox(height: _height / 64),
           Text( widget.params['nombreCom'] , style: Constants.encabezadoStyle),
-          widget.params['tesorero'] ? Text( 'Tesorero'.toUpperCase() , style: Constants.subtituloStyle) : SizedBox(),
-          widget.params['presidente'] ? Text( 'Presidente'.toUpperCase() , style: Constants.subtituloStyle) : SizedBox()
+          widget.params['tesorero'] == 1 ? Text( 'Tesorero'.toUpperCase() , style: Constants.subtituloStyle) : SizedBox(),
+          widget.params['presidente']  == 1? Text( 'Presidente'.toUpperCase() , style: Constants.subtituloStyle) : SizedBox()
         ]
       )
     );
