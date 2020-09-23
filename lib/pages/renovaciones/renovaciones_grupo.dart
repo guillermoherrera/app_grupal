@@ -1,5 +1,6 @@
 import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/providers/db_provider.dart';
+import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/custom_dialog.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
 import 'package:app_grupal/widgets/custom_snack_bar.dart';
@@ -97,25 +98,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
     return Scaffold(
       key: _scaffoldKey,
       body: BodyContent(
-        appBar: AppBar(
-        centerTitle: true,
-        elevation: 0.0,
-        backgroundColor: Colors.transparent,
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Image(
-          image: AssetImage(Constants.logo),
-          color: Colors.white,
-          height: _height / 16,
-          fit: BoxFit.contain,
-        ),
-        actions: [
-          _cargando ? Container(): 
-          _renovadoCheck ? Container():
-          ShakeTransition(child: Container(padding: EdgeInsets.symmetric(horizontal: 10.0), child: IconButton(icon: Icon(Icons.add_circle_outline, color: Colors.white, size: 30.0),onPressed: () => {}))),
-        ],
-        leading: _cargando ? Container():
-         ShakeTransition(child: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context))),
-      ),
+        appBar: _appBar(_height),
         contenido: Column(
           children: [
             Container(
@@ -156,23 +139,16 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
     );
   }
 
-  Widget _floatingButton(double height){
-    return _renovadoCheck ? 
-    Container(
-      padding: EdgeInsets.only(bottom: height / 16),
-      child: FloatingActionButton(
-        backgroundColor: Constants.primaryColor,
-        onPressed: null,
-        child: Icon(Icons.check),
-      ),
-    ):
-    Container(
-      padding: EdgeInsets.only(bottom: height / 16),
-      child: FloatingActionButton(
-        //backgroundColor: Constants.primaryColor,
-        onPressed: (){},
-        child: Icon(Icons.person_add),
-      ),
+  Widget _appBar(double _height){
+    return CustomAppBar(
+      height: _height,
+      actions: [
+        _cargando ? Container(): 
+        _renovadoCheck ? Container():
+        ShakeTransition(child: Container(padding: EdgeInsets.symmetric(horizontal: 10.0), child: IconButton(icon: Icon(Icons.add_circle_outline, size: 30.0),onPressed: () => {}))),
+      ],
+      leading: _cargando ? Container():
+        ShakeTransition(child: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context))),
     );
   }
 

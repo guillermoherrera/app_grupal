@@ -2,6 +2,7 @@ import 'package:app_grupal/components/encabezado.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/pages/home/home_empty_page.dart';
 import 'package:app_grupal/pages/renovaciones/renovaciones.dart';
+import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_grupal/components/body_content.dart';
@@ -54,29 +55,19 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
   }
 
   Widget _appBar(double _height){
-    return AppBar(
-      centerTitle: true,
-      elevation: 0.0,
-      backgroundColor: Colors.transparent,
-      title: Hero(
-        tag: 'logo',
-        child: Image(
-          image: AssetImage(Constants.logo),
-          color: Colors.white,
-          height: _height / 16,
-          fit: BoxFit.contain,
-        ),
-      ),
+    return CustomAppBar(
+      height: _height,
+      heroTag: 'logo',
       actions: [
         Container(
           padding: EdgeInsets.symmetric(horizontal: 10.0),
           child: IconButton(
-            icon: Icon(Icons.account_circle, color: Colors.white, size: 30.0),
+            icon: Icon(Icons.account_circle, size: 30.0),
             onPressed: () => widget.scaffoldKey.currentState.openDrawer()
           ),
-        ),
+        )
       ],
-      leading: Container(),
+      leading: Container()
     );
   }
 

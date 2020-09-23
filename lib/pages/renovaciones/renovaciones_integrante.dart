@@ -1,3 +1,4 @@
+import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_grupal/components/body_content.dart';
@@ -26,32 +27,8 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
     final _height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      //appBar: AppBar(
-      //  centerTitle: true,
-      //  elevation: 0.0,
-      //  iconTheme: IconThemeData(color: Colors.white),
-      //  title: Image(
-      //    image: AssetImage(Constants.logo),
-      //    color: Colors.white,
-      //    height: _height / 16,
-      //    fit: BoxFit.contain,
-      //  ),
-      //  leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context)),
-      //),
       body: BodyContent(
-        appBar: AppBar(
-          centerTitle: true,
-          elevation: 0.0,
-          iconTheme: IconThemeData(color: Colors.white),
-          backgroundColor: Colors.transparent,
-          title: Image(
-            image: AssetImage(Constants.logo),
-            color: Colors.white,
-            height: _height / 16,
-            fit: BoxFit.contain,
-          ),
-          leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context)),
-        ),
+        appBar: _appBar(_height),
         contenido: SingleChildScrollView(
           child: Column(
             children: [
@@ -99,6 +76,14 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
           widget.params['presidente']  == 1? Text( 'Presidente'.toUpperCase() , style: Constants.subtituloStyle) : SizedBox()
         ]
       )
+    );
+  }
+
+  Widget _appBar(double _height){
+    return CustomAppBar(
+      height: _height,
+      heroTag: 'renovacionIntegrante',
+      leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context)),
     );
   }
 
