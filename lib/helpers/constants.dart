@@ -6,9 +6,10 @@ class Constants{
   static final String rootPage = '/';
   static final String loginPage = 'login';
   static final String homePage = 'home';
-  static final String renGrupo = 'renovacionGrupo';
-  static final String renIntegrante = 'renovacionIntegrante';
+  static final String renovacionGrupoPage = 'renovacionGrupo';
+  static final String renovacionIntegrantePage = 'renovacionIntegrante';
   static final String confiashopPage = 'confiashop';
+  static final String solicitudPage = 'solicitud';
 
   static final Color primaryColor = Color(0xff76BD21);
   static final Color defaultColor = Color(0xfff2f2f2);

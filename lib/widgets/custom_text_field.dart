@@ -10,6 +10,7 @@ class CustomTextField extends StatefulWidget {
     this.checkEmpty = true,
     this.isPassword = false,
     this.check500s = false,
+    this.enable = true,
     @required this.controller,
     this.maxLength = 100
   }) : super(key: key);
@@ -23,6 +24,7 @@ class CustomTextField extends StatefulWidget {
   final bool isPassword;
   final TextEditingController controller;
   final int maxLength;
+  final bool enable;
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
@@ -40,6 +42,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       keyboardType: widget.textType,
       obscureText: widget.isPassword ? !watchPassword : false,
       maxLength: widget.maxLength,
+      enabled: widget.enable,
       validator: (value){
         return _validations(value);
       },

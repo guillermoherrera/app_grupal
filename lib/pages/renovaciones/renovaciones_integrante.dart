@@ -25,7 +25,7 @@ class RenovacionesIntegrentePage extends StatefulWidget {
 
 class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage> {
   final formKey = new GlobalKey<FormState>();
-  final importe = TextEditingController();
+  final importeCapital = TextEditingController();
   final _customRoute = CustomRouteTransition();
 
   @override
@@ -256,10 +256,10 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
     return Form(
       key: formKey,
       child: CustomTextField(
-        label: 'Capital (Renovación)', 
-        controller: importe,
+        label: 'Importe Capital (Renovación)', 
+        controller: importeCapital,
         icon: Icons.attach_money,
-        maxLength: 12,
+        maxLength: 6,
         textType: TextInputType.number,
         check500s: true,
       )
@@ -269,8 +269,8 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
   _actulizaMonto(){
     if(formKey.currentState.validate()){
       Navigator.pop(context);
-      widget.setMonto(widget.params['index'], double.parse(importe.text));
-      setState(() {widget.params['nuevoCapital'] = importe.text;});
+      widget.setMonto(widget.params['index'], double.parse(importeCapital.text));
+      setState(() {widget.params['nuevoCapital'] = importeCapital.text;});
     }
   }
 }

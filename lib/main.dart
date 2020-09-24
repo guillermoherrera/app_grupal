@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
               Constants.rootPage  : (BuildContext context) => RootPage(),
               Constants.loginPage : (BuildContext context) => LoginPage(),
               Constants.homePage  : (BuildContext context) => HomePage(),
-              Constants.renGrupo  : (BuildContext context) => RenovacionesGrupoPage(params: null)
+              Constants.renovacionGrupoPage  : (BuildContext context) => RenovacionesGrupoPage(params: null)
             },
             localizationsDelegates: [
               // ... app-specific localization delegate[s] here

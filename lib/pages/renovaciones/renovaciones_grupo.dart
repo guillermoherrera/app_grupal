@@ -154,7 +154,15 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
       actions: [
         _cargando ? Container(): 
         _renovadoCheck ? Container():
-        ShakeTransition(child: Container(padding: EdgeInsets.symmetric(horizontal: 10.0), child: IconButton(icon: Icon(Icons.add_circle_outline, size: 30.0),onPressed: () => {}))),
+        ShakeTransition(child: 
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.0), 
+            child: IconButton(
+              icon: Icon(Icons.add_circle_outline, size: 30.0),
+              onPressed: () => Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, {}))
+            )
+          )
+        ),
       ],
       leading: _cargando ? Container():
         ShakeTransition(child: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context))),
@@ -263,7 +271,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
                   'tesorero'    : _renovacionIntegrantes[index].tesorero,
                   'presidente'  : _renovacionIntegrantes[index].presidente,
                 };
-                if(_renovacionIntegranteCheck[index]) Navigator.push(context, _customRoute.crearRutaSlide(Constants.renIntegrante, json, setMonto: _setMonto));
+                if(_renovacionIntegranteCheck[index]) Navigator.push(context, _customRoute.crearRutaSlide(Constants.renovacionIntegrantePage, json, setMonto: _setMonto));
               },
               child: CustomListTile(
                 title: listTiles[index].title,

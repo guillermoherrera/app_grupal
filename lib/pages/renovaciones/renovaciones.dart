@@ -144,7 +144,7 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
                     GestureDetector(
                       onTap: (){
                         final json = {'nombre': contratos[index].nombreGeneral, 'contrato': contratos[index].contratoId, 'status': contratos[index].status};
-                        Navigator.push(context, _customRoute.crearRutaSlide(Constants.renGrupo, json));
+                        Navigator.push(context, _customRoute.crearRutaSlide(Constants.renovacionGrupoPage, json));
                       },
                       child: CustomListTile(
                         title: listTiles[index].title,
