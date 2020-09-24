@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:app_grupal/models/cat_documentos_model.dart';
+import 'package:app_grupal/models/cat_estados_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -157,6 +159,61 @@ class DBProvider{
     await db.execute(sql);
   }
   
+  //Repositorio CatDocumentos
+  Future<void> insertaCatDocumentos(List<CatDocumento> catDocumentos)async{
+    final db = await database;
+    List<int> res = List();
+    catDocumentos.forEach((e) async{
+      try{
+        final id = await db.insert(Constants.catDocumentosTable,  e.toJson());
+        res.add(id);
+      }catch(e){
+        print('### Error DBprovider insertaDocumentos ### $e');
+      }
+    });
+    return res;
+  }
+
+  Future<void> deleteCatDocumentos()async{
+    final db = await database;
+    final res = await db.delete(Constants.catDocumentosTable);
+    return res;
+  }
+
+  //Repositorio CatEstados
+  Future<void> insertaCatEstados(List<CatEstado> catEstados)async{
+    final db = await database;
+    List<int> res = List();
+    catEstados.forEach((e) async{
+      try{
+        final id = await db.insert(Constants.catEstadosTable,  e.toJson());
+        res.add(id);
+      }catch(e){
+        print('### Error DBprovider insertaCatEstados ### $e');
+      }
+    });
+    return res;
+  }
+
+  Future<void> deleteCatEstados()async{
+    final db = await database;
+    final res = await db.delete(Constants.catEstadosTable);
+    return res;
+  }
+
+  //Repositorio CatIntegrantes
+  Future<void> insertaCatIntegrantes(int cantIntegrantes)async{
+    final db = await database;
+    final res = await db.insert(Constants.catIntegrantesTable,  {Constants.cantidadIntegrantes : cantIntegrantes});
+    return res;
+  }
+
+  Future<void> deleteCatIntegrantes()async{
+    final db = await database;
+    final res = await db.delete(Constants.catIntegrantesTable);
+    return res;
+  }
+  
   //Repositorio Grupos
   Future<int> nuevoGrupo( Grupo grupo) async{
     //validar nombre del grupo
@@ -184,12 +241,12 @@ class DBProvider{
     final grupo = await db.query(Constants.gruposTable, where: '${Constants.contratoId} = ?', whereArgs: [contratoId]);
     final int idGrupo = grupo.isNotEmpty ? Grupo.fromjson(grupo.first).idGrupo : 0;
     final res = await db.query(Constants.renovacionesTable, where: '${Constants.idGrupo} = ?', whereArgs: [idGrupo]);
-    print("");
+    
     List<Renovacion> list = res.isNotEmpty ? res.map((e) => Renovacion.fromjson(e)).toList() : [];
     return list;
   }
   
-  Future<void> nuevasRenovaciones (List<Renovacion> renovaciones, List<bool> renovacionesCheck)async{
+  Future<void> nuevasRenovaciones(List<Renovacion> renovaciones, List<bool> renovacionesCheck)async{
     final db = await database;
     List<int> res = List();
     renovaciones.asMap().forEach((i,r)async{
@@ -199,7 +256,7 @@ class DBProvider{
           res.add(id);
         }
       }catch(e){
-        print('Error al agregar nueva Renovacion $e');
+        print('### Error DBprovider nuevasRenovaciones ### $e');
       }
     });
     return res;

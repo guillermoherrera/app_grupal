@@ -1,3 +1,4 @@
+import 'package:app_grupal/providers/firebase_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_grupal/classes/auth_firebase.dart';
@@ -25,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
   final AuthFirebase _authFirebase = new AuthFirebase();
   final SharedActions _sharedActions = new SharedActions();
   final CustomSnakBar _customSnakBar = new CustomSnakBar();
+  final _firebaseProvider = FirebaseProvider();
   final _formKey = new GlobalKey<FormState>();
   final _userController = TextEditingController();
   final _passController = TextEditingController();
@@ -38,6 +40,7 @@ class _LoginPageState extends State<LoginPage> {
       final authResult = await _authFirebase.signIn(_userController.text, _passController.text);
       if(authResult.result){
         _sharedActions.setUserAuth(authResult.email, _passController.text, authResult.uid);
+        _firebaseProvider.getCatalogos();
         //widget.onSignIn();
         Navigator.pushReplacementNamed(context, Constants.homePage);
       }else{

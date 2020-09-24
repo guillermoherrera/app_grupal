@@ -7,8 +7,13 @@ class CatEstado{
     this.codigo
   });
 
+  Map<String, dynamic> toJson() =>{
+    'estado' : estado,
+    'codigo' : codigo
+  };
+
   CatEstado.fromJson(Map<String, dynamic> json){
-    this.estado = 'estado';
-    this.codigo = 'codigo';
+    this.estado = json['estado'];
+    this.codigo = json['codigo'];
   }
 }
