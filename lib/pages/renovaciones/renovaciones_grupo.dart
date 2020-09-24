@@ -37,38 +37,50 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   final _sharedActions = SharedActions();
   final _customSnakBar = new CustomSnakBar();
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
-  GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
   List<Integrante> _integrantes = List();
-  List<bool> _integranteCheck = List<bool>();
+  List<bool> _renovacionIntegranteCheck = List<bool>();
   List<Renovacion> _renovacionIntegrantes = List();
   bool _cargando = true;
   double _capital = 0.0;
+  int _integrantesCant = 0;
   bool _renovadoCheck = true;
   String userID;
 
   @override
   void initState(){
-    _getIntegrantesFromConfia();
+    _buscarInformacion();
     super.initState();
   }
 
-  _geIntegrantesFromSqlite() async{
+  _buscarInformacion()async{
+    _renovacionIntegrantes.clear();
+    _capital = 0;
+    _renovacionIntegranteCheck.clear();
+    _integrantesCant = 0;
 
+    await Future.delayed(Duration(milliseconds: 1000));
+
+    await _geIntegrantesFromSqlite();
+    //getIntegrantes from firebase
+    if(_renovacionIntegrantes.length == 0) await _getIntegrantesFromConfia();
+    
+    _renovacionIntegrantes.forEach((e) {
+      _capital += e.nuevoCapital;
+      _renovacionIntegranteCheck.add(true);
+    });
+    _integrantesCant = _renovacionIntegrantes.length;
+    _cargando = false;
+    if(this.mounted) setState((){});
+  }
+
+  _geIntegrantesFromSqlite() async{
+    _renovacionIntegrantes = await DBProvider.db.getRenovacionesByContrato(widget.params['contrato']);
   }
 
   _getIntegrantesFromConfia() async{
-    _integrantes.clear();
-    _integranteCheck.clear();
-    _capital = 0.0;
-
-    //_integranteCheck.add(true);
-    await Future.delayed(Duration(milliseconds: 1000));
     _integrantes = await _asesoresProvider.consultaIntegrantesRenovacion(widget.params['contrato']);
     if(_integrantes.length > 0) _renovadoCheck = _integrantes[0].renovado; 
     _integrantes.forEach((integrante) {
-      _capital += integrante.capital;
-      _integranteCheck.add(true);
-      
       Renovacion renovacion = Renovacion(
         capital       : integrante.capital,
         cveCli        : integrante.cveCli,
@@ -86,9 +98,6 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
       );  
       _renovacionIntegrantes.add(renovacion);
     });
-    
-    _cargando = false;
-    if(this.mounted) setState((){});
   }
 
   @override
@@ -113,7 +122,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('${widget.params['nombre']} | ${widget.params['contrato']}'.toUpperCase(), style: Constants.mensajeCentral),
-                      Text('Integrantes: ${_renovacionIntegrantes.length}'.toUpperCase(), style: Constants.mensajeCentral2),
+                      Text('Integrantes: $_integrantesCant'.toUpperCase(), style: Constants.mensajeCentral2),
                       Text('Total: \$ ${_capital.toStringAsFixed(2)}'.toUpperCase(), style: Constants.mensajeCentral3),
                     ]
                   ),
@@ -176,7 +185,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
               borderColor: _renovadoCheck ? Constants.primaryColor : Colors.blue,
               primaryColor: _renovadoCheck ? Constants.primaryColor : Colors.blue,
               textColor: Colors.white,
-              label: _renovadoCheck ? 'Renovación Solicitada' : 'Solicitar Renovación'
+              label: _renovacionIntegrantes.length == 0 ? 'Error en la consulta' : _renovadoCheck ? 'Renovación Solicitada' : 'Solicitar Renovación'
             ),
           ),
         ),
@@ -214,17 +223,17 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
       final listTile = ListTileModel(
         title: Text(
           integrante.nombreCompleto, 
-          style: _integranteCheck[index] ? Constants.mensajeCentral : Constants.mensajeCentralNot, 
+          style: _renovacionIntegranteCheck[index] ? Constants.mensajeCentral : Constants.mensajeCentralNot, 
           overflow: TextOverflow.ellipsis
         ),
-        subtitle: '${integrante.tesorero == 1 ? 'tesorero\n' : integrante.presidente == 1 ? 'presidente\n' : ''}capital: ${integrante.capital}'.toUpperCase(),
+        subtitle: '${integrante.tesorero == 1 ? 'tesorero\n' : integrante.presidente == 1 ? 'presidente\n' : ''}capital: ${integrante.nuevoCapital}'.toUpperCase(),
         leading: Checkbox(
-          value: _integranteCheck[index],
+          value: _renovacionIntegranteCheck[index],
           onChanged: (bool val){
             itemChange(val, index);
           }
         ),
-        trailing: Icon(_integranteCheck[index] ? Icons.arrow_forward_ios : Icons.highlight_off, color: _integranteCheck[index] ? Constants.primaryColor : Colors.grey),
+        trailing: Icon(_renovacionIntegranteCheck[index] ? Icons.arrow_forward_ios : Icons.highlight_off, color: _renovacionIntegranteCheck[index] ? Constants.primaryColor : Colors.grey),
       );
       listTiles.add(listTile);
     });
@@ -242,17 +251,19 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
             GestureDetector(
               onTap: _renovadoCheck ? null : (){
                 final json = {
-                  'nombreCom'  : _renovacionIntegrantes[index].nombreCompleto,
-                  'cveCli'     : _renovacionIntegrantes[index].cveCli,
-                  'telefonoCel': _renovacionIntegrantes[index].telefono,
-                  'importeT'   : _renovacionIntegrantes[index].importe,
-                  'diaAtr'     : _renovacionIntegrantes[index].diasAtraso,
-                  'capital'    : _renovacionIntegrantes[index].capital,
-                  'noCda'      : _renovacionIntegrantes[index].noCda,
-                  'tesorero'   : _renovacionIntegrantes[index].tesorero,
-                  'presidente' : _renovacionIntegrantes[index].presidente
+                  'index'       : index,
+                  'nombreCom'   : _renovacionIntegrantes[index].nombreCompleto,
+                  'cveCli'      : _renovacionIntegrantes[index].cveCli,
+                  'telefonoCel' : _renovacionIntegrantes[index].telefono,
+                  'importeT'    : _renovacionIntegrantes[index].importe,
+                  'diaAtr'      : _renovacionIntegrantes[index].diasAtraso,
+                  'capital'     : _renovacionIntegrantes[index].capital,
+                  'nuevoCapital': _renovacionIntegrantes[index].nuevoCapital,
+                  'noCda'       : _renovacionIntegrantes[index].noCda,
+                  'tesorero'    : _renovacionIntegrantes[index].tesorero,
+                  'presidente'  : _renovacionIntegrantes[index].presidente,
                 };
-                if(_integranteCheck[index]) Navigator.push(context, _customRoute.crearRutaSlide(Constants.renIntegrante, json));
+                if(_renovacionIntegranteCheck[index]) Navigator.push(context, _customRoute.crearRutaSlide(Constants.renIntegrante, json, setMonto: _setMonto));
               },
               child: CustomListTile(
                 title: listTiles[index].title,
@@ -266,11 +277,25 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
       ),
     );
   }
+
+  _setMonto(int index, double monto){
+    _renovacionIntegrantes[index].nuevoCapital = monto;
+    _getTotal();
+  }
+
+  _getTotal(){
+    _capital = 0;
+    _renovacionIntegrantes.asMap().forEach((i,e){
+      if(_renovacionIntegranteCheck[i]) _capital += e.nuevoCapital;
+    });
+  }
   
   void itemChange(bool val,int index){
     setState(() {
-      _integranteCheck[index] = val;
+      _renovacionIntegranteCheck[index] = val;
+      _integrantesCant = val ? _integrantesCant + 1 : _integrantesCant - 1;
     });
+    _getTotal();
   }
 
   _solicitarRenovacion() async{
@@ -288,6 +313,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
 
   _renovar() async{
     //validacion numero de integrantes
+    Navigator.pop(context);
     if(true){
       userID = await _sharedActions.getUserId();
       Grupo grupo = Grupo(
@@ -300,12 +326,14 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
         contratoId: widget.params['contrato']
       );
       try{
-        DBProvider.db.nuevoGrupo(grupo).then((value)async{ 
-          _renovacionIntegrantes.forEach((r) { 
+        DBProvider.db.nuevoGrupo(grupo).then((value)async{
+          _renovacionIntegrantes.forEach((r) {
             r.idGrupo = value;
-            r.userID = userID; 
+            r.userID = userID;
           });
-          await DBProvider.db.nuevasRenovaciones(_renovacionIntegrantes);
+          await DBProvider.db.nuevasRenovaciones(_renovacionIntegrantes, _renovacionIntegranteCheck);
+          _success('Solicitud de Renovacón Realizada con éxito');
+          _buscarInformacion();
           setState((){_renovadoCheck = true;});
         });
         //CAMPOS FALTANTES DE ASIGNAR beneficio, ticket
@@ -317,13 +345,23 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
     }
   }
 
+  _success(String error){
+    _customSnakBar.showSnackBarSuccess(
+      error, 
+      Duration(milliseconds: 2000), 
+      Constants.primaryColor, 
+      Icons.check_circle_outline, 
+      _scaffoldKey
+    );
+  }
+
   _error(String error){
     _customSnakBar.showSnackBar(
-        error, 
-        Duration(milliseconds: 5000), 
-        Colors.pink, 
-        Icons.error_outline, 
-        _scaffoldKey
-      );
-  }
+      error,
+      Duration(milliseconds: 5000),
+      Colors.pink,
+      Icons.error_outline,
+      _scaffoldKey
+    );
+  }  
 }

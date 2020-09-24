@@ -1,4 +1,6 @@
 import 'package:app_grupal/widgets/custom_app_bar.dart';
+import 'package:app_grupal/widgets/custom_dialog.dart';
+import 'package:app_grupal/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_grupal/components/body_content.dart';
@@ -10,16 +12,20 @@ import 'package:app_grupal/widgets/shake_transition.dart';
 class RenovacionesIntegrentePage extends StatefulWidget {
   const RenovacionesIntegrentePage({
     Key key, 
-    this.params
+    this.params,
+    this.setMonto
   }) : super(key: key);
 
   final Map<String, dynamic> params;
+  final void Function(int, double) setMonto;
 
   @override
   _RenovacionesIntegrentePageState createState() => _RenovacionesIntegrentePageState();
 }
 
 class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage> {
+  final formKey = new GlobalKey<FormState>();
+  final importe = TextEditingController();
   final _customRoute = CustomRouteTransition();
 
   @override
@@ -141,13 +147,14 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
               borderRadius: BorderRadius.all(Radius.circular(10.0))
             ),
             padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0), 
-            child: Text('\$ ${widget.params['capital']}', style: Constants.mensajeMonto)),
+            child: Text('\$ ${widget.params['nuevoCapital']}', style: Constants.mensajeMonto)),
           ShakeTransition(
             child: CustomRaisedButton(
               label: 'Actualizar',
               borderColor: Colors.blue,
               primaryColor: Colors.blue,
               textColor: Colors.white,
+              action: ()=>_actualizarCapital(),
             ),
           )
         ],
@@ -228,6 +235,42 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
         break;
       default:
         return null;
+    }
+  }
+
+  _actualizarCapital() async{
+    CustomDialog customDialog = CustomDialog();
+    customDialog.showCustomDialog(
+      context,
+      title: 'Ingresa el monto',
+      icon: Icons.monetization_on,
+      textContent: '',
+      form: _form(),
+      cancel: 'Cancelar',
+      cntinue: 'Actualizar',
+      action: ()=>_actulizaMonto()
+    ); 
+  }
+
+  Widget _form(){
+    return Form(
+      key: formKey,
+      child: CustomTextField(
+        label: 'Capital (Renovación)', 
+        controller: importe,
+        icon: Icons.attach_money,
+        maxLength: 12,
+        textType: TextInputType.number,
+        check500s: true,
+      )
+    );
+  }
+
+  _actulizaMonto(){
+    if(formKey.currentState.validate()){
+      Navigator.pop(context);
+      widget.setMonto(widget.params['index'], double.parse(importe.text));
+      setState(() {widget.params['nuevoCapital'] = importe.text;});
     }
   }
 }

@@ -9,7 +9,9 @@ class CustomTextField extends StatefulWidget {
     this.textType = TextInputType.emailAddress,
     this.checkEmpty = true,
     this.isPassword = false,
-    @required this.controller
+    this.check500s = false,
+    @required this.controller,
+    this.maxLength = 100
   }) : super(key: key);
   
   final String label;
@@ -17,8 +19,10 @@ class CustomTextField extends StatefulWidget {
   final IconData icon;
   final TextInputType textType;
   final bool checkEmpty;
+  final bool check500s;
   final bool isPassword;
   final TextEditingController controller;
+  final int maxLength;
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
@@ -35,6 +39,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       autocorrect: false,
       keyboardType: widget.textType,
       obscureText: widget.isPassword ? !watchPassword : false,
+      maxLength: widget.maxLength,
       validator: (value){
         return _validations(value);
       },
@@ -43,13 +48,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   String _validations(String value){
     if(widget.checkEmpty && value.isEmpty) return widget.errorEmpty; 
+    if(widget.check500s && (double.parse(value) <= 0 || double.parse(value)%500 > 0 )) return 'Ingresa 500, 1000, 1500, 2000... XXXX)';
     return null;
   }
 
   InputDecoration _decorationField(String label){
     return InputDecoration(
       prefixIcon: widget.icon != null ? Icon(widget.icon) : null,
-      labelText: label,
+      labelText: label.toUpperCase(),
       fillColor: Color(0xfff2f2f2),
       filled: true,
       border: new OutlineInputBorder(

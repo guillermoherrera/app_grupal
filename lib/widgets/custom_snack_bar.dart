@@ -23,5 +23,29 @@ class CustomSnakBar{
     );
     
     scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
+  showSnackBarSuccess(String mensaje, Duration duration, Color color, IconData icon, GlobalKey<ScaffoldState> scaffoldKey){
+    
+    final snackBar = SnackBar(
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 50),
+          SizedBox(width: 20.0,),
+          Text(
+            mensaje.toUpperCase(),
+            //overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontWeight: FontWeight.bold
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: color,
+      duration: duration,
+    );
+    
+    scaffoldKey.currentState.showSnackBar(snackBar);
   }  
 }

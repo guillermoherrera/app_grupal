@@ -179,13 +179,25 @@ class DBProvider{
   }
 
   //Repositorio Renovaciones
-  Future<void> nuevasRenovaciones (List<Renovacion> renovaciones)async{
+  Future<List<Renovacion>> getRenovacionesByContrato(int contratoId) async{
+    final db = await database;
+    final grupo = await db.query(Constants.gruposTable, where: '${Constants.contratoId} = ?', whereArgs: [contratoId]);
+    final int idGrupo = grupo.isNotEmpty ? Grupo.fromjson(grupo.first).idGrupo : 0;
+    final res = await db.query(Constants.renovacionesTable, where: '${Constants.idGrupo} = ?', whereArgs: [idGrupo]);
+    print("");
+    List<Renovacion> list = res.isNotEmpty ? res.map((e) => Renovacion.fromjson(e)).toList() : [];
+    return list;
+  }
+  
+  Future<void> nuevasRenovaciones (List<Renovacion> renovaciones, List<bool> renovacionesCheck)async{
     final db = await database;
     List<int> res = List();
-    renovaciones.forEach((r)async{
+    renovaciones.asMap().forEach((i,r)async{
       try{
-        final id = await db.insert(Constants.renovacionesTable,  r.toJson());
-        res.add(id);
+        if(renovacionesCheck[i]){
+          final id = await db.insert(Constants.renovacionesTable,  r.toJson());
+          res.add(id);
+        }
       }catch(e){
         print('Error al agregar nueva Renovacion $e');
       }
