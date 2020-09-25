@@ -19,6 +19,7 @@ class Constants{
   static final String emptyImage = 'assets/empty.png';
   static final String confiashop = 'assets/confiashop.png';
   static final String confirmation = 'assets/confirmation.png';
+  static final String notImage = 'assets/noImage.png';
 
   static final String baseURL = 'test.api.asesores.fconfia.com';
   static final String apiKey = 'doCLjcd9FIABAzXhF49AMDTPJqo608M5Wau';

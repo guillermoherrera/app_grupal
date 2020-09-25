@@ -1,6 +1,4 @@
-import 'package:app_grupal/models/cat_estados_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:app_grupal/models/cat_documentos_model.dart';
 import 'package:app_grupal/providers/db_provider.dart';
 
 class FirebaseProvider{

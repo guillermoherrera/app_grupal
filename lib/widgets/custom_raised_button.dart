@@ -8,7 +8,8 @@ class CustomRaisedButton extends StatelessWidget {
     this.borderColor,
     this.primaryColor,
     this.textColor, 
-    this.action
+    this.action,
+    this.elevation = 0.0
   }) : super(key: key);
 
   final String label;
@@ -16,13 +17,14 @@ class CustomRaisedButton extends StatelessWidget {
   final Color borderColor;
   final Color textColor;
   final VoidCallback action;
+  final double elevation;
 
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
       color: primaryColor != null ? primaryColor : Constants.defaultColor,
       textColor: textColor != null ? textColor : Constants.primaryColor,
-      elevation: 0.0,
+      elevation: elevation,
       child: FittedBox(
         child: Text(
           label.toUpperCase(),

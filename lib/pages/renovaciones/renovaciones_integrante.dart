@@ -123,6 +123,7 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
           ),
           ShakeTransition(
             child: CustomRaisedButton(
+              elevation: 8.0,
               label: 'ir a tienda',
               borderColor: Colors.blue,
               primaryColor: Colors.blue,
@@ -150,6 +151,7 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
             child: Text('\$ ${widget.params['nuevoCapital']}', style: Constants.mensajeMonto)),
           ShakeTransition(
             child: CustomRaisedButton(
+              elevation: 8.0,
               label: 'Actualizar',
               borderColor: Colors.blue,
               primaryColor: Colors.blue,

@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'package:app_grupal/models/cat_documentos_model.dart';
-import 'package:app_grupal/models/cat_estados_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -10,6 +8,12 @@ import 'package:app_grupal/models/grupos_model.dart';
 export 'package:app_grupal/models/grupos_model.dart';
 import 'package:app_grupal/models/renovacion_model.dart';
 export 'package:app_grupal/models/renovacion_model.dart';
+import 'package:app_grupal/models/documentos_model.dart';
+export 'package:app_grupal/models/documentos_model.dart';
+import 'package:app_grupal/models/cat_documentos_model.dart';
+export 'package:app_grupal/models/cat_documentos_model.dart';
+import 'package:app_grupal/models/cat_estados_model.dart';
+export 'package:app_grupal/models/cat_estados_model.dart';
 
 class DBProvider{
   static Database _database;
@@ -178,6 +182,13 @@ class DBProvider{
     final db = await database;
     final res = await db.delete(Constants.catDocumentosTable);
     return res;
+  }
+
+  Future<List<CatDocumento>> getDocumentos() async{
+    final db = await database;
+    final res = await db.query(Constants.catDocumentosTable);
+    List<CatDocumento> list = res.isNotEmpty ? res.map((e) => CatDocumento.fromjson(e)).toList() : [];
+    return list;
   }
 
   //Repositorio CatEstados

@@ -12,7 +12,7 @@ class CatDocumento{
     'descDocumento' : descDocumento
   };
 
-  CatDocumento.fromJson(Map<String, dynamic> json){
+  CatDocumento.fromjson(Map<String, dynamic> json){
     this.tipo = json['tipo'];
     this.descDocumento = json['descDocumento'];
   }

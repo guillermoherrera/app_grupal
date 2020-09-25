@@ -73,6 +73,7 @@ class DatosForm extends StatelessWidget {
             Container(
               padding: EdgeInsets.only(bottom: 20.0),
               child: CustomRaisedButton(
+                elevation: 8.0,
                 borderColor: Colors.blue,
                 textColor: Colors.white,
                 primaryColor: Colors.blue,
