@@ -3,6 +3,7 @@ import 'package:app_grupal/pages/solicitud/datos_form.dart';
 import 'package:app_grupal/pages/solicitud/direccion_form.dart';
 import 'package:app_grupal/pages/solicitud/documentos_form.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
+import 'package:app_grupal/widgets/custom_snack_bar.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
 import 'package:flutter/material.dart';
 
@@ -10,34 +11,45 @@ import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/components/body_content.dart';
 
 class SolicitudPage extends StatefulWidget {
+  const SolicitudPage({
+    Key key, 
+    this.params
+  }) : super(key: key);
+
+  final Map<String, dynamic> params;
+
   @override
   _SolicitudPageState createState() => _SolicitudPageState();
 }
 
 class _SolicitudPageState extends State<SolicitudPage> {
+  final _formKeyDatos = new GlobalKey<FormState>();
+  final _formKeyDireccion = new GlobalKey<FormState>();
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _customSnakBar = new CustomSnakBar();
   PageController _pageController;
   int _currentPage = 0;
   final _importeCapitalController = TextEditingController();
-  final _curp = TextEditingController();
-  final _nombre = TextEditingController();
-  final _sengundoNombre = TextEditingController();
-  final _primerApellido = TextEditingController();
-  final _segundoApellido = TextEditingController();
-  final _fechaNacimiento = TextEditingController();
-  final _rfc = TextEditingController();
-  final _telefono = TextEditingController();
+  final _curpController = TextEditingController();
+  final _nombreController = TextEditingController();
+  final _sengundoNombreController = TextEditingController();
+  final _primerApellidoController = TextEditingController();
+  final _segundoApellidoController = TextEditingController();
+  final _fechaNacimientoController = TextEditingController();
+  final _rfcController = TextEditingController();
+  final _telefonoController = TextEditingController();
 
-  final _direccion1 = TextEditingController();
-  final _colonia = TextEditingController();
-  final _municipio = TextEditingController();
-  final _ciudad = TextEditingController();
-  final _estadoCod = TextEditingController();
-  final _cp = TextEditingController();
-  final _paisCod = TextEditingController();
+  final _direccion1Controller = TextEditingController();
+  final _coloniaController = TextEditingController();
+  final _municipioController = TextEditingController();
+  final _ciudadController = TextEditingController();
+  final _estadoCodController = TextEditingController();
+  final _cpController = TextEditingController();
+  final _paisCodController = TextEditingController();
   
   @override
   void initState() {
-    _paisCod.text = "MX";
+    _paisCodController.text = "MX";
     _pageController = PageController();
     super.initState();
   }
@@ -51,8 +63,9 @@ class _SolicitudPageState extends State<SolicitudPage> {
   @override
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
-    
+
     return Scaffold(
+      key: _scaffoldKey,
       body: BodyContent(
         appBar: _appBar(_height),
         contenido: _formulario(), 
@@ -81,14 +94,14 @@ class _SolicitudPageState extends State<SolicitudPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('Nueva Solicitud'.toUpperCase(), style: Constants.mensajeCentral),
-                  Text('Grupo XXX'.toUpperCase(), style: Constants.mensajeCentral2),
-                  Text('Paso ${_currentPage+1}/3'.toUpperCase(), style: Constants.mensajeCentral3),
+                  Text('Grupo ${widget.params['nombreGrupo']}'.toUpperCase(), style: Constants.mensajeCentral2),
+                  //Text('Paso ${_currentPage+1}/3'.toUpperCase(), style: Constants.mensajeCentral3),
                 ]
               ),
               Column(
                 children: [
                   Icon(Icons.person_add, color: Constants.primaryColor,),
-                  Text('xxx', style: TextStyle(fontSize: 11.0, color: Constants.primaryColor))
+                  Text('${_currentPage+1}/3'.toUpperCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor, fontWeight: FontWeight.bold))
                 ],
               )
             ],
@@ -100,27 +113,33 @@ class _SolicitudPageState extends State<SolicitudPage> {
               physics: NeverScrollableScrollPhysics(),
               controller: _pageController,
               children: [
-                DatosForm(
-                  importeCapitalController: _importeCapitalController,
-                  curp: _curp,
-                  nombre: _nombre,
-                  sengundoNombre: _sengundoNombre,
-                  primerApellido: _primerApellido,
-                  segundoApellido: _segundoApellido,
-                  fechaNacimiento: _fechaNacimiento,
-                  rfc: _rfc,
-                  telefono: _telefono,
+                Form(
+                  key: _formKeyDatos,
+                  child: DatosForm(
+                    importeCapitalController: _importeCapitalController,
+                    curpController: _curpController,
+                    nombreController: _nombreController,
+                    sengundoNombreController: _sengundoNombreController,
+                    primerApellidoController: _primerApellidoController,
+                    segundoApellidoController: _segundoApellidoController,
+                    fechaNacimientoController: _fechaNacimientoController,
+                    rfcController: _rfcController,
+                    telefonoController: _telefonoController,
+                  ),
                 ),
-                DireccionForm(
-                  direccion1 : _direccion1,
-                  colonia : _colonia,
-                  municipio : _municipio,
-                  ciudad : _ciudad,
-                  estadoCod : _estadoCod,
-                  cp : _cp,
-                  paisCod : _paisCod,
-                  pageController: _pageController,
-                  backPage: _backPage
+                Form(
+                  key: _formKeyDireccion,
+                  child: DireccionForm(
+                    direccion1Controller : _direccion1Controller,
+                    coloniaController : _coloniaController,
+                    municipioController : _municipioController,
+                    ciudadController : _ciudadController,
+                    estadoCodController : _estadoCodController,
+                    cpController : _cpController,
+                    paisCodController : _paisCodController,
+                    pageController: _pageController,
+                    backPage: _backPage
+                  ),
                 ),
                 DocumentosForm(
                   pageController: _pageController,
@@ -145,20 +164,33 @@ class _SolicitudPageState extends State<SolicitudPage> {
         ShakeTransition(
           child: Container(
             decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30.0),
-                  topRight: Radius.circular(30.0),
-                )
-              ),
+              color: Colors.blue,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0),
+              )
+            ),
             width: double.infinity,
             height: 50,
-            child: CustomRaisedButton(
+            child: _currentPage == 2 ?
+            ShakeTransition(
+              axis: Axis.vertical,
+              offset: 70.0,
+              duration: Duration(milliseconds: 3000),
+              child: CustomRaisedButton(
+                action: ()=>_actionBottomButton(),
+                borderColor: Colors.blue,
+                primaryColor: Colors.blue,
+                textColor: Colors.white,
+                label: 'Guardar'
+              ),
+            ) : 
+            CustomRaisedButton(
               action: ()=>_actionBottomButton(),
               borderColor: Colors.blue,
               primaryColor: Colors.blue,
               textColor: Colors.white,
-              label: _currentPage == 2 ? 'Guardar' : 'Siguiente'
+              label: 'Siguiente'
             ),
           ),
         ),
@@ -167,16 +199,31 @@ class _SolicitudPageState extends State<SolicitudPage> {
   }
 
   _actionBottomButton(){
-    if (_pageController.hasClients) {
-      _pageController.animateToPage(
-        _currentPage + 1,
-        duration: const Duration(milliseconds: 1000),
-        curve: Curves.easeInOut,
-      );
-    }
+    FocusScope.of(context).requestFocus(FocusNode());
+    if((_currentPage == 0 && _formKeyDatos.currentState.validate()) || (_currentPage == 1 && _formKeyDireccion.currentState.validate())){
+      if (_pageController.hasClients) {
+        _pageController.animateToPage(
+          _currentPage + 1,
+          duration: const Duration(milliseconds: 1000),
+          curve: Curves.easeInOut,
+        );
+      }
 
-    setState(() {_currentPage += 1;});
+      setState(() {_currentPage += 1;});
+    }else{
+      _error('Error por favor revisa la información capturada');
+    }
   }
+
+  _error(String error){
+    _customSnakBar.showSnackBar(
+      error,
+      Duration(milliseconds: 5000),
+      Colors.pink,
+      Icons.error_outline,
+      _scaffoldKey
+    );
+  } 
 
   _backPage(){
     setState(() {_currentPage -= 1;});

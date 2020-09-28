@@ -1,28 +1,29 @@
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/cat_estados_model.dart';
+import 'package:app_grupal/providers/db_provider.dart';
 import 'package:app_grupal/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
 class DireccionForm extends StatefulWidget {
   const DireccionForm({Key key,
-    this.direccion1,
-    this.ciudad,
-    this.colonia,
-    this.cp,
-    this.estadoCod,
-    this.municipio,
-    this.paisCod,
+    this.direccion1Controller,
+    this.ciudadController,
+    this.coloniaController,
+    this.cpController,
+    this.estadoCodController,
+    this.municipioController,
+    this.paisCodController,
     this.pageController,
     this.backPage
   }) : super(key: key);
 
-  final TextEditingController direccion1;
-  final TextEditingController colonia;
-  final TextEditingController municipio;
-  final TextEditingController ciudad;
-  final TextEditingController estadoCod;
-  final TextEditingController cp;
-  final TextEditingController paisCod;
+  final TextEditingController direccion1Controller;
+  final TextEditingController coloniaController;
+  final TextEditingController municipioController;
+  final TextEditingController ciudadController;
+  final TextEditingController estadoCodController;
+  final TextEditingController cpController;
+  final TextEditingController paisCodController;
   final PageController pageController;
   final VoidCallback backPage;
 
@@ -30,7 +31,7 @@ class DireccionForm extends StatefulWidget {
   _DireccionFormState createState() => _DireccionFormState();
 }
 
-class _DireccionFormState extends State<DireccionForm> {
+class _DireccionFormState extends State<DireccionForm> with AutomaticKeepAliveClientMixin{
   var estadoSelected;
   String estadoLabel = "Estado";
   Color estadoColorSelected = Colors.grey[600];
@@ -43,17 +44,20 @@ class _DireccionFormState extends State<DireccionForm> {
   }
 
   _fillEstados() async{
-    CatEstado estado = CatEstado(codigo: 'DUR', estado: 'DURANGO');
-    estados.add(estado);
-    estado = CatEstado(codigo: 'COA', estado: 'COAHUILA');
-    estados.add(estado);
-    estado = CatEstado(codigo: 'AGS', estado: 'AGUASCALIENTES');
-    estados.add(estado);
+    CatEstado estado;
+    await DBProvider.db.getCatEstados().then((list) => {
+      list.forEach((e) {
+        estado = CatEstado(codigo: e.codigo, estado: e.estado);
+        estados.add(estado);
+      }) 
+    });
+    estados.sort((a, b) => a.estado.compareTo(b.estado));
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       padding: EdgeInsets.only(top: 10.0, right: 5.0),
       child: SingleChildScrollView(
@@ -72,7 +76,7 @@ class _DireccionFormState extends State<DireccionForm> {
       _buttonBack(),
       CustomTextField(
         label: 'Calle y número', 
-        controller: widget.direccion1,
+        controller: widget.direccion1Controller,
         maxLength: 50,
       ),
       Row(
@@ -81,14 +85,14 @@ class _DireccionFormState extends State<DireccionForm> {
           flexPadded(
             CustomTextField(
               label: 'Colonia', 
-              controller: widget.colonia,
+              controller: widget.coloniaController,
               maxLength: 50,
             ),
           ),
           flexPadded(
             CustomTextField(
               label: 'Municipio / Delegación', 
-              controller: widget.municipio,
+              controller: widget.municipioController,
               maxLength: 50,
             ),
             isRight: false
@@ -101,7 +105,7 @@ class _DireccionFormState extends State<DireccionForm> {
           flexPadded(
             CustomTextField(
               label: 'Ciudad', 
-              controller: widget.ciudad,
+              controller: widget.ciudadController,
               maxLength: 50,
             ),
           ),
@@ -117,7 +121,7 @@ class _DireccionFormState extends State<DireccionForm> {
           flexPadded(
             CustomTextField(
               label: 'Código Postal', 
-              controller: widget.cp,
+              controller: widget.cpController,
               maxLength: 5,
               textType: TextInputType.number,
             ),
@@ -125,7 +129,7 @@ class _DireccionFormState extends State<DireccionForm> {
           flexPadded(
             CustomTextField(
               label: 'País', 
-              controller: widget.paisCod,
+              controller: widget.paisCodController,
               maxLength: 50,
               enable: false,
             ),
@@ -152,7 +156,7 @@ class _DireccionFormState extends State<DireccionForm> {
               )).toList(),
               onChanged: MediaQuery.of(context).viewInsets.bottom == 0 ? (estadoSel){
                 setState(() {
-                  widget.estadoCod.text = estadoSel;
+                  widget.estadoCodController.text = estadoSel;
                   estadoSelected = estadoSel;
                   estadoLabel = estados.firstWhere((f)=>f.codigo == estadoSel).estado;
                 });
@@ -213,4 +217,7 @@ class _DireccionFormState extends State<DireccionForm> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

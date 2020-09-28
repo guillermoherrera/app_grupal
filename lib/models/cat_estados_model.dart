@@ -12,7 +12,7 @@ class CatEstado{
     'codigo' : codigo
   };
 
-  CatEstado.fromJson(Map<String, dynamic> json){
+  CatEstado.fromjson(Map<String, dynamic> json){
     this.estado = json['estado'];
     this.codigo = json['codigo'];
   }

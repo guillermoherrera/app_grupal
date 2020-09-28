@@ -159,7 +159,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
             padding: EdgeInsets.symmetric(horizontal: 10.0), 
             child: IconButton(
               icon: Icon(Icons.add_circle_outline, size: 30.0),
-              onPressed: () => Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, {}))
+              onPressed: () => Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, {'nombreGrupo': widget.params['nombre']}))
             )
           )
         ),

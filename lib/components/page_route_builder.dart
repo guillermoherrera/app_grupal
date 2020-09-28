@@ -46,7 +46,7 @@ class CustomRouteTransition{
     }else if(ruta == Constants.confiashopPage){
       return ConfiashopPage();
     }else if(ruta == Constants.solicitudPage){
-      return SolicitudPage();
+      return SolicitudPage(params: params);
     }
     return RootPage();
   }

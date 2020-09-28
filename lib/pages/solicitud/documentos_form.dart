@@ -8,18 +8,6 @@ import 'package:image_picker/image_picker.dart';
 
 import 'image_detail.dart';
 
-class Item {
-  Item({
-    this.expandedValue,
-    this.headerValue,
-    this.isExpanded = false,
-  });
-
-  String expandedValue;
-  String headerValue;
-  bool isExpanded;
-}
-
 class DocumentosForm extends StatefulWidget {
   const DocumentosForm({Key key,
     this.pageController,
@@ -33,7 +21,7 @@ class DocumentosForm extends StatefulWidget {
   _DocumentosFormState createState() => _DocumentosFormState();
 }
 
-class _DocumentosFormState extends State<DocumentosForm> {
+class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAliveClientMixin{
   final ImagePicker _picker = ImagePicker();
   List<CatDocumento> _catDocumentos = List();
   List<Documento> _documentos = List();
@@ -56,6 +44,7 @@ class _DocumentosFormState extends State<DocumentosForm> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       padding: EdgeInsets.only(top: 10.0, right: 5.0),
       child: SingleChildScrollView(
@@ -220,7 +209,7 @@ class _DocumentosFormState extends State<DocumentosForm> {
             child: Row(
               children: [
                 Icon(Icons.arrow_back_ios, size: 10.0, color: Colors.blue),
-                Text('Direcccón'.toUpperCase(), style: TextStyle(color: Colors.blue)),
+                Text('Dirección'.toUpperCase(), style: TextStyle(color: Colors.blue)),
               ],
             )
           ),
@@ -237,5 +226,20 @@ class _DocumentosFormState extends State<DocumentosForm> {
       ),
     );
   }
+  
+  @override
+  bool get wantKeepAlive => true;
+}
+
+class Item {
+  Item({
+    this.expandedValue,
+    this.headerValue,
+    this.isExpanded = false,
+  });
+
+  String expandedValue;
+  String headerValue;
+  bool isExpanded;
 }
 

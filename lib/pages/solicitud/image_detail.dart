@@ -19,7 +19,9 @@ class ImageDetail extends StatelessWidget {
       body: Center(
         child: Hero(
           tag: "image"+tipo.toString(),
-          child: Image.file(image)
+          child: InteractiveViewer(
+            child: Image.file(image)
+          )//
         )
       ),
     );

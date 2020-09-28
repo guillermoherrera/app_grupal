@@ -206,6 +206,13 @@ class DBProvider{
     return res;
   }
 
+  Future<List<CatEstado>> getCatEstados() async{
+    final db = await database;
+    final res = await db.query(Constants.catEstadosTable);
+    List<CatEstado> list = res.isNotEmpty ? res.map((e) => CatEstado.fromjson(e)).toList() : [];
+    return list;
+  }
+
   Future<void> deleteCatEstados()async{
     final db = await database;
     final res = await db.delete(Constants.catEstadosTable);
