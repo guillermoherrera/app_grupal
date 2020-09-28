@@ -15,7 +15,8 @@ class DatosForm extends StatefulWidget {
     this.rfcController,
     this.segundoApellidoController,
     this.sengundoNombreController,
-    this.telefonoController
+    this.telefonoController,
+    this.getCheckCurpRFc
   }) : super(key: key);
 
   final TextEditingController importeCapitalController;
@@ -27,6 +28,7 @@ class DatosForm extends StatefulWidget {
   final TextEditingController fechaNacimientoController;
   final TextEditingController rfcController;
   final TextEditingController telefonoController;
+  final bool Function() getCheckCurpRFc;
 
   @override
   _DatosFormState createState() => _DatosFormState();
@@ -78,6 +80,8 @@ class _DatosFormState extends State<DatosForm> with AutomaticKeepAliveClientMixi
               label: 'Curp', 
               controller: widget.curpController,
               maxLength: 18,
+              checkMaxLength: true,
+              enableUpperCase: true,
             ),
           ),
           flexPadded(
@@ -108,6 +112,8 @@ class _DatosFormState extends State<DatosForm> with AutomaticKeepAliveClientMixi
               label: 'Nombre', 
               controller: widget.nombreController,
               maxLength: 50,
+              enableUpperCase: true,
+              onchangeMethod: _onChangeCurpRfc,
             ),
           ),
           flexPadded(
@@ -115,6 +121,9 @@ class _DatosFormState extends State<DatosForm> with AutomaticKeepAliveClientMixi
               label: 'Segundo Nombre', 
               controller: widget.sengundoNombreController,
               maxLength: 50,
+              checkEmpty: false,
+              enableUpperCase: true,
+              onchangeMethod: _onChangeCurpRfc,
             ),
             isRight: false
           ),  
@@ -128,6 +137,8 @@ class _DatosFormState extends State<DatosForm> with AutomaticKeepAliveClientMixi
               label: 'Primer Apellido', 
               controller: widget.primerApellidoController,
               maxLength: 50,
+              enableUpperCase: true,
+              onchangeMethod: _onChangeCurpRfc,
             ),
           ),
           flexPadded(
@@ -135,6 +146,9 @@ class _DatosFormState extends State<DatosForm> with AutomaticKeepAliveClientMixi
               label: 'Segundo Apellido', 
               controller: widget.segundoApellidoController,
               maxLength: 50,
+              checkEmpty: false,
+              enableUpperCase: true,
+              onchangeMethod: _onChangeCurpRfc,
             ),
             isRight: false
           ),  
@@ -149,19 +163,30 @@ class _DatosFormState extends State<DatosForm> with AutomaticKeepAliveClientMixi
               label: 'RFC', 
               controller: widget.rfcController,
               maxLength: 13,
+              checkRfc: true,
+              onlyCharacters: true,
+              enableUpperCase: true,
             ),
           ),
           flexPadded(
             CustomTextField(
               label: 'Teléfono', 
               controller: widget.telefonoController,
+              textType: TextInputType.number,
               maxLength: 10,
+              checkMaxLength: true,
+              onlyCharacters: true,
+              //onchangeMethod: _onChangeTelefono,
             ),
             isRight: false
           ),  
         ],
       ),
     ];
+  }
+
+  _onChangeCurpRfc(String value){
+    widget.getCheckCurpRFc();
   }
 
   Widget _fieldFechaNacimiento(){
@@ -175,6 +200,7 @@ class _DatosFormState extends State<DatosForm> with AutomaticKeepAliveClientMixi
             controller: widget.fechaNacimientoController,
             icon: Icons.calendar_today,
             maxLength: 10,
+            checkMaxLength: true,
           ),
         ),
       ),
@@ -204,7 +230,7 @@ class _DatosFormState extends State<DatosForm> with AutomaticKeepAliveClientMixi
         setState(() {
           selectedDate = picked;
           widget.fechaNacimientoController.text = formatDate(selectedDate, [dd, '/', mm, '/', yyyy]);
-          //getCurpRfc();
+          _onChangeCurpRfc('');
         });
       }else{
         widget.fechaNacimientoController.text = "No válido".toUpperCase();

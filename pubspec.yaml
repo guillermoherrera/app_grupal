@@ -40,6 +40,7 @@ dependencies:
   path_provider: ^1.6.14
   cloud_firestore: ^0.14.0+2
   image_picker: ^0.6.7+11
+  diacritic: ^0.1.1
 
 dev_dependencies:
   flutter_test:

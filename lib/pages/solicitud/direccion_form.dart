@@ -78,6 +78,7 @@ class _DireccionFormState extends State<DireccionForm> with AutomaticKeepAliveCl
         label: 'Calle y número', 
         controller: widget.direccion1Controller,
         maxLength: 50,
+        enableUpperCase: true,
       ),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -87,6 +88,7 @@ class _DireccionFormState extends State<DireccionForm> with AutomaticKeepAliveCl
               label: 'Colonia', 
               controller: widget.coloniaController,
               maxLength: 50,
+              enableUpperCase: true,
             ),
           ),
           flexPadded(
@@ -94,6 +96,7 @@ class _DireccionFormState extends State<DireccionForm> with AutomaticKeepAliveCl
               label: 'Municipio / Delegación', 
               controller: widget.municipioController,
               maxLength: 50,
+              enableUpperCase: true,
             ),
             isRight: false
           ),  
@@ -107,6 +110,7 @@ class _DireccionFormState extends State<DireccionForm> with AutomaticKeepAliveCl
               label: 'Ciudad', 
               controller: widget.ciudadController,
               maxLength: 50,
+              enableUpperCase: true,
             ),
           ),
           flexPadded(

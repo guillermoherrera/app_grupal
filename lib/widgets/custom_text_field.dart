@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:app_grupal/helpers/utilerias.dart';
 
 class CustomTextField extends StatefulWidget {
   const CustomTextField({
     Key key,
     @required this.label,
     this.icon,
-    this.errorEmpty = 'Completa este campo',
+    this.errorEmpty = 'Ingresa este campo',
     this.textType = TextInputType.emailAddress,
     this.checkEmpty = true,
     this.isPassword = false,
     this.check500s = false,
+    this.checkMaxLength = false,
+    this.checkRfc = false,
     this.enable = true,
+    this.onlyCharacters = false,
     @required this.controller,
-    this.maxLength = 100
+    this.maxLength = 100,
+    this.onchangeMethod,
+    this.enableUpperCase = false,
   }) : super(key: key);
   
   final String label;
@@ -25,6 +31,11 @@ class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
   final int maxLength;
   final bool enable;
+  final bool checkMaxLength;
+  final bool checkRfc;
+  final bool onlyCharacters;
+  final bool enableUpperCase;
+  final void Function(String) onchangeMethod;
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
@@ -39,6 +50,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       controller: widget.controller, 
       decoration: _decorationField(widget.label),
       autocorrect: false,
+      inputFormatters: widget.enableUpperCase ? [UpperCaseTextFormatter()] : [],
       keyboardType: widget.textType,
       obscureText: widget.isPassword ? !watchPassword : false,
       maxLength: widget.maxLength,
@@ -46,12 +58,24 @@ class _CustomTextFieldState extends State<CustomTextField> {
       validator: (value){
         return _validations(value);
       },
+      onChanged: (value) => _onChange != null ? _onChange(value) : (){},
     );
   }
 
+  _onChange(String value){
+    widget.onchangeMethod(value);
+  }
+
   String _validations(String value){
+    if(widget.onlyCharacters){
+      value = value.replaceAll(RegExp(r"[^\s\w]"), "");//quitar simbolos
+      value = value.replaceAll(" ", "");//quitar espacios
+    }
+
     if(widget.checkEmpty && value.isEmpty) return widget.errorEmpty; 
     if(widget.check500s && (double.parse(value) <= 0 || double.parse(value)%500 > 0 )) return 'Ingresa 500, 1000, 1500, 2000... XXXX)';
+    if(widget.checkMaxLength && value.length < widget.maxLength) return 'Completa este campo'; 
+    if(widget.checkRfc && (value.length != 10 && value.length != 13)) return 'Completa el RFC';
     return null;
   }
 

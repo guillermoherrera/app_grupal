@@ -112,6 +112,7 @@ class _LoginPageState extends State<LoginPage> {
             label: 'Usuario',
             controller: _userController,
             icon: Icons.account_circle,
+            enableUpperCase: true,
           ),
         ),
       ),
