@@ -1,3 +1,4 @@
+import 'package:app_grupal/helpers/constants.dart';
 import 'package:flutter/material.dart';
 
 class CustomSnakBar{
@@ -28,19 +29,26 @@ class CustomSnakBar{
   showSnackBarSuccess(String mensaje, Duration duration, Color color, IconData icon, GlobalKey<ScaffoldState> scaffoldKey){
     
     final snackBar = SnackBar(
-      content: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 50),
-          SizedBox(width: 20.0,),
-          Text(
-            mensaje.toUpperCase(),
-            //overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontWeight: FontWeight.bold
+      content: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onVerticalDragStart: (_) => debugPrint("no can do!"),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 100),
+            SizedBox(width: 20.0,),
+            Text(
+              mensaje.toUpperCase(),
+              overflow: TextOverflow.ellipsis,
+              style: Constants.encabezadoStyle,
             ),
-          ),
-        ],
+            Text(
+              mensaje.toUpperCase(),
+              overflow: TextOverflow.ellipsis,
+              style: Constants.subtituloStyle,
+            ),
+          ],
+        ),
       ),
       backgroundColor: color,
       duration: duration,

@@ -97,6 +97,9 @@ class _DireccionFormState extends State<DireccionForm> with AutomaticKeepAliveCl
               controller: widget.municipioController,
               maxLength: 50,
               enableUpperCase: true,
+              checkEmpty: false,
+              checkMunicipioCiudad: true,
+              validacion: _validateMunicipioCiudad,
             ),
             isRight: false
           ),  
@@ -111,6 +114,9 @@ class _DireccionFormState extends State<DireccionForm> with AutomaticKeepAliveCl
               controller: widget.ciudadController,
               maxLength: 50,
               enableUpperCase: true,
+              checkEmpty: false,
+              checkMunicipioCiudad: true,
+              validacion: _validateMunicipioCiudad,
             ),
           ),
           flexPadded(
@@ -128,6 +134,7 @@ class _DireccionFormState extends State<DireccionForm> with AutomaticKeepAliveCl
               controller: widget.cpController,
               maxLength: 5,
               textType: TextInputType.number,
+              checkMaxLength: true,
             ),
           ),
           flexPadded(
@@ -183,6 +190,10 @@ class _DireccionFormState extends State<DireccionForm> with AutomaticKeepAliveCl
             color: Colors.grey[600], style: BorderStyle.solid, width: 1),
       ),
     );
+  }
+
+  bool _validateMunicipioCiudad(){
+    return (widget.municipioController.text.isEmpty && widget.ciudadController.text.isEmpty);
   }
 
   Widget _buttonBack(){

@@ -37,7 +37,7 @@ class CustomDialog{
               children: [
                 Icon(icon, color: Constants.primaryColor, size: 100.0,),
                 SizedBox(height: 20.0),
-                Text(textContent.toUpperCase(), textAlign: TextAlign.justify),
+                Text(textContent.toUpperCase(), textAlign: TextAlign.justify, style: Constants.mensajeCentral,),
                 form == null ? Container() : form
               ],
             ),

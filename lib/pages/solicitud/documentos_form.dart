@@ -11,11 +11,13 @@ import 'image_detail.dart';
 class DocumentosForm extends StatefulWidget {
   const DocumentosForm({Key key,
     this.pageController,
-    this.backPage
+    this.backPage,
+    this.fillDocumentos
   }) : super(key: key);
 
   final PageController pageController;
   final VoidCallback backPage;
+  final void Function(List<Documento>) fillDocumentos;
 
   @override
   _DocumentosFormState createState() => _DocumentosFormState();
@@ -76,6 +78,7 @@ class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAlive
 
 
   Widget _tableDocuments(){
+    widget.fillDocumentos(_documentos);
     return ExpansionPanelList(
       expansionCallback: (int index, bool isExpanded) {
         setState(() {

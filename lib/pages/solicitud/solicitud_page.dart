@@ -1,7 +1,9 @@
 import 'package:app_grupal/helpers/constants.dart';
+import 'package:app_grupal/models/documentos_model.dart';
 import 'package:app_grupal/pages/solicitud/datos_form.dart';
 import 'package:app_grupal/pages/solicitud/direccion_form.dart';
 import 'package:app_grupal/pages/solicitud/documentos_form.dart';
+import 'package:app_grupal/widgets/custom_dialog.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
 import 'package:app_grupal/widgets/custom_snack_bar.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
@@ -30,7 +32,8 @@ class _SolicitudPageState extends State<SolicitudPage> {
   final _customSnakBar = new CustomSnakBar();
   PageController _pageController;
   int _currentPage = 0;
-  int intentoCurp = 0; //auxiliar para la validación de las palabras altisonantes 
+  int intentoCurp = 0; //auxiliar para la validación de las palabras altisonantes
+  List<Documento> _documentos = List();
   final _importeCapitalController = TextEditingController();
   final _curpController = TextEditingController();
   final _nombreController = TextEditingController();
@@ -146,6 +149,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
                 ),
                 DocumentosForm(
                   pageController: _pageController,
+                  fillDocumentos: _fillDocumentos,
                   backPage: _backPage
                 )
               ],
@@ -169,8 +173,8 @@ class _SolicitudPageState extends State<SolicitudPage> {
             decoration: BoxDecoration(
               color: Colors.blue,
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30.0),
-                topRight: Radius.circular(30.0),
+                topLeft: Radius.circular(10.0),
+                topRight: Radius.circular(10.0),
               )
             ),
             width: double.infinity,
@@ -181,7 +185,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
               offset: 70.0,
               duration: Duration(milliseconds: 3000),
               child: CustomRaisedButton(
-                action: ()=>_actionBottomButton(),
+                action: ()=>_saveBottomButton(),
                 borderColor: Colors.blue,
                 primaryColor: Colors.blue,
                 textColor: Colors.white,
@@ -190,8 +194,8 @@ class _SolicitudPageState extends State<SolicitudPage> {
             ) : 
             CustomRaisedButton(
               action: ()=>_actionBottomButton(),
-              borderColor: Colors.blue,
-              primaryColor: Colors.blue,
+              borderColor: Colors.blueAccent,
+              primaryColor: Colors.blueAccent,
               textColor: Colors.white,
               label: 'Siguiente'
             ),
@@ -205,21 +209,53 @@ class _SolicitudPageState extends State<SolicitudPage> {
     FocusScope.of(context).requestFocus(FocusNode());
     if((_currentPage == 0 && _formKeyDatos.currentState.validate()) || (_currentPage == 1 && _formKeyDireccion.currentState.validate())){
       if(getChekCurpRfc()){
-        if (_pageController.hasClients) {
-          _pageController.animateToPage(
-            _currentPage + 1,
-            duration: const Duration(milliseconds: 1000),
-            curve: Curves.easeInOut,
-          );
+        if(checkEstado()){
+          
+          if (_pageController.hasClients) {
+            _pageController.animateToPage(
+              _currentPage + 1,
+              duration: const Duration(milliseconds: 1000),
+              curve: Curves.easeInOut,
+            );
+          }
+          setState(() {_currentPage += 1;});
+        
+        }else{
+          _error('Ingresa el estado.');  
         }
-
-        setState(() {_currentPage += 1;});
       }else{
         _error('Error en el formato de la CURP y/o RFC.');
       }
     }else{
       _error('Error por favor revisa la información capturada');
     }
+  }
+
+  _saveBottomButton(){
+    List<Documento> documentosFaltantes = _documentos.where((d) => d.documento == null).toList();
+    if(documentosFaltantes.length == 0){
+      CustomDialog customDialog = CustomDialog();
+      customDialog.showCustomDialog(
+        context,
+        title: 'Crear Solicitud',
+        icon: Icons.error_outline,
+        textContent: 'Antes de crear la solicitud confirme que ha revisado que los DATOS DEL CLIENTE se han capturado correctamente.\n\n¿La información capturada es correcta?',
+        cancel: 'No, volver',
+        cntinue: 'Si, crear solicitud',
+        action: _crearSolicitud
+      );
+    }else{
+      _error('Error ${documentosFaltantes.length} documento(s) faltante(s)');
+    }
+  }
+
+  _crearSolicitud() async{
+    Navigator.pop(context);
+    _success('Solicitud creada con éxito');
+  }
+
+  _fillDocumentos(List<Documento> documentosForm){
+    _documentos = documentosForm;
   }
 
   _error(String error){
@@ -230,10 +266,32 @@ class _SolicitudPageState extends State<SolicitudPage> {
       Icons.error_outline,
       _scaffoldKey
     );
-  } 
+  }
+
+  _success(String msj){
+    _customSnakBar.showSnackBarSuccess(
+      msj, 
+      Duration(milliseconds: 2000), 
+      Constants.primaryColor, 
+      Icons.check_circle_outline, 
+      _scaffoldKey
+    );
+  }
 
   _backPage(){
     setState(() {_currentPage -= 1;});
+  }
+
+  bool checkEstado(){
+    if(_currentPage == 1){
+      if(_estadoCodController.text.isEmpty || _estadoCodController.text == null){
+        return false;
+      }else{
+        return true;
+      }
+    }else{
+      return true;
+    }
   }
 
   bool getChekCurpRfc(){

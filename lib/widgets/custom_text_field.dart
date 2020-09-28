@@ -19,6 +19,8 @@ class CustomTextField extends StatefulWidget {
     this.maxLength = 100,
     this.onchangeMethod,
     this.enableUpperCase = false,
+    this.validacion,
+    this.checkMunicipioCiudad = false
   }) : super(key: key);
   
   final String label;
@@ -33,9 +35,11 @@ class CustomTextField extends StatefulWidget {
   final bool enable;
   final bool checkMaxLength;
   final bool checkRfc;
+  final bool checkMunicipioCiudad;
   final bool onlyCharacters;
   final bool enableUpperCase;
   final void Function(String) onchangeMethod;
+  final bool Function() validacion;
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
@@ -72,6 +76,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       value = value.replaceAll(" ", "");//quitar espacios
     }
 
+    if(widget.checkMunicipioCiudad && widget.validacion()) return 'Ingresa la Ciudad y/o el Municipio';
     if(widget.checkEmpty && value.isEmpty) return widget.errorEmpty; 
     if(widget.check500s && (double.parse(value) <= 0 || double.parse(value)%500 > 0 )) return 'Ingresa 500, 1000, 1500, 2000... XXXX)';
     if(widget.checkMaxLength && value.length < widget.maxLength) return 'Completa este campo'; 
