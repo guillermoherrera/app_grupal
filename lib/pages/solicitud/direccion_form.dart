@@ -1,3 +1,4 @@
+import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/cat_estados_model.dart';
 import 'package:app_grupal/providers/db_provider.dart';
@@ -44,6 +45,7 @@ class _DireccionFormState extends State<DireccionForm> with AutomaticKeepAliveCl
   }
 
   _fillEstados() async{
+    if(widget.estadoCodController.text.isNotEmpty) estadoSelected = widget.estadoCodController.text;
     CatEstado estado;
     await DBProvider.db.getCatEstados().then((list) => {
       list.forEach((e) {

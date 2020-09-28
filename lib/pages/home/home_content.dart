@@ -74,10 +74,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
   List<Widget> _createTabs() {
     return [
       Tab(
-        icon: Hero(
-          tag: 'homeIcon',
-          child: Icon(Icons.home)
-        ),
+        icon: Icon(Icons.home),
         text: 'INICIO',
         iconMargin: EdgeInsets.all(0),
       ),

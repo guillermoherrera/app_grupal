@@ -1,5 +1,7 @@
+import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/documentos_model.dart';
+import 'package:app_grupal/models/solicitud_model.dart';
 import 'package:app_grupal/pages/solicitud/datos_form.dart';
 import 'package:app_grupal/pages/solicitud/direccion_form.dart';
 import 'package:app_grupal/pages/solicitud/documentos_form.dart';
@@ -30,10 +32,12 @@ class _SolicitudPageState extends State<SolicitudPage> {
   final _formKeyDireccion = new GlobalKey<FormState>();
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _customSnakBar = new CustomSnakBar();
+  final _sharedActions = SharedActions();
   PageController _pageController;
   int _currentPage = 0;
   int intentoCurp = 0; //auxiliar para la validación de las palabras altisonantes
   List<Documento> _documentos = List();
+  Solicitud _solicitud = new Solicitud();
   final _importeCapitalController = TextEditingController();
   final _curpController = TextEditingController();
   final _nombreController = TextEditingController();
@@ -56,6 +60,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
   void initState() {
     _paisCodController.text = "MX";
     _pageController = PageController();
+    _getSolicitudFromShared();
     super.initState();
   }
 
@@ -63,6 +68,28 @@ class _SolicitudPageState extends State<SolicitudPage> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  _getSolicitudFromShared() async{
+    Solicitud solicitud = await _sharedActions.getSolicitud();
+    if(solicitud.importe > 0){
+      _importeCapitalController.text = '${solicitud.importe.toStringAsFixed(0)}';
+      _nombreController.text = solicitud.nombrePrimero;
+      _sengundoNombreController.text = solicitud.nombreSegundo;
+      _primerApellidoController.text = solicitud.apellidoPrimero;
+      _segundoApellidoController.text = solicitud.apellidoSegundo;
+      _fechaNacimientoController.text = solicitud.fechaNacimiento;
+      _curpController.text = solicitud.curp;
+      _rfcController.text = solicitud.rfc;
+      _telefonoController.text = solicitud.telefono;
+      _direccion1Controller.text = solicitud.direccion1;
+      _coloniaController.text = solicitud.coloniaPoblacion;
+      _municipioController.text = solicitud.delegacionMunicipio;
+      _ciudadController.text = solicitud.ciudad;
+      _estadoCodController.text = solicitud.estado;
+      _cpController.text = solicitud.cp != null ? '${solicitud.cp}' : solicitud.cp;
+      _paisCodController.text = solicitud.pais;
+    }
   }
 
   @override
@@ -182,7 +209,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
             child: _currentPage == 2 ?
             ShakeTransition(
               axis: Axis.vertical,
-              offset: 70.0,
+              offset: 140.0,
               duration: Duration(milliseconds: 3000),
               child: CustomRaisedButton(
                 action: ()=>_saveBottomButton(),
@@ -217,8 +244,9 @@ class _SolicitudPageState extends State<SolicitudPage> {
               duration: const Duration(milliseconds: 1000),
               curve: Curves.easeInOut,
             );
+            _saveSharedPreferences(_currentPage);
+            setState(() {_currentPage += 1;});
           }
-          setState(() {_currentPage += 1;});
         
         }else{
           _error('Ingresa el estado.');  
@@ -229,6 +257,29 @@ class _SolicitudPageState extends State<SolicitudPage> {
     }else{
       _error('Error por favor revisa la información capturada');
     }
+  }
+
+  _saveSharedPreferences(int _currentPage){
+    if(_currentPage == 0){
+      _solicitud.importe = double.parse(_importeCapitalController.text);
+      _solicitud.nombrePrimero = _nombreController.text;
+      _solicitud.nombreSegundo = _sengundoNombreController.text;
+      _solicitud.apellidoPrimero = _primerApellidoController.text;
+      _solicitud.apellidoSegundo = _segundoApellidoController.text;
+      _solicitud.fechaNacimiento = _fechaNacimientoController.text;
+      _solicitud.curp = _curpController.text;
+      _solicitud.rfc = _rfcController.text;
+      _solicitud.telefono = _telefonoController.text;
+    }else if(_currentPage == 1){
+      _solicitud.direccion1 = _direccion1Controller.text;
+      _solicitud.coloniaPoblacion = _coloniaController.text;
+      _solicitud.delegacionMunicipio = _municipioController.text;
+      _solicitud.ciudad = _ciudadController.text;
+      _solicitud.estado = _estadoCodController.text;
+      _solicitud.cp = int.parse(_cpController.text);
+      _solicitud.pais = _paisCodController.text;
+    }
+    _sharedActions.saveSolicitud(_solicitud, _currentPage);
   }
 
   _saveBottomButton(){
@@ -251,6 +302,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
 
   _crearSolicitud() async{
     Navigator.pop(context);
+    _sharedActions.removeSolicitud();
     _success('Solicitud creada con éxito');
   }
 

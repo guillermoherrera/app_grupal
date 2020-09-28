@@ -118,7 +118,7 @@ class CustomDrawer extends StatelessWidget {
   }
 
   Widget _creaBoton(Color color, IconData icono, String texto, VoidCallback action){
-    String heroTag = getHeroTag(icono.codePoint);
+    //String heroTag = getHeroTag(icono.codePoint);
     return GestureDetector(
       onTap: ()=> action(),
       child: Container(
@@ -141,7 +141,7 @@ class CustomDrawer extends StatelessWidget {
                 CircleAvatar(
                   backgroundColor: color,
                   radius: 40.0,
-                  child: Hero(tag: heroTag,child: Icon(icono, color: Colors.white, size: 30.0)),
+                  child: Icon(icono, color: Colors.white, size: 30.0),
                 ),
                 Text(
                   texto.toUpperCase(),
@@ -157,22 +157,6 @@ class CustomDrawer extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  getHeroTag(int codePoint){
-    switch (codePoint) {
-      case 59530:
-        return 'homeIcon';
-        break;
-      case 59543:
-        return 'lockIcon';
-        break;
-      case 59534:
-        return 'infoIcon';
-        break;
-      default:
-      return '';
-    }
   }
 
   Widget _sinInfo(){

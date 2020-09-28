@@ -45,6 +45,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   int _integrantesCant = 0;
   bool _renovadoCheck = true;
   String userID;
+  int _validaIntegrantesCant = 100;
 
   @override
   void initState(){
@@ -60,6 +61,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
 
     await Future.delayed(Duration(milliseconds: 1000));
 
+    _validaIntegrantesCant = await DBProvider.db.getCatIntegrantesCant();
     await _geIntegrantesFromSqlite();
     //getIntegrantes from firebase
     if(_renovacionIntegrantes.length == 0) await _getIntegrantesFromConfia();
@@ -122,7 +124,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('${widget.params['nombre']} | ${widget.params['contrato']}'.toUpperCase(), style: Constants.mensajeCentral),
-                      Text('Integrantes: $_integrantesCant'.toUpperCase(), style: Constants.mensajeCentral2),
+                      Text('Integrantes: $_integrantesCant'.toUpperCase(), style: _renovacionIntegranteCheck.where((d) => d ).length >= _validaIntegrantesCant ? Constants.mensajeCentral2 : Constants.mensajeCentral2error),
                       Text('Total: \$ ${_capital.toStringAsFixed(2)}'.toUpperCase(), style: Constants.mensajeCentral3),
                     ]
                   ),
@@ -307,22 +309,26 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   }
 
   _solicitarRenovacion() async{
-    CustomDialog customDialog = CustomDialog();
-    customDialog.showCustomDialog(
-      context,
-      title: 'Solicitar Renovación',
-      icon: Icons.error_outline,
-      textContent: '¿Desea solicitar la renovacion del grupo \'${widget.params['nombre']}\'?',
-      cancel: 'No, cancelar',
-      cntinue: 'Si, solicitar renovación',
-      action: _renovar
-    ); 
+    if(_renovacionIntegranteCheck.where((d) => d ).length >= _validaIntegrantesCant){
+      CustomDialog customDialog = CustomDialog();
+      customDialog.showCustomDialog(
+        context,
+        title: 'Solicitar Renovación',
+        icon: Icons.error_outline,
+        textContent: '¿Desea solicitar la renovacion del grupo \'${widget.params['nombre']}\'?',
+        cancel: 'No, cancelar',
+        cntinue: 'Si, solicitar renovación',
+        action: _renovar
+      ); 
+    }else{
+      _error('No pudo solicitarse la renovación.\nDebe tener al menos $_validaIntegrantesCant integrantes.');
+    }
   }
 
   _renovar() async{
     //validacion numero de integrantes
     Navigator.pop(context);
-    if(true){
+    //if(true){
       userID = await _sharedActions.getUserId();
       Grupo grupo = Grupo(
         cantidadSolicitudes: _renovacionIntegrantes.length,
@@ -348,9 +354,9 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
       }catch(e){
         _error('No pudo solicitarse la renovación.\n$e');
       }
-    }else{
-      _error('No pudo solicitarse la renovación.\nDebe tener al menos X integrantes.');
-    }
+    //}else{
+    //  _error('No pudo solicitarse la renovación.\nDebe tener al menos X integrantes.');
+    //}
   }
 
   _success(String error){

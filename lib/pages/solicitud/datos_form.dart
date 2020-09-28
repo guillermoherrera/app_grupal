@@ -1,4 +1,5 @@
 import 'package:app_grupal/helpers/constants.dart';
+import 'package:app_grupal/widgets/custom_dialog.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
 import 'package:app_grupal/widgets/custom_text_field.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
@@ -96,7 +97,7 @@ class _DatosFormState extends State<DatosForm> with AutomaticKeepAliveClientMixi
                   textColor: Colors.white,
                   primaryColor: Colors.blue,
                   label: 'Consultar Curp',
-                  action: (){},
+                  action: ()=>_consultarCurp(),
                 ),
               ),
             ),
@@ -183,6 +184,19 @@ class _DatosFormState extends State<DatosForm> with AutomaticKeepAliveClientMixi
         ],
       ),
     ];
+  }
+
+  _consultarCurp(){
+    CustomDialog customDialog = CustomDialog();
+    customDialog.showCustomDialog(
+      context,
+      title: 'Servicio no disponible',
+      icon: Icons.error_outline,
+      textContent: 'El servicio de consulta de CURP no esta disponible por el momento',
+      cancel: 'cerrar',
+      cntinue: 'ok',
+      action: ()=>Navigator.pop(context)
+    ); 
   }
 
   _onChangeCurpRfc(String value){

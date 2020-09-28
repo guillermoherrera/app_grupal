@@ -163,6 +163,13 @@ class DBProvider{
     await db.execute(sql);
   }
   
+  //Repositorio CatIntegrantes
+  Future<int> getCatIntegrantesCant()async{
+    final db = await database;
+    final res = await db.query(Constants.catIntegrantesTable);
+    return res.isNotEmpty ? res[0]['cantidadIntegrantes'] : 100;
+  }
+
   //Repositorio CatDocumentos
   Future<void> insertaCatDocumentos(List<CatDocumento> catDocumentos)async{
     final db = await database;
