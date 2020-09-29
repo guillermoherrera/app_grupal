@@ -7,8 +7,13 @@ import 'package:app_grupal/classes/auth_firebase.dart';
 import 'package:app_grupal/classes/shared_preferences.dart';
 
 class CustomDrawer extends StatelessWidget {
-  final AuthFirebase _authFirebase = new AuthFirebase();
-  final SharedActions _sharedActions = new SharedActions();
+
+  const CustomDrawer({
+    Key key, 
+    this.userInfo
+  }) : super(key: key);
+
+  final Map<String, dynamic> userInfo;
   
   @override
   Widget build(BuildContext context) {
@@ -55,13 +60,13 @@ class CustomDrawer extends StatelessWidget {
       SizedBox(height: height / 40),
       Center(
         child: Text(
-          'NOMBRE DEL ASESOR',
+          '${userInfo['name']}'.toUpperCase(),
           style: Constants.encabezadoStyle,
         )
       ),
       Center(
         child: Text(
-          'USUARIO DEL ASESOR',
+          '${userInfo['user']}'.toUpperCase(),
           style: Constants.subtituloStyle,
         )
       )
@@ -175,6 +180,9 @@ class CustomDrawer extends StatelessWidget {
   }
 
   _actions(BuildContext context, action) async{
+    final AuthFirebase _authFirebase = new AuthFirebase();
+    final SharedActions _sharedActions = new SharedActions();
+    
     switch (action) {
       case 1:
         Navigator.pop(context);

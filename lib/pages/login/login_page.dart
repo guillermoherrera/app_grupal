@@ -39,7 +39,8 @@ class _LoginPageState extends State<LoginPage> {
       FocusScope.of(context).requestFocus(FocusNode());
       final authResult = await _authFirebase.signIn(_userController.text, _passController.text);
       if(authResult.result){
-        _sharedActions.setUserAuth(authResult.email, _passController.text, authResult.uid);
+        await _sharedActions.setUserAuth(authResult.email, _passController.text, authResult.uid);
+        await _firebaseProvider.getUserInfo();
         _firebaseProvider.getCatalogos();
         //widget.onSignIn();
         Navigator.pushReplacementNamed(context, Constants.homePage);

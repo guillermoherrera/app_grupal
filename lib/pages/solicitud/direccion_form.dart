@@ -1,4 +1,3 @@
-import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/cat_estados_model.dart';
 import 'package:app_grupal/providers/db_provider.dart';

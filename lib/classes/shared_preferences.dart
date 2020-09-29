@@ -1,4 +1,5 @@
 import 'package:app_grupal/models/solicitud_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedActions{
@@ -16,9 +17,37 @@ class SharedActions{
 
   }
 
+  Future<Map<String, dynamic>> getUserInfo() async{
+    await init();
+    return {
+      'user': preferences.getString('user'),
+      'name': preferences.getString('name')
+    };
+  }
+
   Future<String> getUserId() async{
     await init();
     return preferences.getString('uid');
+  }
+
+  Future<void> saveUserInfo(DocumentSnapshot documentSnapshot) async{
+    await init();
+    preferences.setInt("tipoUsuario", documentSnapshot.data()['tipoUsuario']);
+    preferences.setString("name", documentSnapshot.data()['nombre']);
+    preferences.setBool("passGenerico", documentSnapshot.data()['passGenerico']);
+    preferences.setString("documentID", documentSnapshot.id);
+    preferences.setInt("sistema", documentSnapshot.data()['sistema']);
+    preferences.setString("sistemaDesc", documentSnapshot.data()['sistemaDesc']);
+  }
+
+  Future<void> removeUserInfo()async{
+    await init();
+    preferences.remove('tipoUsuario');
+    preferences.remove('name');
+    preferences.remove('passGenerico');
+    preferences.remove('documentID');
+    preferences.remove('sistema');
+    preferences.remove('sistemaDesc');
   }
 
   Future<void> saveSolicitud(Solicitud solicitud, int currentPage) async{

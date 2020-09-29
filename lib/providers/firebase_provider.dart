@@ -1,14 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app_grupal/providers/db_provider.dart';
+import 'package:app_grupal/classes/shared_preferences.dart';
 
 class FirebaseProvider{
+  final _sharedActions = SharedActions();
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   QuerySnapshot _querySnapshot;
   Query _query;
+
+  Future<void> getUserInfo() async{
+    try{
+      //info de usuario
+      String userID = await _sharedActions.getUserId();
+      _query = _firestore.collection("UsuariosTipos").where('uid', isEqualTo: userID);
+      _querySnapshot = await _query.get();
+      if(_querySnapshot.docs.length > 0 ){
+        await _sharedActions.saveUserInfo(_querySnapshot.docs[0]);
+      }else{
+        throw Exception('Usuario no configurado');
+      }
+    }catch(e){
+      print('### Error FirebaseProvider getUserInfo ### $e');
+      await _sharedActions.removeUserInfo();
+    }
+  }
   
   Future<void> getCatalogos() async{
     try{
-      
+
       //catDocumentos
       List<CatDocumento> catDocumentos = List();
       await DBProvider.db.deleteCatDocumentos();
