@@ -1,6 +1,7 @@
 class Renovacion{
   int idRenovacion;
   int idGrupo;
+  int idSolicitud;
   String nombreGrupo;
   int noCda;
   String cveCli;
@@ -25,6 +26,7 @@ class Renovacion{
     this.noCda,
     this.diasAtraso,
     this.idGrupo,
+    this.idSolicitud,
     this.idRenovacion,
     this.importe,
     this.nombreCompleto,
@@ -46,6 +48,7 @@ class Renovacion{
     'noCda'          : noCda,
     'diasAtraso'     : diasAtraso,
     'idGrupo'        : idGrupo,
+    'idSolicitud'    : idSolicitud,
     'idRenovacion'   : idRenovacion,
     'importe'        : importe,
     'nombreCompleto' : nombreCompleto,
@@ -67,6 +70,7 @@ class Renovacion{
     this.noCda          = json['noCda'];
     this.diasAtraso     = json['diasAtraso'];
     this.idGrupo        = json['idGrupo'];
+    this.idSolicitud    = json['idSolicitud'];
     this.idRenovacion   = json['idRenovacion'];
     this.importe        = json['importe'];
     this.nombreCompleto = json['nombreCompleto'];

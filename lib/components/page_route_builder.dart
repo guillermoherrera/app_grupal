@@ -9,9 +9,9 @@ import 'package:app_grupal/pages/root_page.dart';
 
 class CustomRouteTransition{
   
-  Route crearRutaSlide(String route, Map<String, dynamic> params, {void Function(int, double) setMonto}){
+  Route crearRutaSlide(String route, Map<String, dynamic> params, {void Function(int, double) setMonto, void Function(int) getNewIntegrante}){
 
-    Widget ruta = _getPage(route, params, setMonto);
+    Widget ruta = _getPage(route, params, setMonto, getNewIntegrante);
 
     return PageRouteBuilder(
       pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) => ruta,
@@ -38,7 +38,7 @@ class CustomRouteTransition{
     );
   }
 
-  Widget _getPage(String ruta, Map<String, dynamic> params, void Function(int, double) setMonto){
+  Widget _getPage(String ruta, Map<String, dynamic> params, void Function(int, double) setMonto, void Function(int) getNewIntegrante){
     if(ruta == Constants.renovacionGrupoPage){
       return RenovacionesGrupoPage(params: params);
     }else if(ruta == Constants.renovacionIntegrantePage){
@@ -46,7 +46,7 @@ class CustomRouteTransition{
     }else if(ruta == Constants.confiashopPage){
       return ConfiashopPage();
     }else if(ruta == Constants.solicitudPage){
-      return SolicitudPage(params: params);
+      return SolicitudPage(params: params, getNewIntegrante: getNewIntegrante);
     }
     return RootPage();
   }

@@ -76,10 +76,10 @@ class Constants{
   static const idGrupo = 'idGrupo'; //grupos
   static const nombreGrupo = 'nombreGrupo'; //grupos
   static const importe = 'importe'; //renovaciones
-  static const nombrePrimero = 'nombrePrimero';
-  static const nombreSegundo = 'nombreSegundo';
-  static const apellidoPrimero = 'apellidoPrimero';
-  static const apellidoSegundo = 'apellidoSegundo';
+  static const nombre = 'nombre';
+  static const segundoNombre = 'segundoNombre';
+  static const primerApellido = 'primerApellido';
+  static const segundoApellido = 'segundoApellido';
   static const fechaNacimiento = 'fechaNacimiento';
   static const fechaCaptura = 'fechaCaptura';
   static const curp = 'curp';

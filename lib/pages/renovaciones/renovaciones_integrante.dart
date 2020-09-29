@@ -63,13 +63,10 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
         children: [
           Container(
             padding: EdgeInsets.all(_height / 128),
-            child: Hero(
-              tag: widget.params['cveCli'],
-              child: Icon(
-                Icons.person,
-                color: Constants.primaryColor,
-                size: 100,
-              ),
+            child: Icon(
+              Icons.person,
+              color: Constants.primaryColor,
+              size: 100,
             ),
             decoration: BoxDecoration(
               color: Colors.black,
@@ -88,7 +85,7 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
   Widget _appBar(double _height){
     return CustomAppBar(
       height: _height,
-      heroTag: 'renovacionIntegrante',
+      heroTag: 'logo',
       leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context)),
     );
   }

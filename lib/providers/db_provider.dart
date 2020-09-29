@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:app_grupal/models/solicitud_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -80,11 +81,11 @@ class DBProvider{
       ${Constants.idSolicitud} INTEGER PRIMARY KEY,
       ${Constants.idGrupo} INTEGER,
       ${Constants.nombreGrupo} TEXT,
-      ${Constants.importe} DOUBLE,
-      ${Constants.nombrePrimero} TEXT,
-      ${Constants.nombreSegundo} TEXT,
-      ${Constants.apellidoPrimero} TEXT,
-      ${Constants.apellidoSegundo} TEXT,
+      ${Constants.capital} DOUBLE,
+      ${Constants.nombre} TEXT,
+      ${Constants.segundoNombre} TEXT,
+      ${Constants.primerApellido} TEXT,
+      ${Constants.segundoApellido} TEXT,
       ${Constants.fechaNacimiento} INTEGER,
       ${Constants.curp} TEXT,
       ${Constants.rfc} TEXT,
@@ -103,7 +104,8 @@ class DBProvider{
       ${Constants.estado} TEXT,
       ${Constants.cp} INTEGER,
       ${Constants.pais} TEXT,
-      ${Constants.fechaCaptura} INTEGER
+      ${Constants.fechaCaptura} INTEGER,
+      ${Constants.contratoId} INTEGER
     )''';
     
     await db.execute(solicitudesSql);
@@ -142,6 +144,7 @@ class DBProvider{
     final sql = '''CREATE TABLE ${Constants.renovacionesTable}(
       ${Constants.idRenovacion} INTEGER PRIMARY KEY,
       ${Constants.idGrupo} INTEGER,
+      ${Constants.idSolicitud} INTEGER,
       ${Constants.nombreGrupo} TEXT,
       ${Constants.importe} DOUBLE,
       ${Constants.nombreCompleto} TEXT,
@@ -258,6 +261,26 @@ class DBProvider{
     final res = await db.query(Constants.gruposTable);
     List<Grupo> list = res.isNotEmpty ? res.map((e) => Grupo.fromjson(e)).toList() : [];
     return list;
+  }
+
+  //Repositorio Solicitudes Integrantes
+  Future<int> nuevaSolicitud(Solicitud solicitud)async{
+    final db = await database;
+    final res = await db.insert(Constants.solicitudesTable, solicitud.toJson());
+    return res;
+  }
+
+  Future<List<Solicitud>> getSolicitudesByContrato(int contratoId)async{
+    final db = await database;
+    final res = await db.query(Constants.solicitudesTable, where: '${Constants.contratoId} = ?', whereArgs: [contratoId]);
+    List<Solicitud> list = res.isNotEmpty ? res.map((e) => Solicitud.fromjson(e)).toList() : [];
+    return list;
+  }
+
+  Future<Solicitud> getSolicitudById(int id)async{
+    final db = await database;
+    final res = await db.query(Constants.solicitudesTable, where: '${Constants.idSolicitud} = ?', whereArgs: [id]);
+    return res.isNotEmpty ? Solicitud.fromjson(res.first) : null;
   }
 
   //Repositorio Renovaciones

@@ -5,6 +5,7 @@ import 'package:app_grupal/models/solicitud_model.dart';
 import 'package:app_grupal/pages/solicitud/datos_form.dart';
 import 'package:app_grupal/pages/solicitud/direccion_form.dart';
 import 'package:app_grupal/pages/solicitud/documentos_form.dart';
+import 'package:app_grupal/providers/db_provider.dart';
 import 'package:app_grupal/widgets/custom_dialog.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
 import 'package:app_grupal/widgets/custom_snack_bar.dart';
@@ -18,10 +19,12 @@ import 'package:app_grupal/components/body_content.dart';
 class SolicitudPage extends StatefulWidget {
   const SolicitudPage({
     Key key, 
-    this.params
+    this.params,
+    this.getNewIntegrante
   }) : super(key: key);
 
   final Map<String, dynamic> params;
+  final void Function(int) getNewIntegrante;
 
   @override
   _SolicitudPageState createState() => _SolicitudPageState();
@@ -34,6 +37,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
   final _customSnakBar = new CustomSnakBar();
   final _sharedActions = SharedActions();
   PageController _pageController;
+  String _userID;
   int _currentPage = 0;
   int intentoCurp = 0; //auxiliar para la validación de las palabras altisonantes
   List<Documento> _documentos = List();
@@ -60,6 +64,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
   void initState() {
     _paisCodController.text = "MX";
     _pageController = PageController();
+    _getUserID();
     _getSolicitudFromShared();
     super.initState();
   }
@@ -70,14 +75,18 @@ class _SolicitudPageState extends State<SolicitudPage> {
     super.dispose();
   }
 
+  _getUserID()async{
+    _userID = await _sharedActions.getUserId();
+  }
+
   _getSolicitudFromShared() async{
     Solicitud solicitud = await _sharedActions.getSolicitud();
-    if(solicitud.importe > 0){
-      _importeCapitalController.text = '${solicitud.importe.toStringAsFixed(0)}';
-      _nombreController.text = solicitud.nombrePrimero;
-      _sengundoNombreController.text = solicitud.nombreSegundo;
-      _primerApellidoController.text = solicitud.apellidoPrimero;
-      _segundoApellidoController.text = solicitud.apellidoSegundo;
+    if(solicitud.capital > 0){
+      _importeCapitalController.text = '${solicitud.capital.toStringAsFixed(0)}';
+      _nombreController.text = solicitud.nombre;
+      _sengundoNombreController.text = solicitud.segundoNombre;
+      _primerApellidoController.text = solicitud.primerApellido;
+      _segundoApellidoController.text = solicitud.segundoApellido;
       _fechaNacimientoController.text = solicitud.fechaNacimiento;
       _curpController.text = solicitud.curp;
       _rfcController.text = solicitud.rfc;
@@ -109,6 +118,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
   Widget _appBar(double _height){
     return CustomAppBar(
       height: _height,
+      heroTag: 'logo',
       leading: ShakeTransition(child: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context))),
     );
   }
@@ -261,11 +271,11 @@ class _SolicitudPageState extends State<SolicitudPage> {
 
   _saveSharedPreferences(int _currentPage){
     if(_currentPage == 0){
-      _solicitud.importe = double.parse(_importeCapitalController.text);
-      _solicitud.nombrePrimero = _nombreController.text;
-      _solicitud.nombreSegundo = _sengundoNombreController.text;
-      _solicitud.apellidoPrimero = _primerApellidoController.text;
-      _solicitud.apellidoSegundo = _segundoApellidoController.text;
+      _solicitud.capital = double.parse(_importeCapitalController.text);
+      _solicitud.nombre = _nombreController.text;
+      _solicitud.segundoNombre = _sengundoNombreController.text;
+      _solicitud.primerApellido = _primerApellidoController.text;
+      _solicitud.segundoApellido = _segundoApellidoController.text;
       _solicitud.fechaNacimiento = _fechaNacimientoController.text;
       _solicitud.curp = _curpController.text;
       _solicitud.rfc = _rfcController.text;
@@ -291,7 +301,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
         title: 'Crear Solicitud',
         icon: Icons.error_outline,
         textContent: 'Antes de crear la solicitud confirme que ha revisado que los DATOS DEL CLIENTE se han capturado correctamente.\n\n¿La información capturada es correcta?',
-        cancel: 'No, volver',
+        cancel: 'Revisar',
         cntinue: 'Si, crear solicitud',
         action: _crearSolicitud
       );
@@ -302,8 +312,21 @@ class _SolicitudPageState extends State<SolicitudPage> {
 
   _crearSolicitud() async{
     Navigator.pop(context);
-    _sharedActions.removeSolicitud();
-    _success('Solicitud creada con éxito');
+    _solicitud.contratoId = widget.params['contratoId'];
+    _solicitud.nombreGrupo = widget.params['nombreGrupo'];
+    _solicitud.status = 0;
+    _solicitud.tipoContrato = 2;
+    _solicitud.userID = _userID;
+    int id = await DBProvider.db.nuevaSolicitud(_solicitud);
+    if(id > 0){
+      widget.getNewIntegrante(id);
+      _success('Solicitud creada con éxito');
+      await Future.delayed(Duration(milliseconds: 2000));
+      Navigator.pop(context);
+      //_sharedActions.removeSolicitud();
+    }else{
+      _error('Error desconocido');
+    }
   }
 
   _fillDocumentos(List<Documento> documentosForm){

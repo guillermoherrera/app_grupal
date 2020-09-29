@@ -1,4 +1,5 @@
 import 'package:app_grupal/classes/shared_preferences.dart';
+import 'package:app_grupal/models/solicitud_model.dart';
 import 'package:app_grupal/providers/db_provider.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/custom_dialog.dart';
@@ -100,6 +101,45 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
       );  
       _renovacionIntegrantes.add(renovacion);
     });
+
+    await _getNewIntegrantes();
+  }
+
+  _getNewIntegrantes()async{
+    List<Solicitud> _nuevosIntegrantes = await DBProvider.db.getSolicitudesByContrato(widget.params['contrato']);
+    print(_nuevosIntegrantes);
+    _nuevosIntegrantes.forEach((e) {
+      _addNewToRenovacionIntegrantes(e);
+    });
+  }
+
+  _addNewToRenovacionIntegrantes(Solicitud solicitud){
+    Renovacion renovacion = Renovacion(
+      idSolicitud    : solicitud.idSolicitud,  
+      capital        : solicitud.capital,
+      cveCli         : '',
+      noCda          : 0,
+      diasAtraso     : 0,
+      importe        : 0,
+      nombreCompleto : '${solicitud.nombre} ${solicitud.segundoNombre} ${solicitud.primerApellido} ${solicitud.segundoApellido}',
+      nuevoCapital   : solicitud.capital,
+      presidente     : 0,
+      tesorero       : 0,
+      telefono       : solicitud.telefono,
+      status         : 0,
+      nombreGrupo    : widget.params['nombre'],
+      tipoContrato   : 2 
+    );  
+    _renovacionIntegrantes.add(renovacion);
+  }
+
+  _getNewIntegrante(int id)async{
+    Solicitud solicitud = await DBProvider.db.getSolicitudById(id);
+    _addNewToRenovacionIntegrantes(solicitud);
+    _capital += solicitud.capital;
+    _integrantesCant += 1;
+    _renovacionIntegranteCheck.add(true);
+    setState((){});
   }
 
   @override
@@ -153,6 +193,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   Widget _appBar(double _height){
     return CustomAppBar(
       height: _height,
+      heroTag: 'logo',
       actions: [
         _cargando ? Container(): 
         _renovadoCheck ? Container():
@@ -161,7 +202,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
             padding: EdgeInsets.symmetric(horizontal: 10.0), 
             child: IconButton(
               icon: Icon(Icons.add_circle_outline, size: 30.0),
-              onPressed: () => Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, {'nombreGrupo': widget.params['nombre']}))
+              onPressed: () => Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, {'nombreGrupo': widget.params['nombre'], 'contratoId': widget.params['contrato']}, getNewIntegrante: _getNewIntegrante))
             )
           )
         ),

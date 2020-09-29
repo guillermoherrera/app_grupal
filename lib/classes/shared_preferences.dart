@@ -53,11 +53,11 @@ class SharedActions{
   Future<void> saveSolicitud(Solicitud solicitud, int currentPage) async{
     await init();
     if(currentPage == 0){ 
-      preferences.setString('importe', '${solicitud.importe}');
-      preferences.setString('nombrePrimero', solicitud.nombrePrimero);
-      preferences.setString('nombreSegundo', solicitud.nombreSegundo);
-      preferences.setString('apellidoPrimero', solicitud.apellidoPrimero);
-      preferences.setString('apellidoSegundo', solicitud.apellidoSegundo);
+      preferences.setString('importe', '${solicitud.capital}');
+      preferences.setString('nombrePrimero', solicitud.nombre);
+      preferences.setString('nombreSegundo', solicitud.segundoNombre);
+      preferences.setString('apellidoPrimero', solicitud.primerApellido);
+      preferences.setString('apellidoSegundo', solicitud.segundoApellido);
       preferences.setString('fechaNacimiento', solicitud.fechaNacimiento);
       preferences.setString('curp', solicitud.curp);
       preferences.setString('rfc', solicitud.rfc);
@@ -77,11 +77,11 @@ class SharedActions{
     await init();
     Solicitud solicitud = new Solicitud();
     try{
-    solicitud.importe             = double.parse(preferences.getString('importe'));
-    solicitud.nombrePrimero       = preferences.getString('nombrePrimero');
-    solicitud.nombreSegundo       = preferences.getString('nombreSegundo');
-    solicitud.apellidoPrimero     = preferences.getString('apellidoPrimero');
-    solicitud.apellidoSegundo     = preferences.getString('apellidoSegundo');
+    solicitud.capital             = double.parse(preferences.getString('importe'));
+    solicitud.nombre       = preferences.getString('nombrePrimero');
+    solicitud.segundoNombre       = preferences.getString('nombreSegundo');
+    solicitud.primerApellido     = preferences.getString('apellidoPrimero');
+    solicitud.segundoApellido     = preferences.getString('apellidoSegundo');
     solicitud.fechaNacimiento     = preferences.getString('fechaNacimiento');
     solicitud.curp                = preferences.getString('curp');
     solicitud.rfc                 = preferences.getString('rfc');
@@ -95,7 +95,7 @@ class SharedActions{
     solicitud.pais                = preferences.getString('pais');
     }
     catch(e){
-      solicitud.importe = 0.0;
+      solicitud.capital = 0.0;
       print('### Error SharedActions getSolicitud ###');
     }
     return solicitud;
