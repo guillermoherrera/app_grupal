@@ -263,6 +263,13 @@ class DBProvider{
     return list;
   }
 
+  Future<List<Grupo>> getLastGrupos(String uid) async{
+    final db = await database;
+    final res = await db.query(Constants.gruposTable, where: '${Constants.userID} = ?', whereArgs: [uid], orderBy: '${Constants.idGrupo} DESC', limit: 15);
+    List<Grupo> list = res.isNotEmpty ? res.map((e) => Grupo.fromjson(e)).toList() : [];
+    return list;
+  }
+
   //Repositorio Solicitudes Integrantes
   Future<int> nuevaSolicitud(Solicitud solicitud)async{
     final db = await database;

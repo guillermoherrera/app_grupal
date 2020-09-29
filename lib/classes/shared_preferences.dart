@@ -21,7 +21,8 @@ class SharedActions{
     await init();
     return {
       'user': preferences.getString('user'),
-      'name': preferences.getString('name')
+      'name': preferences.getString('name'),
+      'uid' : preferences.getString('uid')
     };
   }
 
@@ -78,9 +79,9 @@ class SharedActions{
     Solicitud solicitud = new Solicitud();
     try{
     solicitud.capital             = double.parse(preferences.getString('importe'));
-    solicitud.nombre       = preferences.getString('nombrePrimero');
+    solicitud.nombre              = preferences.getString('nombrePrimero');
     solicitud.segundoNombre       = preferences.getString('nombreSegundo');
-    solicitud.primerApellido     = preferences.getString('apellidoPrimero');
+    solicitud.primerApellido      = preferences.getString('apellidoPrimero');
     solicitud.segundoApellido     = preferences.getString('apellidoSegundo');
     solicitud.fechaNacimiento     = preferences.getString('fechaNacimiento');
     solicitud.curp                = preferences.getString('curp');

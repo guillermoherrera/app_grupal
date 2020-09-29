@@ -1,7 +1,10 @@
 import 'package:app_grupal/components/encabezado.dart';
 import 'package:app_grupal/helpers/constants.dart';
+import 'package:app_grupal/models/grupos_model.dart';
+import 'package:app_grupal/pages/home/home_dashboard.dart';
 import 'package:app_grupal/pages/home/home_empty_page.dart';
 import 'package:app_grupal/pages/renovaciones/renovaciones.dart';
+import 'package:app_grupal/providers/db_provider.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -11,19 +14,24 @@ class HomeContent extends StatefulWidget {
   
   const HomeContent({
     Key key, 
-    this.scaffoldKey
+    this.scaffoldKey,
+    this.uid
   }) : super(key: key);
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final String uid;
 
   _HomeContentState createState() => _HomeContentState();
 }
 
 class _HomeContentState extends State<HomeContent> with SingleTickerProviderStateMixin {
   TabController _tabController;
+  List<Grupo> _ultimosq15Grupos = List();
+  List<Grupo> _gruposSinEnviar = List();
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
+    _getLastGrupos();
     super.initState();
   }
 
@@ -31,6 +39,12 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  _getLastGrupos()async{
+    _ultimosq15Grupos = await DBProvider.db.getLastGrupos(widget.uid);
+    _gruposSinEnviar = _ultimosq15Grupos.where((e) => e.status == 1).toList();
+    if(_ultimosq15Grupos.length > 0) setState((){});
   }
 
   @override
@@ -90,7 +104,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
     return TabBarView(
       physics: NeverScrollableScrollPhysics(),
       children: [
-        HomeEmptyPage(),
+        _ultimosq15Grupos.isEmpty ? HomeEmptyPage() : HomeDashboardPage(grupos: _ultimosq15Grupos),
         RenovacionesPage()
       ],
       controller: _tabController,
@@ -103,7 +117,10 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
       child: TabBarView(
         physics: NeverScrollableScrollPhysics(),
         children: [
-          Encabezado(icon: Icons.check_circle, encabezado: 'Bienvenido', subtitulo: 'Subtitulos'),
+          Encabezado(
+            icon: _gruposSinEnviar.isEmpty ? Icons.check_circle_outline : Icons.error_outline,
+            encabezado: _gruposSinEnviar.isEmpty ? 'Hola, bienvenido' : 'Hay Grupos pendientes', 
+            subtitulo: _gruposSinEnviar.isEmpty ? 'Selecciona una opción en el menu de la barra inferior' : 'Tienes ${_gruposSinEnviar.length} grupo(s) pendiente(s) de enviar a mesa de crédito'),
           Encabezado(icon: Icons.assignment, encabezado: 'Renovaciones', subtitulo: 'Grupos proximos a liquidar.'),
         ],
         controller: _tabController,

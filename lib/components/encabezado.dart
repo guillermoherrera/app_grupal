@@ -25,20 +25,24 @@ class Encabezado extends StatelessWidget {
         children: [
           Icon(icon, color: Colors.white ,size: 40.0),
           SizedBox(width: _width/16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                encabezado.toUpperCase(),
-                overflow: TextOverflow.ellipsis, 
-                style: Constants.encabezadoStyle
-              ),
-              Text(
-                subtitulo.toUpperCase(),
-                overflow: TextOverflow.ellipsis,
-                style: Constants.subtituloStyle
-              ),
-            ],
+          Container(
+            width: _width * 0.7,
+
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  encabezado.toUpperCase(),
+                  overflow: TextOverflow.ellipsis, 
+                  style: Constants.encabezadoStyle
+                ),
+                Text(
+                  subtitulo.toUpperCase(),
+                  //overflow: TextOverflow.ellipsis,
+                  style: Constants.subtituloStyle
+                ),
+              ],
+            ),
           )
         ],
       ),

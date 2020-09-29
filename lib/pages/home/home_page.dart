@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>{
   SharedActions _sharedActions = SharedActions();
-  Map<String, dynamic> userInfo = {'name': 'Asesor', 'user': 'Usuario'};
+  Map<String, dynamic> userInfo = {'name': 'Asesor', 'user': 'Usuario', 'uid': 'userID'};
 
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage>{
       key: _scaffoldKey,
       drawer: CustomDrawer(userInfo: userInfo),
       drawerEnableOpenDragGesture: false,
-      body: HomeContent(scaffoldKey: _scaffoldKey),
+      body: HomeContent(scaffoldKey: _scaffoldKey, uid: userInfo['uid']),
     );
   }
 }

@@ -372,7 +372,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
     //if(true){
       userID = await _sharedActions.getUserId();
       Grupo grupo = Grupo(
-        cantidadSolicitudes: _renovacionIntegrantes.length,
+        cantidadSolicitudes: _renovacionIntegranteCheck.where((d) => d ).length,//_renovacionIntegrantes.length,
         //idGrupo: widget.params['contrato'],
         importeGrupo: _capital,
         nombreGrupo: widget.params['nombre'],
