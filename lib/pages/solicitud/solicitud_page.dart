@@ -10,6 +10,7 @@ import 'package:app_grupal/widgets/custom_dialog.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
 import 'package:app_grupal/widgets/custom_snack_bar.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
+import 'package:date_format/date_format.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 
@@ -82,12 +83,13 @@ class _SolicitudPageState extends State<SolicitudPage> {
   _getSolicitudFromShared() async{
     Solicitud solicitud = await _sharedActions.getSolicitud();
     if(solicitud.capital > 0){
+      String fechaFromMS = formatDate(DateTime.fromMillisecondsSinceEpoch(solicitud.fechaNacimiento).toUtc(), [dd, '/', mm, '/', yyyy]);
       _importeCapitalController.text = '${solicitud.capital.toStringAsFixed(0)}';
       _nombreController.text = solicitud.nombre;
       _sengundoNombreController.text = solicitud.segundoNombre;
       _primerApellidoController.text = solicitud.primerApellido;
       _segundoApellidoController.text = solicitud.segundoApellido;
-      _fechaNacimientoController.text = solicitud.fechaNacimiento;
+      _fechaNacimientoController.text = fechaFromMS;
       _curpController.text = solicitud.curp;
       _rfcController.text = solicitud.rfc;
       _telefonoController.text = solicitud.telefono;
@@ -270,13 +272,16 @@ class _SolicitudPageState extends State<SolicitudPage> {
   }
 
   _saveSharedPreferences(int _currentPage){
+    
     if(_currentPage == 0){
+      String fechaString = _fechaNacimientoController.text;
+      int fechaToMS = DateTime.parse('${fechaString.substring(6,10)}-${fechaString.substring(3,5)}-${fechaString.substring(0,2)}').millisecondsSinceEpoch;
       _solicitud.capital = double.parse(_importeCapitalController.text);
       _solicitud.nombre = _nombreController.text;
       _solicitud.segundoNombre = _sengundoNombreController.text;
       _solicitud.primerApellido = _primerApellidoController.text;
       _solicitud.segundoApellido = _segundoApellidoController.text;
-      _solicitud.fechaNacimiento = _fechaNacimientoController.text;
+      _solicitud.fechaNacimiento = fechaToMS;
       _solicitud.curp = _curpController.text;
       _solicitud.rfc = _rfcController.text;
       _solicitud.telefono = _telefonoController.text;

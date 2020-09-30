@@ -116,7 +116,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   _addNewToRenovacionIntegrantes(Solicitud solicitud){
     Renovacion renovacion = Renovacion(
       idSolicitud    : solicitud.idSolicitud,  
-      capital        : solicitud.capital,
+      capital        : 0,
       cveCli         : '',
       noCda          : 0,
       diasAtraso     : 0,

@@ -8,7 +8,7 @@ class Solicitud{
   String segundoNombre;
   String primerApellido;
   String segundoApellido;
-  String fechaNacimiento;
+  int fechaNacimiento;
   String curp;
   String rfc;
   String telefono;
@@ -25,7 +25,7 @@ class Solicitud{
   String estado;
   int cp;
   String pais;
-  String fechaCaptura;
+  DateTime fechaCaptura;
   int contratoId;
 
   Solicitud({
