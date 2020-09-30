@@ -270,6 +270,25 @@ class DBProvider{
     return list;
   }
 
+  Future<List<Grupo>> getGruposPendientes(String uid)async{
+    final db = await database;
+    final res = await db.query(Constants.gruposTable, where: '${Constants.userID} = ? AND ${Constants.status} = ?', whereArgs: [uid, 1], orderBy: '${Constants.idGrupo} DESC', limit: 15);
+    List<Grupo> list = res.isNotEmpty ? res.map((e) => Grupo.fromjson(e)).toList() : [];
+    return list;
+  }
+
+  Future<int> updateGrupoStatus(int idGrupo, int status)async{
+    final db = await database;
+    final res = db.update(Constants.gruposTable, {'${Constants.status}': status});
+    return res;
+  }
+
+  Future<int> updateGrupoGrupoID(int idGrupo, String grupoID)async{
+    final db = await database;
+    final res = db.update(Constants.gruposTable, {'${Constants.grupoID}': grupoID});
+    return res;
+  }
+
   //Repositorio Solicitudes Integrantes
   Future<int> nuevaSolicitud(Solicitud solicitud)async{
     final db = await database;
@@ -284,10 +303,24 @@ class DBProvider{
     return list;
   }
 
+  Future<List<Solicitud>> getSolicitudesByGrupo(int idGrupo)async{
+    final db = await database;
+    final res = await db.query(Constants.solicitudesTable, where: '${Constants.idGrupo} = ?', whereArgs: [idGrupo]);
+    List<Solicitud> list = res.isNotEmpty ? res.map((e) => Solicitud.fromjson(e)).toList() : [];
+    return list;
+  }
+
   Future<Solicitud> getSolicitudById(int id)async{
     final db = await database;
     final res = await db.query(Constants.solicitudesTable, where: '${Constants.idSolicitud} = ?', whereArgs: [id]);
     return res.isNotEmpty ? Solicitud.fromjson(res.first) : null;
+  }
+
+  //Repositorio Docuementos Solicitudes
+  Future<int> nuevoDocumento(Documento documento)async{
+    final db = await database;
+    final res = await db.insert(Constants.documentoSolicitudesTable, documento.toJson());
+    return res;
   }
 
   //Repositorio Renovaciones
@@ -295,6 +328,14 @@ class DBProvider{
     final db = await database;
     final grupo = await db.query(Constants.gruposTable, where: '${Constants.contratoId} = ?', whereArgs: [contratoId]);
     final int idGrupo = grupo.isNotEmpty ? Grupo.fromjson(grupo.first).idGrupo : 0;
+    final res = await db.query(Constants.renovacionesTable, where: '${Constants.idGrupo} = ?', whereArgs: [idGrupo]);
+    
+    List<Renovacion> list = res.isNotEmpty ? res.map((e) => Renovacion.fromjson(e)).toList() : [];
+    return list;
+  }
+
+  Future<List<Renovacion>> getRenovacionesByGrupo(int idGrupo) async{
+    final db = await database;
     final res = await db.query(Constants.renovacionesTable, where: '${Constants.idGrupo} = ?', whereArgs: [idGrupo]);
     
     List<Renovacion> list = res.isNotEmpty ? res.map((e) => Renovacion.fromjson(e)).toList() : [];
@@ -314,6 +355,12 @@ class DBProvider{
         print('### Error DBprovider nuevasRenovaciones ### $e');
       }
     });
+    return res;
+  }
+
+  Future<int> updateRenovacionStatus(int idRenovacion, int status)async{
+    final db = await database;
+    final res = db.update(Constants.renovacionesTable, {'${Constants.status}': status});
     return res;
   }
 }

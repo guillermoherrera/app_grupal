@@ -16,4 +16,14 @@ class Documento{
     this.tipoDocumento,
     this.version,
   });
+
+  Map<String, dynamic> toJson() =>{
+    'cambioDoc'              : cambioDoc,
+    'documento'              : documento,
+    'idDocumentoSolicitudes' : idDocumentoSolicitudes,
+    'idSolicitud'            : idSolicitud,
+    'observacionCambio'      : observacionCambio,
+    'tipoDocumento'          : tipoDocumento,
+    'version'                : version,
+  };
 }

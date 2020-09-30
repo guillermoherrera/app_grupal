@@ -1,6 +1,7 @@
 import 'package:app_grupal/components/page_route_builder.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/list_tile_model.dart';
+import 'package:app_grupal/providers/firebase_provider.dart';
 import 'package:app_grupal/widgets/animator.dart';
 import 'package:app_grupal/widgets/custom_fade_transition.dart';
 import 'package:app_grupal/widgets/custom_list_tile.dart';
@@ -21,6 +22,7 @@ class HomeDashboardPage extends StatefulWidget {
 }
 
 class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKeepAliveClientMixin{
+  final _firebaseProvider = FirebaseProvider();
   GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
   final _customRoute = CustomRouteTransition();
   _getGrupos()async{
@@ -94,11 +96,14 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
                       Text('capturadas en este dispositivo'.toUpperCase(), style: Constants.mensajeCentral2),  
                     ]
                   ),
-                  Column(
-                    children: [
-                      Icon(Icons.group, color: Constants.primaryColor,),
-                      Text('${widget.grupos.length}', style: TextStyle(fontSize: 11.0, color: Constants.primaryColor))
-                    ],
+                  GestureDetector(
+                    onTap: ()=> _firebaseProvider.sendRenovacionesToFirebase(),
+                    child: Column(
+                      children: [
+                        Icon(Icons.send, color: Constants.primaryColor,),
+                        Text('Sincronizar'.toLowerCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor))
+                      ],
+                    ),
                   )
                 ],
               )

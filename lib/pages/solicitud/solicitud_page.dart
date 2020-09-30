@@ -317,9 +317,15 @@ class _SolicitudPageState extends State<SolicitudPage> {
     _solicitud.status = 0;
     _solicitud.tipoContrato = 2;
     _solicitud.userID = _userID;
-    int id = await DBProvider.db.nuevaSolicitud(_solicitud);
-    if(id > 0){
-      widget.getNewIntegrante(id);
+    await DBProvider.db.nuevaSolicitud(_solicitud).then((id){
+      _solicitud.idSolicitud = id;
+      _documentos.forEach((e)async{
+        await DBProvider.db.nuevoDocumento(e);
+      });
+    });    
+    //int id = await DBProvider.db.nuevaSolicitud(_solicitud);
+    if(_solicitud.idSolicitud != null && _solicitud.idSolicitud > 0){
+      widget.getNewIntegrante(_solicitud.idSolicitud);
       _success('Solicitud creada con éxito');
       await Future.delayed(Duration(milliseconds: 2000));
       Navigator.pop(context);

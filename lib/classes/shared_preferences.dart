@@ -1,5 +1,6 @@
 import 'package:app_grupal/models/solicitud_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_format/date_format.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedActions{
@@ -20,9 +21,10 @@ class SharedActions{
   Future<Map<String, dynamic>> getUserInfo() async{
     await init();
     return {
-      'user': preferences.getString('user'),
-      'name': preferences.getString('name'),
-      'uid' : preferences.getString('uid')
+      'user'    : preferences.getString('user'),
+      'name'    : preferences.getString('name'),
+      'uid'     : preferences.getString('uid'),
+      'sistema' : preferences.getInt('sistema')
     };
   }
 
@@ -120,6 +122,13 @@ class SharedActions{
     preferences.remove('estado');
     preferences.remove('cp');
     preferences.remove('pais');
+  }
+
+  Future<void> setSincRegistroInit()async{
+    await init();
+    
+    preferences.setBool('Sincronizando?', false);
+    preferences.setString('horaSincronizacion', formatDate(DateTime.now(), [dd, '/', mm, '/', yyyy, " ", HH, ':', nn, ':', ss]));
   }
 
   clear() async{
