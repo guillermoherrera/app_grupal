@@ -32,7 +32,7 @@ class _HomeEmptyPageState extends State<HomeEmptyPage> with AutomaticKeepAliveCl
             child:Text(
               Constants.homeText,
               textAlign: TextAlign.justify,
-              style: TextStyle(fontSize: 15),
+              style: Constants.mensajeCentral,
             )
           )
         ],

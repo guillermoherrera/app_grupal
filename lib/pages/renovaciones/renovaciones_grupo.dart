@@ -70,7 +70,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
     if(_renovacionIntegrantes.length == 0) await _getIntegrantesFromConfia();
     
     _renovacionIntegrantes.forEach((e) {
-      _capital += e.nuevoCapital;
+      _capital += e.capitalSolicitado;
       _renovacionIntegranteCheck.add(true);
     });
     _integrantesCant = _renovacionIntegrantes.length;
@@ -93,7 +93,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
         diasAtraso    : integrante.diaAtr,
         importe       : integrante.importeT,
         nombreCompleto: integrante.nombreCom,
-        nuevoCapital  : integrante.capital,
+        capitalSolicitado  : integrante.capital,
         presidente    : integrante.presidente ? 1 : 0,
         tesorero      : integrante.tesorero ? 1 : 0,
         telefono      : integrante.telefonoCel,
@@ -124,7 +124,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
       diasAtraso     : 0,
       importe        : 0,
       nombreCompleto : '${solicitud.nombre} ${solicitud.segundoNombre} ${solicitud.primerApellido} ${solicitud.segundoApellido}',
-      nuevoCapital   : solicitud.capital,
+      capitalSolicitado   : solicitud.capital,
       presidente     : 0,
       tesorero       : 0,
       telefono       : solicitud.telefono,
@@ -279,7 +279,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
           style: _renovacionIntegranteCheck[index] ? Constants.mensajeCentral : Constants.mensajeCentralNot, 
           overflow: TextOverflow.ellipsis
         ),
-        subtitle: '${integrante.tesorero == 1 ? 'tesorero\n' : integrante.presidente == 1 ? 'presidente\n' : ''}capital: ${integrante.nuevoCapital}'.toUpperCase(),
+        subtitle: '${integrante.tesorero == 1 ? 'tesorero\n' : integrante.presidente == 1 ? 'presidente\n' : ''}capital: ${integrante.capitalSolicitado}'.toUpperCase(),
         leading: Checkbox(
           value: _renovacionIntegranteCheck[index],
           onChanged: (bool val){
@@ -311,7 +311,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
                   'importeT'    : _renovacionIntegrantes[index].importe,
                   'diaAtr'      : _renovacionIntegrantes[index].diasAtraso,
                   'capital'     : _renovacionIntegrantes[index].capital,
-                  'nuevoCapital': _renovacionIntegrantes[index].nuevoCapital,
+                  'capitalSolicitado': _renovacionIntegrantes[index].capitalSolicitado,
                   'noCda'       : _renovacionIntegrantes[index].noCda,
                   'tesorero'    : _renovacionIntegrantes[index].tesorero,
                   'presidente'  : _renovacionIntegrantes[index].presidente,
@@ -332,14 +332,14 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   }
 
   _setMonto(int index, double monto){
-    _renovacionIntegrantes[index].nuevoCapital = monto;
+    _renovacionIntegrantes[index].capitalSolicitado = monto;
     _getTotal();
   }
 
   _getTotal(){
     _capital = 0;
     _renovacionIntegrantes.asMap().forEach((i,e){
-      if(_renovacionIntegranteCheck[i]) _capital += e.nuevoCapital;
+      if(_renovacionIntegranteCheck[i]) _capital += e.capitalSolicitado;
     });
   }
   

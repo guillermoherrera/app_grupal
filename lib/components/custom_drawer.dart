@@ -66,7 +66,7 @@ class CustomDrawer extends StatelessWidget {
       ),
       Center(
         child: Text(
-          '${userInfo['user']}'.toUpperCase(),
+          '${userInfo['user']} | ${userInfo['sistemaDesc']}'.toUpperCase(),
           style: Constants.subtituloStyle,
         )
       )

@@ -10,7 +10,7 @@ class AuthFirebase{
     print("#### signIn");
     try{
       UserCredential result = await firebaseAuth
-        .signInWithEmailAndPassword(email: user, password: pass)
+        .signInWithEmailAndPassword(email: '$user@confia.com', password: pass)
         .timeout(Duration(milliseconds: 10000));
       resp = AuthObject(email: result.user.email, uid: result.user.uid, result: true, mensaje: 'Sesión iniciada correctamente');
       print(resp);

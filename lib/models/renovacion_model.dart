@@ -14,7 +14,7 @@ class Renovacion{
   int status;
   String userID;
   int tipoContrato;
-  double nuevoCapital;
+  double capitalSolicitado;
   String telefono;
   int presidente;
   int tesorero;
@@ -35,7 +35,7 @@ class Renovacion{
     this.status,
     this.userID,
     this.tipoContrato,
-    this.nuevoCapital,
+    this.capitalSolicitado,
     this.telefono,
     this.presidente,
     this.tesorero,
@@ -57,7 +57,7 @@ class Renovacion{
     'status'         : status,
     'userID'         : userID,
     'tipoContrato'   : tipoContrato,
-    'nuevoCapital'   : nuevoCapital,
+    'capitalSolicitado'   : capitalSolicitado,
     'presidente'     : presidente,
     'tesorero'       : tesorero,
     'telefono'       : telefono
@@ -79,7 +79,7 @@ class Renovacion{
     this.status         = json['status'];
     this.userID         = json['userID'];
     this.tipoContrato   = json['tipoContrato'];
-    this.nuevoCapital   = json['nuevoCapital'];
+    this.capitalSolicitado   = json['capitalSolicitado'];
     this.presidente     = json['presidente'];
     this.tesorero       = json['tesorero'];
     this.telefono       = json['telefono'];

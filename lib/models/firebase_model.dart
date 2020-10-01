@@ -50,9 +50,9 @@ class FirebaseRenovacion{
   int noCda;
   String cveCli;
   String nombre;
-  double nuevoCapital;
-  double capitalHistorico; 
-  int diasAtraso;
+  double capitalSolicitado;
+  double historicoCapital; 
+  int historicodiasAtraso;
   //List<Map> beneficios;
   String grupoID;
   String grupoNombre;
@@ -62,15 +62,15 @@ class FirebaseRenovacion{
   DateTime fechaCaptura;
   int contratoId;
   int tipoContrato;
-  double importeHistorico;
+  double historicoImporte;
 
   FirebaseRenovacion({
     this.noCda,
     this.cveCli,
     this.nombre,
-    this.nuevoCapital,
-    this.capitalHistorico,
-    this.diasAtraso,
+    this.capitalSolicitado,
+    this.historicoCapital,
+    this.historicodiasAtraso,
     //this.beneficios,
     this.grupoID,
     this.grupoNombre,
@@ -80,16 +80,16 @@ class FirebaseRenovacion{
     this.fechaCaptura,
     this.contratoId,
     this.tipoContrato,
-    this.importeHistorico
+    this.historicoImporte
   });
 
   Map<String, dynamic> toJson()=>{
     'noCda'            : noCda,
     'cveCli'           : cveCli,
     'nombre'           : nombre,
-    'nuevoCapital'     : nuevoCapital,
-    'capitalHistorico' : capitalHistorico,
-    'diasAtraso'       : diasAtraso,
+    'capitalSolicitado': capitalSolicitado,
+    'historicoCapital' : historicoCapital,
+    'historicodiasAtraso'       : historicodiasAtraso,
     //'beneficios'       : beneficios,
     'grupoID'          : grupoID,
     'grupoNombre'      : grupoNombre,
@@ -99,7 +99,7 @@ class FirebaseRenovacion{
     'fechaCaptura'     : fechaCaptura,
     'contratoId'       : contratoId,
     'tipoContrato'     : tipoContrato,
-    'importeHistorico' : importeHistorico
+    'historicoImporte' : historicoImporte
   };
 
   FirebaseRenovacion getFirebaseRenovacion(Renovacion renovacion, String grupoID, int contratoId){
@@ -107,9 +107,9 @@ class FirebaseRenovacion{
       noCda: renovacion.noCda,
       cveCli: renovacion.cveCli,
       nombre: renovacion.nombreCompleto,
-      nuevoCapital: renovacion.nuevoCapital,
-      capitalHistorico: renovacion.capital,
-      diasAtraso: renovacion.diasAtraso,
+      capitalSolicitado: renovacion.capitalSolicitado,
+      historicoCapital: renovacion.capital,
+      historicodiasAtraso: renovacion.diasAtraso,
       grupoID: grupoID,
       grupoNombre: renovacion.nombreGrupo,
       ticket: renovacion.ticket,
@@ -118,7 +118,7 @@ class FirebaseRenovacion{
       fechaCaptura: DateTime.now(),
       contratoId: contratoId,
       tipoContrato: 2,
-      importeHistorico: renovacion.importe,
+      historicoImporte: renovacion.importe,
     );
   }
 }
@@ -126,7 +126,7 @@ class FirebaseRenovacion{
 class FirebaseSolicitud{
   Map persona;
   Map direccion;
-  double importeCapital;
+  double capitalSolicitado;
   DateTime fechaCaptura;
   int tipoContrato; 
   String userID;
@@ -141,7 +141,7 @@ class FirebaseSolicitud{
   FirebaseSolicitud({
     this.persona,
     this.direccion,
-    this.importeCapital,
+    this.capitalSolicitado,
     this.fechaCaptura,
     this.tipoContrato,
     this.userID,
@@ -156,7 +156,7 @@ class FirebaseSolicitud{
   Map<String, dynamic> toJson()=>{
     'persona'        : persona,
     'direccion'      : direccion,
-    'importeCapital' : importeCapital,
+    'capitalSolicitado' : capitalSolicitado,
     'fechaCaptura'   : fechaCaptura,
     'tipoContrato'   : tipoContrato,
     'userID'         : userID,
@@ -171,7 +171,7 @@ class FirebaseSolicitud{
     return new FirebaseSolicitud(
       persona: persona,
       direccion: direccion,
-      importeCapital: solicitud.capital,
+      capitalSolicitado: solicitud.capital,
       fechaCaptura: DateTime.fromMillisecondsSinceEpoch(solicitud.fechaNacimiento).toUtc(),
       tipoContrato: 2,
       userID: solicitud.userID,

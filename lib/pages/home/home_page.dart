@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>{
   SharedActions _sharedActions = SharedActions();
-  Map<String, dynamic> userInfo = {'name': 'Asesor', 'user': 'Usuario', 'uid': 'userID'};
+  Map<String, dynamic> userInfo = {'name': 'Asesor', 'user': 'Usuario', 'uid': 'userID', 'sistemaDesc': 'sistema'};
 
   @override
   void initState() {

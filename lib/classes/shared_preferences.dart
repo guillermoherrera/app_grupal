@@ -24,7 +24,8 @@ class SharedActions{
       'user'    : preferences.getString('user'),
       'name'    : preferences.getString('name'),
       'uid'     : preferences.getString('uid'),
-      'sistema' : preferences.getInt('sistema')
+      'sistema' : preferences.getInt('sistema'),
+      'sistemaDesc' : preferences.getString('sistemaDesc'),
     };
   }
 
