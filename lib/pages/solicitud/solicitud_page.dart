@@ -322,11 +322,13 @@ class _SolicitudPageState extends State<SolicitudPage> {
     _solicitud.status = 0;
     _solicitud.tipoContrato = 2;
     _solicitud.userID = _userID;
-    await DBProvider.db.nuevaSolicitud(_solicitud).then((id){
+    await DBProvider.db.nuevaSolicitud(_solicitud).then((id)async{
       _solicitud.idSolicitud = id;
-      _documentos.forEach((e)async{
-        await DBProvider.db.nuevoDocumento(e);
-      });
+      for(Documento e in _documentos){
+        e.idSolicitud = _solicitud.idSolicitud;
+        int id = await DBProvider.db.nuevoDocumento(e);
+        print(id);
+      }
     });    
     //int id = await DBProvider.db.nuevaSolicitud(_solicitud);
     if(_solicitud.idSolicitud != null && _solicitud.idSolicitud > 0){

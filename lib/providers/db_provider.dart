@@ -279,7 +279,7 @@ class DBProvider{
 
   Future<int> updateGrupoStatus(int idGrupo, int status)async{
     final db = await database;
-    final res = db.update(Constants.gruposTable, {'${Constants.status}': status});
+    final res = db.update(Constants.gruposTable, {'${Constants.status}': status}, where: '${Constants.idGrupo} = ?', whereArgs: [idGrupo]);
     return res;
   }
 
@@ -323,6 +323,14 @@ class DBProvider{
     return res;
   }
 
+  Future<List<Documento>> getDocumentosbySolicitud(int idSolicitud)async{
+    final db = await database;
+    final res = await db.query(Constants.documentoSolicitudesTable, where: '${Constants.idSolicitud} = ?', whereArgs: [idSolicitud]);
+    
+    List<Documento> list = res.isNotEmpty ? res.map((e) => Documento.fromjson(e)).toList() : [];
+    return list;
+  }
+
   //Repositorio Renovaciones
   Future<List<Renovacion>> getRenovacionesByContrato(int contratoId) async{
     final db = await database;
@@ -334,9 +342,9 @@ class DBProvider{
     return list;
   }
 
-  Future<List<Renovacion>> getRenovacionesByGrupo(int idGrupo) async{
+  Future<List<Renovacion>> getRenovacionesPendientesByGrupo(int idGrupo) async{
     final db = await database;
-    final res = await db.query(Constants.renovacionesTable, where: '${Constants.idGrupo} = ?', whereArgs: [idGrupo]);
+    final res = await db.query(Constants.renovacionesTable, where: '${Constants.idGrupo} = ? AND ${Constants.status} = 0', whereArgs: [idGrupo]);
     
     List<Renovacion> list = res.isNotEmpty ? res.map((e) => Renovacion.fromjson(e)).toList() : [];
     return list;
@@ -360,7 +368,7 @@ class DBProvider{
 
   Future<int> updateRenovacionStatus(int idRenovacion, int status)async{
     final db = await database;
-    final res = db.update(Constants.renovacionesTable, {'${Constants.status}': status});
+    final res = db.update(Constants.renovacionesTable, {'${Constants.status}': status}, where:'${Constants.idRenovacion} = ?', whereArgs: [idRenovacion]);
     return res;
   }
 }

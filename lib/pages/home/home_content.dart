@@ -104,7 +104,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
     return TabBarView(
       physics: NeverScrollableScrollPhysics(),
       children: [
-        _ultimosq15Grupos.isEmpty ? HomeEmptyPage() : HomeDashboardPage(grupos: _ultimosq15Grupos),
+        _ultimosq15Grupos.isEmpty ? HomeEmptyPage() : HomeDashboardPage(grupos: _ultimosq15Grupos, scaffoldKey: widget.scaffoldKey),
         RenovacionesPage()
       ],
       controller: _tabController,
@@ -120,7 +120,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
           Encabezado(
             icon: _gruposSinEnviar.isEmpty ? Icons.check_circle_outline : Icons.error_outline,
             encabezado: _gruposSinEnviar.isEmpty ? 'Hola, bienvenido' : 'Hay Grupos pendientes', 
-            subtitulo: _gruposSinEnviar.isEmpty ? 'Selecciona una opción en el menu de la barra inferior' : 'Tienes ${_gruposSinEnviar.length} grupo(s) pendiente(s) de enviar a mesa de crédito'),
+            subtitulo: _gruposSinEnviar.isEmpty ? 'Selecciona una opción en el menu de la barra inferior' : 'Tienes ${_gruposSinEnviar.length} grupo(s) pendiente(s) de enviar'),
           Encabezado(icon: Icons.assignment, encabezado: 'Renovaciones', subtitulo: 'Grupos proximos a liquidar.'),
         ],
         controller: _tabController,

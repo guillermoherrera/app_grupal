@@ -172,18 +172,24 @@ class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAlive
     
     if(pathFile != null){
       String titulo = _catDocumentos.singleWhere((archivo) => archivo.tipo == tipo).descDocumento;
-      return ContainerShadow(
-        child: Hero(
-          tag: "image"+tipo.toString(),
-          child: GestureDetector(
-            onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context)=> ImageDetail(tipo: tipo,image: File(pathFile), titulo: titulo))),
-            child: Image.file(File(pathFile))
-          ),
-        )
+      return Container(
+        width: 100.0,
+        child: ContainerShadow(
+          child: Hero(
+            tag: "image"+tipo.toString(),
+            child: GestureDetector(
+              onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context)=> ImageDetail(tipo: tipo,image: File(pathFile), titulo: titulo))),
+              child: Image.file(File(pathFile))
+            ),
+          )
+        ),
       );
     }else
-      return ContainerShadow(
-        child: Image.asset(Constants.notImage) 
+      return Container(
+        width: 100.0,
+        child: ContainerShadow(
+          child: Image.asset(Constants.notImage) 
+        ),
       );
       //return Container(
       //  color: Colors.grey[200],

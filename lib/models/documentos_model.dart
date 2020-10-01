@@ -26,4 +26,14 @@ class Documento{
     'tipoDocumento'          : tipoDocumento,
     'version'                : version,
   };
+
+  Documento.fromjson(Map<String, dynamic> json){
+    this.cambioDoc = json['cambioDoc'];
+    this.documento = json['documento'];
+    this.idDocumentoSolicitudes = json['idDocumentoSolicitudes'];
+    this.idSolicitud = json['idSolicitud'];
+    this.observacionCambio = json['observacionCambio'];
+    this.tipoDocumento = json['tipoDocumento'];
+    this.version = json['version'];
+  }
 }

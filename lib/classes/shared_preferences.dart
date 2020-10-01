@@ -61,7 +61,7 @@ class SharedActions{
       preferences.setString('nombreSegundo', solicitud.segundoNombre);
       preferences.setString('apellidoPrimero', solicitud.primerApellido);
       preferences.setString('apellidoSegundo', solicitud.segundoApellido);
-      preferences.setString('fechaNacimiento', solicitud.fechaNacimiento);
+      preferences.setInt('fechaNacimiento', solicitud.fechaNacimiento);
       preferences.setString('curp', solicitud.curp);
       preferences.setString('rfc', solicitud.rfc);
       preferences.setString('telefono', solicitud.telefono);
@@ -85,7 +85,7 @@ class SharedActions{
     solicitud.segundoNombre       = preferences.getString('nombreSegundo');
     solicitud.primerApellido      = preferences.getString('apellidoPrimero');
     solicitud.segundoApellido     = preferences.getString('apellidoSegundo');
-    solicitud.fechaNacimiento     = preferences.getString('fechaNacimiento');
+    solicitud.fechaNacimiento     = preferences.getInt('fechaNacimiento');
     solicitud.curp                = preferences.getString('curp');
     solicitud.rfc                 = preferences.getString('rfc');
     solicitud.telefono            = preferences.getString('telefono');

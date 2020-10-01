@@ -5,6 +5,7 @@ import 'package:app_grupal/providers/firebase_provider.dart';
 import 'package:app_grupal/widgets/animator.dart';
 import 'package:app_grupal/widgets/custom_fade_transition.dart';
 import 'package:app_grupal/widgets/custom_list_tile.dart';
+import 'package:app_grupal/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:app_grupal/models/grupos_model.dart';
 
@@ -12,10 +13,12 @@ class HomeDashboardPage extends StatefulWidget {
   
   const HomeDashboardPage({
     Key key, 
-    this.grupos
+    this.grupos,
+    this.scaffoldKey
   }) : super(key: key);
   
   final List<Grupo> grupos;
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
   _HomeDashboardPageState createState() => _HomeDashboardPageState();
@@ -25,6 +28,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
   final _firebaseProvider = FirebaseProvider();
   GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
   final _customRoute = CustomRouteTransition();
+  final _customSnakBar = new CustomSnakBar();
   _getGrupos()async{
   }
 
@@ -53,7 +57,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
     widget.grupos.forEach((grupo) {
       final listTile = ListTileModel(
         title: Text(grupo.nombreGrupo, style: Constants.mensajeCentral, overflow: TextOverflow.ellipsis),
-        subtitle: '     Capital Total: ${grupo.importeGrupo} | Integrantes: ${grupo.cantidadSolicitudes}\n     ${grupo.contratoId != null ? "contrato historial: ${grupo.contratoId}" : 'Grupo nuevo'}'.toUpperCase(),
+        subtitle: 'Capital Total: ${grupo.importeGrupo} | Integrantes: ${grupo.cantidadSolicitudes}\n${grupo.contratoId != null ? "contrato historial: ${grupo.contratoId}" : 'Grupo nuevo'}'.toUpperCase(),
         leading: Icon(Icons.group),
         trailing: Column(
           children: [
@@ -97,10 +101,10 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
                     ]
                   ),
                   GestureDetector(
-                    onTap: ()=> _firebaseProvider.sendRenovacionesToFirebase(),
+                    onTap: ()=>_firebaseProvider.sendRenovacionesToFirebase(),
                     child: Column(
                       children: [
-                        Icon(Icons.send, color: Constants.primaryColor,),
+                        Icon(Icons.sync, color: Constants.primaryColor,),
                         Text('Sincronizar'.toLowerCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor))
                       ],
                     ),
