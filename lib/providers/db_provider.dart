@@ -177,14 +177,15 @@ class DBProvider{
   Future<void> insertaCatDocumentos(List<CatDocumento> catDocumentos)async{
     final db = await database;
     List<int> res = List();
-    catDocumentos.forEach((e) async{
+    for(CatDocumento e in catDocumentos){
+    //catDocumentos.forEach((e) async{
       try{
         final id = await db.insert(Constants.catDocumentosTable,  e.toJson());
         res.add(id);
       }catch(e){
         print('### Error DBprovider insertaDocumentos ### $e');
       }
-    });
+    }
     return res;
   }
 
@@ -205,14 +206,15 @@ class DBProvider{
   Future<void> insertaCatEstados(List<CatEstado> catEstados)async{
     final db = await database;
     List<int> res = List();
-    catEstados.forEach((e) async{
+    for(CatEstado e in catEstados){
+    //catEstados.forEach((e) async{
       try{
         final id = await db.insert(Constants.catEstadosTable,  e.toJson());
         res.add(id);
       }catch(e){
         print('### Error DBprovider insertaCatEstados ### $e');
       }
-    });
+    }
     return res;
   }
 
@@ -353,16 +355,19 @@ class DBProvider{
   Future<void> nuevasRenovaciones(List<Renovacion> renovaciones, List<bool> renovacionesCheck)async{
     final db = await database;
     List<int> res = List();
-    renovaciones.asMap().forEach((i,r)async{
+    int i = 0;
+    for(Renovacion r in renovaciones){
+    //renovaciones.asMap().forEach((i,r)async{
       try{
         if(renovacionesCheck[i]){
           final id = await db.insert(Constants.renovacionesTable,  r.toJson());
           res.add(id);
         }
       }catch(e){
-        print('### Error DBprovider nuevasRenovaciones ### $e');
+        print('### Error DBprovider nuevasRenovaciones ### ${r.nombreCompleto} $e');
       }
-    });
+      i++;
+    }
     return res;
   }
 

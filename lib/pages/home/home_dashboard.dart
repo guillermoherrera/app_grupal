@@ -1,6 +1,7 @@
 import 'package:app_grupal/components/page_route_builder.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/list_tile_model.dart';
+import 'package:app_grupal/providers/db_provider.dart';
 import 'package:app_grupal/providers/firebase_provider.dart';
 import 'package:app_grupal/widgets/animator.dart';
 import 'package:app_grupal/widgets/custom_fade_transition.dart';
@@ -14,11 +15,13 @@ class HomeDashboardPage extends StatefulWidget {
   const HomeDashboardPage({
     Key key, 
     this.grupos,
-    this.scaffoldKey
+    this.scaffoldKey,
+    this.getLastGrupos
   }) : super(key: key);
   
   final List<Grupo> grupos;
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final VoidCallback getLastGrupos;
 
   @override
   _HomeDashboardPageState createState() => _HomeDashboardPageState();
@@ -29,7 +32,12 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
   GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
   final _customRoute = CustomRouteTransition();
   final _customSnakBar = new CustomSnakBar();
+  //List<Grupo> __ultimosq15Grupos = List();
+  
   _getGrupos()async{
+    await Future.delayed(Duration(milliseconds: 1000));
+    widget.getLastGrupos();
+    setState((){});
   }
 
   @override
@@ -53,6 +61,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
   }
 
   Widget _lista(){
+    //final List<Grupo> gruposDash = __ultimosq15Grupos.isEmpty ? widget.grupos : __ultimosq15Grupos;
     List<ListTileModel> listTiles = List();
     widget.grupos.forEach((grupo) {
       final listTile = ListTileModel(
@@ -61,8 +70,8 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
         leading: Icon(Icons.group),
         trailing: Column(
           children: [
-            Text('Status'),
-            Text('${grupo.status == 1 ? 'Pendiente' : 'Enviado'}', textAlign: TextAlign.center, style: TextStyle(color: grupo.status == 1 ? Colors.yellow[700] : grupo.status == 2 ? Constants.primaryColor : Colors.black),)
+            Text('Status'.toUpperCase()),
+            Text('${grupo.status == 1 ? 'Pendiente' : 'Enviado'}'.toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: grupo.status == 1 ? Colors.yellow[700] : grupo.status == 2 ? Constants.primaryColor : Colors.black),)
           ],
         )//Text('Status\n ${grupo.status == 1 ? 'Pendinte' : 'Enviado'}', textAlign: TextAlign.center,)
       );
@@ -93,7 +102,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.phone_iphone, size: 12.0,),
+                          Icon(Icons.phone_iphone, size: 12.0, color: Colors.blue),
                           Text('Últimas Solicitudes'.toUpperCase(), style: Constants.mensajeCentral),
                         ],
                       ),
@@ -101,7 +110,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
                     ]
                   ),
                   GestureDetector(
-                    onTap: ()=>_firebaseProvider.sendRenovacionesToFirebase(),
+                    onTap: ()=>_firebaseProvider.sendRenovacionesToFirebase(widget.getLastGrupos),
                     child: Column(
                       children: [
                         Icon(Icons.sync, color: Constants.primaryColor,),
@@ -119,7 +128,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
               context: context,
               removeTop: true,
               child: ListView.builder(
-                physics: BouncingScrollPhysics(),
+                physics: widget.grupos.length > 5 ? BouncingScrollPhysics() : null,
                 itemCount: widget.grupos.length + 1,
                 itemBuilder: (context, index){
                   if(index == widget.grupos.length)

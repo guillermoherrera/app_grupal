@@ -23,10 +23,12 @@ class RenovacionesGrupoPage extends StatefulWidget {
 
   const RenovacionesGrupoPage({
     Key key, 
-    @required this.params
+    @required this.params,
+    this.getLastGrupos
   }) : super(key: key);
 
   final Map<String, dynamic> params;
+  final VoidCallback getLastGrupos;
 
   @override
   _RenovacionesGrupoPageState createState() => _RenovacionesGrupoPageState();
@@ -390,6 +392,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
           _success('Solicitud de Renovacón Realizada con éxito');
           _buscarInformacion();
           setState((){_renovadoCheck = true;});
+          widget.getLastGrupos();
         });
         //CAMPOS FALTANTES DE ASIGNAR beneficio, ticket
       }catch(e){

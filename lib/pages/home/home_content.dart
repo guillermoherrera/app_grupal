@@ -6,6 +6,7 @@ import 'package:app_grupal/pages/home/home_empty_page.dart';
 import 'package:app_grupal/pages/renovaciones/renovaciones.dart';
 import 'package:app_grupal/providers/db_provider.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
+import 'package:app_grupal/widgets/custom_center_loading.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_grupal/components/body_content.dart';
@@ -24,9 +25,11 @@ class HomeContent extends StatefulWidget {
 }
 
 class _HomeContentState extends State<HomeContent> with SingleTickerProviderStateMixin {
+  GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
   TabController _tabController;
   List<Grupo> _ultimosq15Grupos = List();
   List<Grupo> _gruposSinEnviar = List();
+  bool cargando = true;
 
   @override
   void initState() {
@@ -42,9 +45,11 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
   }
 
   _getLastGrupos()async{
+    await Future.delayed(Duration(milliseconds: 1000));
     _ultimosq15Grupos = await DBProvider.db.getLastGrupos(widget.uid);
     _gruposSinEnviar = _ultimosq15Grupos.where((e) => e.status == 1).toList();
-    if(_ultimosq15Grupos.length > 0) setState((){});
+    if(this.mounted) setState((){cargando = false;});
+    //if(_ultimosq15Grupos.length > 0) setState((){});
   }
 
   @override
@@ -104,10 +109,19 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
     return TabBarView(
       physics: NeverScrollableScrollPhysics(),
       children: [
-        _ultimosq15Grupos.isEmpty ? HomeEmptyPage() : HomeDashboardPage(grupos: _ultimosq15Grupos, scaffoldKey: widget.scaffoldKey),
-        RenovacionesPage()
+        cargando ? CustomCenterLoading(texto: 'Iniciando App') : 
+          _ultimosq15Grupos.isEmpty ? _emptyPage() : HomeDashboardPage(grupos: _ultimosq15Grupos, scaffoldKey: widget.scaffoldKey, getLastGrupos: ()=>_getLastGrupos()),
+        RenovacionesPage(getLastGrupos: ()=>_getLastGrupos())
       ],
       controller: _tabController,
+    );
+  }
+
+  Widget _emptyPage(){
+    return RefreshIndicator(
+      key: _refreshKey,
+      onRefresh: () =>_getLastGrupos(),
+      child: HomeEmptyPage()
     );
   }
 
@@ -118,9 +132,9 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
         physics: NeverScrollableScrollPhysics(),
         children: [
           Encabezado(
-            icon: _gruposSinEnviar.isEmpty ? Icons.check_circle_outline : Icons.error_outline,
-            encabezado: _gruposSinEnviar.isEmpty ? 'Hola, bienvenido' : 'Hay Grupos pendientes', 
-            subtitulo: _gruposSinEnviar.isEmpty ? 'Selecciona una opción en el menu de la barra inferior' : 'Tienes ${_gruposSinEnviar.length} grupo(s) pendiente(s) de enviar'),
+            icon: cargando ? Icons.watch_later : _gruposSinEnviar.isEmpty ? Icons.check_circle_outline : Icons.error_outline,
+            encabezado: cargando ? 'Iniciando App' : _gruposSinEnviar.isEmpty ? 'Créditos Grupales' : 'Hay Grupos pendientes', 
+            subtitulo: cargando ? 'Cargando información' : _gruposSinEnviar.isEmpty ? 'Sin solicitudes por enviar' : 'Tienes ${_gruposSinEnviar.length} grupo(s) pendiente(s) de enviar'),
           Encabezado(icon: Icons.assignment, encabezado: 'Renovaciones', subtitulo: 'Grupos proximos a liquidar.'),
         ],
         controller: _tabController,

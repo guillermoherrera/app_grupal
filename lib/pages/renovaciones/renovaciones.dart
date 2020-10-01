@@ -16,6 +16,12 @@ import 'package:app_grupal/providers/asesores_provider.dart';
 import 'package:app_grupal/widgets/custom_center_loading.dart';
 
 class RenovacionesPage extends StatefulWidget {
+
+  const RenovacionesPage({
+    Key key, 
+    this.getLastGrupos}) : super(key: key);
+  final VoidCallback getLastGrupos;
+
   @override
   _RenovacionesPageState createState() => _RenovacionesPageState();
 }
@@ -144,7 +150,7 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
                     GestureDetector(
                       onTap: (){
                         final json = {'nombre': contratos[index].nombreGeneral, 'contrato': contratos[index].contratoId, 'status': contratos[index].status};
-                        Navigator.push(context, _customRoute.crearRutaSlide(Constants.renovacionGrupoPage, json));
+                        Navigator.push(context, _customRoute.crearRutaSlide(Constants.renovacionGrupoPage, json, getLastGrupos: widget.getLastGrupos));
                       },
                       child: CustomListTile(
                         title: listTiles[index].title,

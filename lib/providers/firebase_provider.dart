@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app_grupal/providers/db_provider.dart';
 import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:mime_type/mime_type.dart';
 
 class FirebaseProvider{
@@ -75,7 +76,7 @@ class FirebaseProvider{
     }
   }
 
-  sendRenovacionesToFirebase() async{
+  sendRenovacionesToFirebase(VoidCallback getLastGrupos) async{
     if(!(await _utilerias.checkInternet()))
       return null;
     //validar Sincronizando
@@ -83,16 +84,17 @@ class FirebaseProvider{
     _sharedActions.setSincRegistroInit();
 
     List<Grupo> gruposPendientes = await DBProvider.db.getGruposPendientes(userInfo['uid']);
-    gruposPendientes.forEach((e)async{
+    for(Grupo e in gruposPendientes){
+    //gruposPendientes.forEach((e)async{
       _sendRenovacionGrupo(e, userInfo['sistema']).then((grupoID)async{
         
-        await DBProvider.db.getRenovacionesPendientesByGrupo(e.idGrupo).then((listaSolicitudes)async{
-          await _sendRenovacionIntegrantesGrupo(listaSolicitudes, grupoID, e.contratoId, userInfo['sistema']);
+        DBProvider.db.getRenovacionesPendientesByGrupo(e.idGrupo).then((listaSolicitudes)async{
+          await _sendRenovacionIntegrantesGrupo(listaSolicitudes, grupoID, e.contratoId, userInfo['sistema'], getLastGrupos);
         }).catchError((e)=>print('### Error getRenovacionesByGrupo ###'));
 
       }).catchError((e)=>print('### Error _sendRenovacionGrupo ###'));
       
-    });
+    }
   }
 
   Future<String> _sendRenovacionGrupo(Grupo renovacionGrupo, int sistema)async{
@@ -108,7 +110,7 @@ class FirebaseProvider{
     }
   }
 
-  _sendRenovacionIntegrantesGrupo(List<Renovacion> solicitudesRenovacion, String grupoID, int contratoId, int sistema)async{
+  _sendRenovacionIntegrantesGrupo(List<Renovacion> solicitudesRenovacion, String grupoID, int contratoId, int sistema, VoidCallback getLastGrupos)async{
     int solicitudesSubidas = 0;
     for(Renovacion e in solicitudesRenovacion){
     //solicitudesRenovacion.forEach((e)async{
@@ -132,7 +134,10 @@ class FirebaseProvider{
         await DBProvider.db.updateRenovacionStatus(e.idRenovacion, 1);
       }
     }
-    if(solicitudesSubidas == solicitudesRenovacion.length) await DBProvider.db.updateGrupoStatus(solicitudesRenovacion[0].idGrupo, 2);
+    if(solicitudesSubidas == solicitudesRenovacion.length){
+      await DBProvider.db.updateGrupoStatus(solicitudesRenovacion[0].idGrupo, 2);
+      getLastGrupos();
+    }
   }
 
   Future<FirebaseSolicitud> _buildFirebaseSolicitud(Solicitud solicitud, String grupoID)async{
