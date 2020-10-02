@@ -157,7 +157,7 @@ class DBProvider{
       ${Constants.status} INT,
       ${Constants.userID} TEXT,
       ${Constants.tipoContrato} INT,
-      ${Constants.nuevoCapital} DOUBLE,
+      ${Constants.capitalSolicitado} DOUBLE,
       ${Constants.telefono} TEXT,
       ${Constants.presidente} INTEGER,
       ${Constants.tesorero} INTEGER

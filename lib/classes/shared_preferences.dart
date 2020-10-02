@@ -127,9 +127,16 @@ class SharedActions{
 
   Future<void> setSincRegistroInit()async{
     await init();
-    
     preferences.setBool('Sincronizando?', false);
     preferences.setString('horaSincronizacion', formatDate(DateTime.now(), [dd, '/', mm, '/', yyyy, " ", HH, ':', nn, ':', ss]));
+  }
+
+  Future<Map<String, dynamic>> getSincRegistroInfo() async{
+    await init();
+    return {
+      'Sincronizando?'        : preferences.getBool('Sincronizando?'),
+      'horaSincronizacion'    : preferences.getString('horaSincronizacion'),
+    };
   }
 
   clear() async{

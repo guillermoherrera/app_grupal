@@ -28,10 +28,12 @@ class HomeDashboardPage extends StatefulWidget {
 }
 
 class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKeepAliveClientMixin{
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _firebaseProvider = FirebaseProvider();
   GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
   final _customRoute = CustomRouteTransition();
   final _customSnakBar = new CustomSnakBar();
+  bool sincronizando = false;
   //List<Grupo> __ultimosq15Grupos = List();
   
   _getGrupos()async{
@@ -44,6 +46,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      key: _scaffoldKey,
       body: _bodyContent(), 
     );
   }
@@ -110,11 +113,11 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
                     ]
                   ),
                   GestureDetector(
-                    onTap: ()=>_firebaseProvider.sendRenovacionesToFirebase(widget.getLastGrupos),
+                    onTap: ()=>_sincronizar(),
                     child: Column(
                       children: [
-                        Icon(Icons.sync, color: Constants.primaryColor,),
-                        Text('Sincronizar'.toLowerCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor))
+                        Icon(Icons.sync, color: sincronizando ? Colors.grey : Constants.primaryColor,),
+                        Text('Sincronizar'.toLowerCase(), style: TextStyle(fontSize: 11.0, color: sincronizando ? Colors.grey : Constants.primaryColor))
                       ],
                     ),
                   )
@@ -154,6 +157,42 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
           //Expanded(child: CustomAnimatedList(lista: listTiles)),
         ],
       ),
+    );
+  }
+
+  _sincronizar()async{
+    if(!sincronizando){
+      setState((){sincronizando = !sincronizando;});
+      _infoSnackbar('Sincronizando, por favor espere');
+      try{
+        if(!(await _firebaseProvider.sincronizar(widget.getLastGrupos)))
+          _error('Error desconocido, revisa tu conexión o vuelve a iniciar sesión.');
+      }catch(e){
+        _error('Error desconocido, revisa tu conexión o vuelve a iniciar sesión.');
+      }
+      await Future.delayed(Duration(milliseconds: 1000));
+      _scaffoldKey.currentState.hideCurrentSnackBar();
+      setState((){sincronizando = !sincronizando;});
+    }
+  }
+
+  _infoSnackbar(String msj){
+    _customSnakBar.showSnackBarSuccess(
+      msj, 
+      Duration(milliseconds: 20000), 
+      Colors.blueAccent, 
+      Icons.watch_later, 
+      _scaffoldKey
+    );
+  }
+
+  _error(String error){
+    _customSnakBar.showSnackBar(
+      error,
+      Duration(milliseconds: 5000),
+      Colors.pink,
+      Icons.error_outline,
+      widget.scaffoldKey
     );
   }
 

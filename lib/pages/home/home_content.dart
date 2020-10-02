@@ -99,7 +99,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
       ),
       Tab(
         icon: Icon(Icons.cached),
-        text: 'RENOVACIÓNES',
+        text: 'RENOVACIONES',
         iconMargin: EdgeInsets.all(0),
       )
     ];

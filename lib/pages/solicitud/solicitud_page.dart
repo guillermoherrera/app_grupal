@@ -316,7 +316,6 @@ class _SolicitudPageState extends State<SolicitudPage> {
   }
 
   _crearSolicitud() async{
-    Navigator.pop(context);
     _solicitud.contratoId = widget.params['contratoId'];
     _solicitud.nombreGrupo = widget.params['nombreGrupo'];
     _solicitud.status = 0;
@@ -330,12 +329,13 @@ class _SolicitudPageState extends State<SolicitudPage> {
         print(id);
       }
     });    
+    Navigator.pop(context);//cierra el popUp
     //int id = await DBProvider.db.nuevaSolicitud(_solicitud);
     if(_solicitud.idSolicitud != null && _solicitud.idSolicitud > 0){
       widget.getNewIntegrante(_solicitud.idSolicitud);
       _success('Solicitud creada con éxito');
       await Future.delayed(Duration(milliseconds: 2000));
-      Navigator.pop(context);
+      Navigator.pop(context);//cierra el formulairio
       //_sharedActions.removeSolicitud();
     }else{
       _error('Error desconocido');

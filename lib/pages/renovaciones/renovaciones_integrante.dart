@@ -145,7 +145,7 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
               borderRadius: BorderRadius.all(Radius.circular(10.0))
             ),
             padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0), 
-            child: Text('\$ ${widget.params['nuevoCapital']}', style: Constants.mensajeMonto)),
+            child: Text('\$ ${widget.params['capitalSolicitado']}', style: Constants.mensajeMonto)),
           ShakeTransition(
             child: CustomRaisedButton(
               elevation: 8.0,
@@ -269,7 +269,7 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
     if(formKey.currentState.validate()){
       Navigator.pop(context);
       widget.setMonto(widget.params['index'], double.parse(importeCapital.text));
-      setState(() {widget.params['nuevoCapital'] = importeCapital.text;});
+      setState(() {widget.params['capitalSolicitado'] = importeCapital.text;});
     }
   }
 }

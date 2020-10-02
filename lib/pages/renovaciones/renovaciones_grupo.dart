@@ -3,6 +3,7 @@ import 'package:app_grupal/models/solicitud_model.dart';
 import 'package:app_grupal/providers/db_provider.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/custom_dialog.dart';
+import 'package:app_grupal/widgets/custom_fade_transition.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
 import 'package:app_grupal/widgets/custom_snack_bar.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
@@ -264,7 +265,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
     return Container(
       color: Colors.white,
       child: Stack(children: [
-        EmptyImage(text: 'Sin resultados'),
+        CustomFadeTransition(child: EmptyImage(text: 'Sin resultados'), duration: Duration(milliseconds: 2000),),
         ListView()
       ]),
     );

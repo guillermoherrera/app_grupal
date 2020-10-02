@@ -40,17 +40,17 @@ class Constants{
 
   static String errorAuth(error){
     if(error.contains("invalid-email")){
-      return "El formato del correo no es correcto.";
+      return "El formato del usuario no es correcto.";
     }else if(error.contains("Given String is empty or null")){
-      return "Es necesario llenar los campos de correo y contraseña para iniciar sesión.";
+      return "Es necesario llenar los campos de usuario y contraseña para iniciar sesión.";
     }else if(error.contains("ERROR_TOO_MANY_REQUESTS")){
       return "ATENCIÓN: Has intentado iniciar sesión demasiadas veces, intentalo de nuevo mas tarde o ponte en contacto con soporte.";
     }else if(error.contains("An internal error has occurred. [ 7: ]")){
-      return "Error interno, revisa tu conexión a internet.";
+      return "Error desconocido, revisa tu conexión a internet.";
     }else if(error.contains("TimeoutException")){
-      return "Error interno, revisa tu conexión a internet.";
-    }else if(error.contains("ERROR_NETWORK")){
-      return "Error interno, revisa tu conexión a internet.";
+      return "Error desconocido, revisa tu conexión a internet.";
+    }else if(error.contains("ERROR_NETWORK") || error.contains("network")){
+      return "Error desconocido, revisa tu conexión a internet.";
     }else{
       return "Correo y/o contraseña incorrectos.";
     }
@@ -123,7 +123,7 @@ class Constants{
   static const diasAtraso = "diasAtraso";
   static const beneficio = "beneficio";
   static const ticket = "ticket";
-  static const nuevoCapital = "nuevoCapital";
+  static const capitalSolicitado = "capitalSolicitado";
   static const status = 'status';
   static const userID = 'userID';
 }

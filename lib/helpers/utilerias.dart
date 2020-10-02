@@ -5,7 +5,7 @@ import 'dart:io';
 class Utilerias{
 
   Future<bool> checkInternet()async{
-    final result = await InternetAddress.lookup('google.com');
+    final result = await InternetAddress.lookup('google.com').timeout(Duration(milliseconds: 10000));
     if(!result.isNotEmpty || !result[0].rawAddress.isNotEmpty)
       return false;
     return true;

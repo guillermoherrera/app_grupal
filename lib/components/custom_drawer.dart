@@ -114,7 +114,7 @@ class CustomDrawer extends StatelessWidget {
         ),
         TableRow(
           children: [
-            ShakeTransition(child: _creaBoton(Constants.primaryColor, Icons.info, 'Acerca de ...', ()=>_actions(context, 2))),
+            ShakeTransition(child: _creaBoton(Constants.primaryColor, Icons.info, 'Información', ()=>_actions(context, 2))),
             ShakeTransition(child: _creaBoton(Constants.primaryColor, Icons.exit_to_app, 'Cerrar Sesión', ()=>_actions(context, 3)))
           ]
         )

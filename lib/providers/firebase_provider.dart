@@ -28,7 +28,7 @@ class FirebaseProvider{
     try{
       String userID = await _sharedActions.getUserId();
       _query = _firestore.collection("UsuariosTipos").where('uid', isEqualTo: userID);
-      _querySnapshot = await _query.get();
+      _querySnapshot = await _query.get().timeout(_timeOutDutaion);
       if(_querySnapshot.docs.length > 0 ){
         await _sharedActions.saveUserInfo(_querySnapshot.docs[0]);
       }else{
@@ -40,14 +40,14 @@ class FirebaseProvider{
     }
   }
   
-  Future<void> getCatalogos() async{
+  Future<bool> getCatalogos() async{
     try{
 
       //catDocumentos
       List<CatDocumento> catDocumentos = List();
       await DBProvider.db.deleteCatDocumentos();
       _query = _firestore.collection("catDocumentos").where('activo', isEqualTo: true);
-      _querySnapshot = await _query.get();
+      _querySnapshot = await _query.get().timeout(_timeOutDutaion);
       for (DocumentSnapshot value in _querySnapshot.docs) {
         final catDocumento = CatDocumento(tipo: value.data()['tipo'], descDocumento: value.data()['descDocumento'] );
         catDocumentos.add(catDocumento);
@@ -58,7 +58,7 @@ class FirebaseProvider{
       List<CatEstado> catEstados = List();
       await DBProvider.db.deleteCatEstados();
       _query = _firestore.collection("catEstados");
-      _querySnapshot = await _query.get();
+      _querySnapshot = await _query.get().timeout(_timeOutDutaion);
       for (DocumentSnapshot value in _querySnapshot.docs) {
         final catEstado = CatEstado(codigo: value.data()['codigo'], estado: value.data()['estado'] );
         catEstados.add(catEstado);
@@ -68,33 +68,49 @@ class FirebaseProvider{
       //catIntegramtes
       await DBProvider.db.deleteCatIntegrantes();
       _query = _firestore.collection("catIntegrantesGrupo");
-      _querySnapshot = await _query.get();
+      _querySnapshot = await _query.get().timeout(_timeOutDutaion);
       DBProvider.db.insertaCatIntegrantes(_querySnapshot.docs[0].data()['cantidad']);
-
+      return true;
     }catch(e){
       print('### Error FirebaseProvider getCatalogos ### $e');
+      return false;
     }
   }
 
-  sendRenovacionesToFirebase(VoidCallback getLastGrupos) async{
+  Future<bool>sincronizar(VoidCallback getLastGrupos)async{
+    bool conexionStatus;
+    _sharedActions.setSincRegistroInit();
     if(!(await _utilerias.checkInternet()))
-      return null;
+      return false;
+    conexionStatus = await getCatalogos();
+    conexionStatus = conexionStatus ? await _sendRenovacionesToFirebase(getLastGrupos) : conexionStatus;
+
+    return conexionStatus;
+  }
+
+  Future<bool> _sendRenovacionesToFirebase(VoidCallback getLastGrupos) async{
     //validar Sincronizando
     Map<String, dynamic> userInfo = await _sharedActions.getUserInfo();
-    _sharedActions.setSincRegistroInit();
 
     List<Grupo> gruposPendientes = await DBProvider.db.getGruposPendientes(userInfo['uid']);
     for(Grupo e in gruposPendientes){
     //gruposPendientes.forEach((e)async{
-      _sendRenovacionGrupo(e, userInfo['sistema']).then((grupoID)async{
+      await _sendRenovacionGrupo(e, userInfo['sistema']).then((grupoID)async{
         
-        DBProvider.db.getRenovacionesPendientesByGrupo(e.idGrupo).then((listaSolicitudes)async{
+        await DBProvider.db.getRenovacionesPendientesByGrupo(e.idGrupo).then((listaSolicitudes)async{
           await _sendRenovacionIntegrantesGrupo(listaSolicitudes, grupoID, e.contratoId, userInfo['sistema'], getLastGrupos);
-        }).catchError((e)=>print('### Error getRenovacionesByGrupo ###'));
+        }).catchError((e){
+          print('### Error getRenovacionesByGrupo ###');
+          return false;
+        });
 
-      }).catchError((e)=>print('### Error _sendRenovacionGrupo ###'));
+      }).catchError((e){
+        print('### Error _sendRenovacionGrupo ###');
+        return false;
+      });
       
     }
+    return true;
   }
 
   Future<String> _sendRenovacionGrupo(Grupo renovacionGrupo, int sistema)async{
@@ -102,7 +118,7 @@ class FirebaseProvider{
     if(firebaseGrupo.grupoID == null){
       Map objFirebaseGrupo = firebaseGrupo.toJson();
       objFirebaseGrupo.putIfAbsent('sistema', ()=> sistema);
-      var result = await _firestore.collection("GruposRenovacion").add(objFirebaseGrupo);
+      var result = await _firestore.collection("GruposRenovacion").add(objFirebaseGrupo).timeout(_timeOutDutaion);
       await DBProvider.db.updateGrupoGrupoID(renovacionGrupo.idGrupo, result.id);
       return result.id;
     }else{
@@ -128,7 +144,7 @@ class FirebaseProvider{
         print(firebaseRenovacion);
         //if(firebaseRenovacion.contratoId == null) objFirebaseRenovacion.putIfAbsent('contratoId', ()=> contratoId);
         objFirebaseRenovacion.putIfAbsent('sistema', ()=> sistema);
-        var result = await _firestore.collection("Renovaciones").add(objFirebaseRenovacion);
+        var result = await _firestore.collection("Renovaciones").add(objFirebaseRenovacion).timeout(_timeOutDutaion);
         print(result);
         solicitudesSubidas += 1;
         await DBProvider.db.updateRenovacionStatus(e.idRenovacion, 1);
