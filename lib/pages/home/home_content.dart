@@ -1,3 +1,4 @@
+import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/components/encabezado.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/grupos_model.dart';
@@ -15,20 +16,20 @@ class HomeContent extends StatefulWidget {
   
   const HomeContent({
     Key key, 
-    this.scaffoldKey,
-    this.uid
+    this.scaffoldKey
   }) : super(key: key);
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final String uid;
 
   _HomeContentState createState() => _HomeContentState();
 }
 
 class _HomeContentState extends State<HomeContent> with SingleTickerProviderStateMixin {
+  SharedActions _sharedActions = SharedActions();
   GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
   TabController _tabController;
   List<Grupo> _ultimosq15Grupos = List();
   List<Grupo> _gruposSinEnviar = List();
+  String uid;
   bool cargando = true;
 
   @override
@@ -46,7 +47,8 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
 
   _getLastGrupos()async{
     await Future.delayed(Duration(milliseconds: 1000));
-    _ultimosq15Grupos = await DBProvider.db.getLastGrupos(widget.uid);
+    uid = await _sharedActions.getUserId();
+    _ultimosq15Grupos = await DBProvider.db.getLastGrupos(uid);
     _gruposSinEnviar = _ultimosq15Grupos.where((e) => e.status == 1).toList();
     if(this.mounted) setState((){cargando = false;});
     //if(_ultimosq15Grupos.length > 0) setState((){});

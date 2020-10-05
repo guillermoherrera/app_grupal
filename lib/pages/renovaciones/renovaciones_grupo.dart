@@ -50,6 +50,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   bool _renovadoCheck = true;
   String userID;
   int _validaIntegrantesCant = 100;
+  bool _showIcon = true;
 
   @override
   void initState(){
@@ -210,8 +211,16 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
           )
         ),
       ],
-      leading: _cargando ? Container():
-        ShakeTransition(child: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context))),
+      leading: !_showIcon ? Container() : _cargando ? Container():
+        ShakeTransition(
+          child: IconButton(
+            icon: Icon(Icons.arrow_back_ios), 
+            onPressed: ()async{
+              setState(() {_showIcon = false;});
+              Navigator.pop(context);
+            }
+          )
+        ),
     );
   }
 

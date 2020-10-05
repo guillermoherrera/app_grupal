@@ -1,3 +1,4 @@
+import 'package:app_grupal/widgets/custom_fade_transition.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
@@ -6,15 +7,29 @@ import 'package:app_grupal/widgets/shake_transition.dart';
 import 'package:app_grupal/classes/auth_firebase.dart';
 import 'package:app_grupal/classes/shared_preferences.dart';
 
-class CustomDrawer extends StatelessWidget {
+class CustomDrawer extends StatefulWidget {
+  @override
+  _CustomDrawerState createState() => _CustomDrawerState();
+}
 
-  const CustomDrawer({
-    Key key, 
-    this.userInfo
-  }) : super(key: key);
-
-  final Map<String, dynamic> userInfo;
+class _CustomDrawerState extends State<CustomDrawer> {
+  SharedActions _sharedActions = SharedActions();
+  Map<String, dynamic> userInfo = {};
+  Map<String, dynamic> sincRegistroInfo = {};
   
+  @override
+  void initState() {
+    _getDrawerInfo();
+    super.initState();
+  }
+
+  _getDrawerInfo()async{
+    //await Future.delayed(Duration(milliseconds: 1000));
+    userInfo = await _sharedActions.getUserInfo();
+    sincRegistroInfo = await _sharedActions.getSincRegistroInfo();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
@@ -58,17 +73,21 @@ class CustomDrawer extends StatelessWidget {
         ),
       ),
       SizedBox(height: height / 40),
-      Center(
-        child: Text(
-          '${userInfo['name']}'.toUpperCase(),
-          style: Constants.encabezadoStyle,
-        )
+      userInfo['name'] == null ? Container() : CustomFadeTransition(
+        child: Center(
+          child: Text(
+            '${userInfo['name']}'.toUpperCase(),
+            style: Constants.encabezadoStyle,
+          )
+        ),
       ),
-      Center(
-        child: Text(
-          '${userInfo['user']} | ${userInfo['sistemaDesc']}'.toUpperCase(),
-          style: Constants.subtituloStyle,
-        )
+      userInfo['name'] == null ? Container() : CustomFadeTransition(
+        child: Center(
+          child: Text(
+            '${userInfo['user']} | ${userInfo['sistemaDesc']}'.toUpperCase(),
+            style: Constants.subtituloStyle,
+          )
+        ),
       )
     ];
         
@@ -169,12 +188,14 @@ class CustomDrawer extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 10.0),
       width: double.infinity,
       color: Colors.white.withOpacity(0.8),
-      child: Text(
-        "Ultima Sincronización: ".toUpperCase(),
-        style: TextStyle(
-          color: Colors.black38,
-          fontWeight: FontWeight.bold
-        )
+      child: sincRegistroInfo['horaSincronizacion'] == null ? Container() : CustomFadeTransition(
+        child: Text(
+          "Ultima Sincronización: ${sincRegistroInfo['horaSincronizacion']}".toUpperCase(),
+          style: TextStyle(
+            color: Colors.black38,
+            fontWeight: FontWeight.bold
+          )
+        ),
       )
     );
   }
@@ -199,5 +220,4 @@ class CustomDrawer extends StatelessWidget {
         Navigator.pop(context);
     }
   }
-
 }

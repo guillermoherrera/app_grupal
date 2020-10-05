@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:app_grupal/components/page_route_builder.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/list_tile_model.dart';
@@ -7,6 +8,7 @@ import 'package:app_grupal/widgets/animator.dart';
 import 'package:app_grupal/widgets/custom_fade_transition.dart';
 import 'package:app_grupal/widgets/custom_list_tile.dart';
 import 'package:app_grupal/widgets/custom_snack_bar.dart';
+import 'package:app_grupal/widgets/shake_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:app_grupal/models/grupos_model.dart';
 
@@ -36,6 +38,24 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
   bool sincronizando = false;
   //List<Grupo> __ultimosq15Grupos = List();
   
+  @override
+  void initState() {
+    _sincAutomatica();
+    super.initState();
+  }
+
+  _sincAutomatica()async{
+    final syncTime =  Duration(milliseconds: 600000);
+    new Timer.periodic(syncTime, (Timer t)async{
+      if(this.mounted){
+        _sincronizar();
+        print("Sincronización Programada Realizada: "+DateTime.now().toString());
+      }else{
+        t.cancel();
+      }
+    });
+  }
+
   _getGrupos()async{
     await Future.delayed(Duration(milliseconds: 1000));
     widget.getLastGrupos();
@@ -73,8 +93,8 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
         leading: Icon(Icons.group),
         trailing: Column(
           children: [
-            Text('Status'.toUpperCase()),
-            Text('${grupo.status == 1 ? 'Pendiente' : 'Enviado'}'.toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: grupo.status == 1 ? Colors.yellow[700] : grupo.status == 2 ? Constants.primaryColor : Colors.black),)
+            Text('Status'.toUpperCase(), style: Constants.mensajeCentral2),
+            Text('${grupo.status == 1 ? 'Pendiente' : 'Enviado'}'.toUpperCase(), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: grupo.status == 1 ? Colors.yellow[700] : grupo.status == 2 ? Constants.primaryColor : Colors.black),)
           ],
         )//Text('Status\n ${grupo.status == 1 ? 'Pendinte' : 'Enviado'}', textAlign: TextAlign.center,)
       );
@@ -87,7 +107,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
         children: [
           CustomFadeTransition(
             child: Container(
-              padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
+              padding: EdgeInsets.only(left: 20.0, right: 5.0, top: 20.0),
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -112,15 +132,39 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
                       Text('capturadas en este dispositivo'.toUpperCase(), style: Constants.mensajeCentral2),  
                     ]
                   ),
-                  GestureDetector(
-                    onTap: ()=>_sincronizar(),
-                    child: Column(
-                      children: [
-                        Icon(Icons.sync, color: sincronizando ? Colors.grey : Constants.primaryColor,),
-                        Text('Sincronizar'.toLowerCase(), style: TextStyle(fontSize: 11.0, color: sincronizando ? Colors.grey : Constants.primaryColor))
-                      ],
-                    ),
+                  Column(
+                    children: [
+                      ShakeTransition(
+                        axis: Axis.vertical,
+                        duration: Duration(milliseconds: 2000),
+                        child: RaisedButton(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(sincronizando ? Icons.watch_later : Icons.sync, color: sincronizando ? Colors.grey : Constants.primaryColor,),
+                              Text('Sincronizar'.toUpperCase(), style: TextStyle(fontSize: 6.0, fontWeight: FontWeight.bold, color: sincronizando ? Colors.grey : Constants.primaryColor))
+                            ],
+                          ),
+                          padding: EdgeInsets.all(10.0),
+                          color: Colors.white,
+                          elevation: 8.0,
+                          shape: CircleBorder(),
+                          onPressed: ()=>_sincronizar()
+                        ),
+                      ),
+                    ],
                   )
+                  //ClipOval(
+                  //  child: GestureDetector(
+                  //    onTap: ()=>_sincronizar(),
+                  //    child: Column(
+                  //      children: [
+                  //        Icon(Icons.sync, color: sincronizando ? Colors.grey : Constants.primaryColor,),
+                  //        Text('Sincronizar'.toLowerCase(), style: TextStyle(fontSize: 11.0, color: sincronizando ? Colors.grey : Constants.primaryColor))
+                  //      ],
+                  //    ),
+                  //  ),
+                  //)
                 ],
               )
             ),
@@ -180,7 +224,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
     _customSnakBar.showSnackBarSuccess(
       msj, 
       Duration(milliseconds: 20000), 
-      Colors.blueAccent, 
+      Colors.blueAccent.withOpacity(0.8), 
       Icons.watch_later, 
       _scaffoldKey
     );

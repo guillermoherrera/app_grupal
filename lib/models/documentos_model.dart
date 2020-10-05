@@ -27,6 +27,16 @@ class Documento{
     'version'                : version,
   };
 
+  Map<String, dynamic> toFirebaseJson() =>{
+    'cambioDoc'              : cambioDoc,
+    'documento'              : documento,
+    //'idDocumentoSolicitudes' : idDocumentoSolicitudes,
+    //'idSolicitud'            : idSolicitud,
+    'observacionCambio'      : observacionCambio,
+    'tipoDocumento'          : tipoDocumento,
+    'version'                : version,
+  };
+
   Documento.fromjson(Map<String, dynamic> json){
     this.cambioDoc = json['cambioDoc'];
     this.documento = json['documento'];

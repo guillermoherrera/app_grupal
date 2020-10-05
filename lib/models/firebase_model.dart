@@ -175,7 +175,7 @@ class FirebaseSolicitud{
       fechaCaptura: DateTime.fromMillisecondsSinceEpoch(solicitud.fechaNacimiento).toUtc(),
       tipoContrato: 2,
       userID: solicitud.userID,
-      documentos: documentos.map((e) => e.toJson()).toList(),
+      documentos: documentos.map((e) => e.toFirebaseJson()).toList(),
       status: 1,
       grupoNombre: solicitud.nombreGrupo, 
       grupoID: grupoID

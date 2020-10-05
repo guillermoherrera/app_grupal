@@ -167,6 +167,7 @@ class _DireccionFormState extends State<DireccionForm> with AutomaticKeepAliveCl
                 value: f.codigo
               )).toList(),
               onChanged: MediaQuery.of(context).viewInsets.bottom == 0 ? (estadoSel){
+                FocusScope.of(context).requestFocus(FocusNode());
                 setState(() {
                   widget.estadoCodController.text = estadoSel;
                   estadoSelected = estadoSel;

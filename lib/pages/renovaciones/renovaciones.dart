@@ -172,9 +172,15 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
 
   Widget _floatingButton(){
     return FloatingActionButton(
-      //backgroundColor: Constants.primaryColor,
+      backgroundColor: Colors.white,
       onPressed: ()async => await _displayPicker(context),
-      child: Icon(Icons.date_range),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.date_range, color: Constants.primaryColor,),
+          Text('Consulta'.toUpperCase(), style: TextStyle(fontSize: 6.0, fontWeight: FontWeight.bold, color: Constants.primaryColor))
+        ],
+      ),
     );
   }
 

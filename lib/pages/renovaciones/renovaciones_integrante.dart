@@ -27,6 +27,7 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
   final formKey = new GlobalKey<FormState>();
   final importeCapital = TextEditingController();
   final _customRoute = CustomRouteTransition();
+  bool _showIcon = true;
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +87,16 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
     return CustomAppBar(
       height: _height,
       heroTag: 'logo',
-      leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context)),
+      leading: !_showIcon ? Container() :
+        ShakeTransition(
+          child: IconButton(
+            icon: Icon(Icons.arrow_back_ios), 
+            onPressed: ()async{
+              setState(() {_showIcon = false;});
+              Navigator.pop(context);
+            }
+          )
+        ),
     );
   }
 
