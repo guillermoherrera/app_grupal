@@ -52,13 +52,14 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
     return Container(
       padding: EdgeInsets.symmetric(vertical: _height / 32),
       width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: FractionalOffset(1.0, 0.0),
-          end: FractionalOffset(0.01, 0.0),
-          colors: [Color.fromRGBO(118, 189, 33, 1.0), Color.fromRGBO(98, 169, 13, 1.0)]
-        )
-      ),
+      color: Constants.primaryColor,
+      //decoration: BoxDecoration(
+      //  gradient: LinearGradient(
+      //    begin: FractionalOffset(1.0, 0.0),
+      //    end: FractionalOffset(0.01, 0.0),
+      //    colors: [Color.fromRGBO(118, 189, 33, 1.0), Color.fromRGBO(98, 169, 13, 1.0)]
+      //  )
+      //),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -90,7 +91,7 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
       leading: !_showIcon ? Container() :
         ShakeTransition(
           child: IconButton(
-            icon: Icon(Icons.arrow_back_ios), 
+            icon: Icon(Icons.arrow_back_ios, size: 40,), 
             onPressed: ()async{
               setState(() {_showIcon = false;});
               Navigator.pop(context);

@@ -77,6 +77,24 @@ class FirebaseProvider{
     }
   }
 
+  Future<List<Renovacion>> getGrupoRenovacion(int contratoId)async{
+    List<Renovacion> list = List();
+    try{
+      _query = _firestore.collection('Renovaciones').where('contratoId', isEqualTo: contratoId);
+      _querySnapshot = await _query.get().timeout(_timeOutDutaion);
+      for (DocumentSnapshot value in _querySnapshot.docs) {
+        final renovacion = Renovacion(
+          nombreCompleto: value.data()['nombre'] != null ? value.data()['nombre'] : '${value.data()['persona']['nombre']} ${value.data()['persona']['apellido']}' ,
+          capitalSolicitado: value.data()['capitalSolicitado']
+        );
+        list.add(renovacion);
+      }
+      return list;
+    }catch(e){
+      return [];
+    }
+  }
+
   Future<bool>sincronizar(VoidCallback getLastGrupos)async{
     bool conexionStatus;
     _sharedActions.setSincRegistroInit();

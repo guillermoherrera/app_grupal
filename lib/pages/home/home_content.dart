@@ -81,9 +81,9 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
       heroTag: 'logo',
       actions: [
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.0),
+          padding: EdgeInsets.symmetric(horizontal: 20.0),
           child: IconButton(
-            icon: Icon(Icons.account_circle, size: 30.0),
+            icon: Icon(Icons.account_circle, size: 40.0),
             onPressed: () => widget.scaffoldKey.currentState.openDrawer()
           ),
         )

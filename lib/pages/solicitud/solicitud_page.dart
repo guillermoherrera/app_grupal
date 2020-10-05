@@ -121,7 +121,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
     return CustomAppBar(
       height: _height,
       heroTag: 'logo',
-      leading: ShakeTransition(child: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=>Navigator.pop(context))),
+      leading: ShakeTransition(child: IconButton(icon: Icon(Icons.arrow_back_ios, size: 40.0,), onPressed: ()=>Navigator.pop(context))),
     );
   }
 

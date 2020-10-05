@@ -93,14 +93,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
         
     return Container(
       height: height / 2.5,
-      //color: Constants.primaryColor.withOpacity(0.8),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: FractionalOffset(1.0, 0.0),
-          end: FractionalOffset(0.01, 0.0),
-          colors: [Color.fromRGBO(118, 189, 33, 1.0).withOpacity(0.8), Color.fromRGBO(98, 169, 13, 1.0).withOpacity(0.8)]
-        )
-      ),
+      color: Constants.primaryColor.withOpacity(0.8),
+      //decoration: BoxDecoration(
+      //  gradient: LinearGradient(
+      //    begin: FractionalOffset(1.0, 0.0),
+      //    end: FractionalOffset(0.01, 0.0),
+      //    colors: [Color.fromRGBO(118, 189, 33, 1.0).withOpacity(0.8), Color.fromRGBO(98, 169, 13, 1.0).withOpacity(0.8)]
+      //  )
+      //),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,

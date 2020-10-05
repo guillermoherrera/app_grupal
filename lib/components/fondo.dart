@@ -1,3 +1,4 @@
+import 'package:app_grupal/helpers/constants.dart';
 import 'package:flutter/material.dart';
 
 class Fondo extends StatelessWidget {
@@ -11,7 +12,8 @@ class Fondo extends StatelessWidget {
         gradient: LinearGradient(
           begin: FractionalOffset(1.0, 0.0),
           end: FractionalOffset(0.01, 0.0),
-          colors: [Color.fromRGBO(118, 189, 33, 1.0), Color.fromRGBO(98, 169, 13, 1.0)]
+          //colors: [Color.fromRGBO(118, 189, 33, 1.0), Color.fromRGBO(98, 169, 13, 1.0)]
+          colors: [Constants.primaryColor, Constants.primaryColor]
         )
       ),
     )

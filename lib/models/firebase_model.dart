@@ -219,7 +219,7 @@ class FirebasePersona{
     return new FirebasePersona(
       nombre: solicitud.nombre,
       segundoNombre: solicitud.segundoNombre,
-      apellido: solicitud.segundoNombre,
+      apellido: solicitud.primerApellido,
       segundoApellido: solicitud.segundoApellido,
       curp: solicitud.curp,
       fechaNacimiento: DateTime.fromMillisecondsSinceEpoch(solicitud.fechaNacimiento).toUtc(),

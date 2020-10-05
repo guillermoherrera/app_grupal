@@ -1,6 +1,7 @@
 import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/models/solicitud_model.dart';
 import 'package:app_grupal/providers/db_provider.dart';
+import 'package:app_grupal/providers/firebase_provider.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/custom_dialog.dart';
 import 'package:app_grupal/widgets/custom_fade_transition.dart';
@@ -39,6 +40,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   final _asesoresProvider = AsesoresProvider();
   final _customRoute = CustomRouteTransition();
   final _sharedActions = SharedActions();
+  final _firebaseProvider = FirebaseProvider();
   final _customSnakBar = new CustomSnakBar();
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<Integrante> _integrantes = List();
@@ -68,7 +70,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
 
     _validaIntegrantesCant = await DBProvider.db.getCatIntegrantesCant();
     await _geIntegrantesFromSqlite();
-    //getIntegrantes from firebase
+    if(_renovacionIntegrantes.length == 0) await _getIntegrantesFromFirebase();
     if(_renovacionIntegrantes.length == 0) await _getIntegrantesFromConfia();
     
     _renovacionIntegrantes.forEach((e) {
@@ -82,6 +84,10 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
 
   _geIntegrantesFromSqlite() async{
     _renovacionIntegrantes = await DBProvider.db.getRenovacionesByContrato(widget.params['contrato']);
+  }
+
+  _getIntegrantesFromFirebase()async{
+    _renovacionIntegrantes = await _firebaseProvider.getGrupoRenovacion(widget.params['contrato']);
   }
 
   _getIntegrantesFromConfia() async{
@@ -203,9 +209,9 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
         _renovadoCheck ? Container():
         ShakeTransition(child: 
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.0), 
+            padding: EdgeInsets.symmetric(horizontal: 20.0), 
             child: IconButton(
-              icon: Icon(Icons.add_circle_outline, size: 30.0),
+              icon: Icon(Icons.add_circle_outline, size: 40.0),
               onPressed: () => Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, {'nombreGrupo': widget.params['nombre'], 'contratoId': widget.params['contrato']}, getNewIntegrante: _getNewIntegrante))
             )
           )
@@ -214,7 +220,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
       leading: !_showIcon ? Container() : _cargando ? Container():
         ShakeTransition(
           child: IconButton(
-            icon: Icon(Icons.arrow_back_ios), 
+            icon: Icon(Icons.arrow_back_ios, size: 40.0), 
             onPressed: ()async{
               setState(() {_showIcon = false;});
               Navigator.pop(context);
