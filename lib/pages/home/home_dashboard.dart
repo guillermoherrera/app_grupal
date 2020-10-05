@@ -18,12 +18,14 @@ class HomeDashboardPage extends StatefulWidget {
     Key key, 
     this.grupos,
     this.scaffoldKey,
-    this.getLastGrupos
+    this.getLastGrupos,
+    this.sincroniza
   }) : super(key: key);
   
   final List<Grupo> grupos;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final VoidCallback getLastGrupos;
+  final Future<bool> Function() sincroniza;
 
   @override
   _HomeDashboardPageState createState() => _HomeDashboardPageState();
@@ -209,7 +211,8 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
       setState((){sincronizando = !sincronizando;});
       _infoSnackbar('Sincronizando, por favor espere');
       try{
-        if(!(await _firebaseProvider.sincronizar(widget.getLastGrupos)))
+        //if(!(await _firebaseProvider.sincronizar(widget.getLastGrupos)))
+        if(!(await widget.sincroniza()))
           _error('Error desconocido, revisa tu conexión o vuelve a iniciar sesión.');
       }catch(e){
         _error('Error desconocido, revisa tu conexión o vuelve a iniciar sesión.');

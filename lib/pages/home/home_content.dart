@@ -6,6 +6,7 @@ import 'package:app_grupal/pages/home/home_dashboard.dart';
 import 'package:app_grupal/pages/home/home_empty_page.dart';
 import 'package:app_grupal/pages/renovaciones/renovaciones.dart';
 import 'package:app_grupal/providers/db_provider.dart';
+import 'package:app_grupal/providers/firebase_provider.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/custom_center_loading.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class HomeContent extends StatefulWidget {
 
 class _HomeContentState extends State<HomeContent> with SingleTickerProviderStateMixin {
   SharedActions _sharedActions = SharedActions();
+  final _firebaseProvider = FirebaseProvider();
   GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
   TabController _tabController;
   List<Grupo> _ultimosq15Grupos = List();
@@ -52,6 +54,10 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
     _gruposSinEnviar = _ultimosq15Grupos.where((e) => e.status == 1).toList();
     if(this.mounted) setState((){cargando = false;});
     //if(_ultimosq15Grupos.length > 0) setState((){});
+  }
+
+  Future<bool> _sincroniza()async{
+    return await _firebaseProvider.sincronizar(_getLastGrupos);
   }
 
   @override
@@ -112,8 +118,8 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
       physics: NeverScrollableScrollPhysics(),
       children: [
         cargando ? CustomCenterLoading(texto: 'Iniciando App') : 
-          _ultimosq15Grupos.isEmpty ? _emptyPage() : HomeDashboardPage(grupos: _ultimosq15Grupos, scaffoldKey: widget.scaffoldKey, getLastGrupos: ()=>_getLastGrupos()),
-        RenovacionesPage(getLastGrupos: ()=>_getLastGrupos())
+          _ultimosq15Grupos.isEmpty ? _emptyPage() : HomeDashboardPage(grupos: _ultimosq15Grupos, scaffoldKey: widget.scaffoldKey, getLastGrupos: ()=>_getLastGrupos(), sincroniza: _sincroniza),
+        RenovacionesPage(getLastGrupos: ()=>_getLastGrupos(), sincroniza: _sincroniza)
       ],
       controller: _tabController,
     );
@@ -123,7 +129,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
     return RefreshIndicator(
       key: _refreshKey,
       onRefresh: () =>_getLastGrupos(),
-      child: HomeEmptyPage()
+      child: HomeEmptyPage(sincroniza: _sincroniza, scaffoldKey: widget.scaffoldKey,)
     );
   }
 

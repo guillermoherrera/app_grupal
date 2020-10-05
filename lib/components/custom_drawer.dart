@@ -127,14 +127,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
       children: [
         TableRow(
           children: [
-            ShakeTransition(child: _creaBoton(Constants.primaryColor, Icons.home, 'Inicio', ()=>_actions(context, 0) )),
-            ShakeTransition(child: _creaBoton(Constants.primaryColor, Icons.lock, 'Contraseña', ()=>_actions(context, 1)))
+            ShakeTransition(duration: Duration(milliseconds: 3000), child: _creaBoton(Constants.primaryColor, Icons.home, 'Inicio', ()=>_actions(context, 0) )),
+            ShakeTransition(duration: Duration(milliseconds: 1500),child: _creaBoton(Constants.primaryColor, Icons.lock, 'Contraseña', ()=>_actions(context, 1)))
           ]
         ),
         TableRow(
           children: [
-            ShakeTransition(child: _creaBoton(Constants.primaryColor, Icons.info, 'Información', ()=>_actions(context, 2))),
-            ShakeTransition(child: _creaBoton(Constants.primaryColor, Icons.exit_to_app, 'Cerrar Sesión', ()=>_actions(context, 3)))
+            ShakeTransition(duration: Duration(milliseconds: 4000),child: _creaBoton(Constants.primaryColor, Icons.info, 'Información', ()=>_actions(context, 2))),
+            ShakeTransition(duration: Duration(milliseconds: 2000),child: _creaBoton(Constants.primaryColor, Icons.exit_to_app, 'Cerrar Sesión', ()=>_actions(context, 3)))
           ]
         )
       ],

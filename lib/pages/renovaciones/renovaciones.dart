@@ -19,8 +19,11 @@ class RenovacionesPage extends StatefulWidget {
 
   const RenovacionesPage({
     Key key, 
-    this.getLastGrupos}) : super(key: key);
+    this.getLastGrupos,
+    this.sincroniza  
+  }) : super(key: key);
   final VoidCallback getLastGrupos;
+  final Future<bool> Function() sincroniza;
 
   @override
   _RenovacionesPageState createState() => _RenovacionesPageState();
@@ -150,7 +153,7 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
                     GestureDetector(
                       onTap: (){
                         final json = {'nombre': contratos[index].nombreGeneral, 'contrato': contratos[index].contratoId, 'status': contratos[index].status};
-                        Navigator.push(context, _customRoute.crearRutaSlide(Constants.renovacionGrupoPage, json, getLastGrupos: widget.getLastGrupos));
+                        Navigator.push(context, _customRoute.crearRutaSlide(Constants.renovacionGrupoPage, json, getLastGrupos: widget.getLastGrupos, sincroniza: widget.sincroniza));
                       },
                       child: CustomListTile(
                         title: listTiles[index].title,

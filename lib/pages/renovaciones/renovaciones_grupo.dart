@@ -26,11 +26,13 @@ class RenovacionesGrupoPage extends StatefulWidget {
   const RenovacionesGrupoPage({
     Key key, 
     @required this.params,
-    this.getLastGrupos
+    this.getLastGrupos,
+    this.sincroniza
   }) : super(key: key);
 
   final Map<String, dynamic> params;
   final VoidCallback getLastGrupos;
+  final Future<bool> Function() sincroniza;
 
   @override
   _RenovacionesGrupoPageState createState() => _RenovacionesGrupoPageState();
@@ -409,6 +411,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
           _buscarInformacion();
           setState((){_renovadoCheck = true;});
           widget.getLastGrupos();
+          _sincronizar();
         });
         //CAMPOS FALTANTES DE ASIGNAR beneficio, ticket
       }catch(e){
@@ -417,6 +420,16 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
     //}else{
     //  _error('No pudo solicitarse la renovación.\nDebe tener al menos X integrantes.');
     //}
+  }
+
+  _sincronizar()async{
+    Future.delayed(Duration(milliseconds: 1000));
+    try{
+      if(!(await widget.sincroniza()))
+        _info('Renovación guardada pero no enviada, sin conexión a internet');
+    }catch(e){
+      _info('Renovación guardada pero no enviada, sin conexión a internet.');
+    }
   }
 
   _success(String error){
@@ -434,6 +447,16 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
       error,
       Duration(milliseconds: 5000),
       Colors.pink,
+      Icons.error_outline,
+      _scaffoldKey
+    );
+  }
+
+  _info(String error){
+    _customSnakBar.showSnackBar(
+      error,
+      Duration(milliseconds: 5000),
+      Colors.blueAccent,
       Icons.error_outline,
       _scaffoldKey
     );
