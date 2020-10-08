@@ -1,5 +1,8 @@
+import 'package:app_grupal/models/ticket_confiashop_model.dart';
+import 'package:app_grupal/providers/confiashop_provider.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/custom_dialog.dart';
+import 'package:app_grupal/widgets/custom_draggable.dart';
 import 'package:app_grupal/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -13,38 +16,120 @@ class RenovacionesIntegrentePage extends StatefulWidget {
   const RenovacionesIntegrentePage({
     Key key, 
     this.params,
-    this.setMonto
+    this.setMonto,
+    this.setTicket
   }) : super(key: key);
 
   final Map<String, dynamic> params;
   final void Function(int, double) setMonto;
-
+  final void Function(int, String) setTicket;
   @override
   _RenovacionesIntegrentePageState createState() => _RenovacionesIntegrentePageState();
 }
 
 class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage> {
+  final _confiashopProvider = ConfiashopProvider();
   final formKey = new GlobalKey<FormState>();
   final importeCapital = TextEditingController();
   final _customRoute = CustomRouteTransition();
   bool _showIcon = true;
+  bool _verVenta = false;
+  Widget _articulos;
+  TicketConfiaShop _ticketConfiaShop;
+  
 
+  _getArticulos()async{
+    _ticketConfiaShop = await _confiashopProvider.getArticulosByTicket(widget.params['ticket'], 'D865');
+    _tableArticulos(_ticketConfiaShop.tIcketDetalle);
+    setState((){});
+  }
+
+  _tableArticulos(List<TicketDetalle> articulos){
+    List<TableRow> tableRows = [];
+
+    tableRows.add(
+      TableRow(
+        children: [
+          Center(child: Text('Artículo\n'.toUpperCase(), style: Constants.subtituloStyle)),
+          Center(child: Text('Descripción\n'.toUpperCase(), style: Constants.subtituloStyle)),
+          Center(child: Text('Precio total\n'.toUpperCase(), style: Constants.subtituloStyle))
+        ]
+      )
+    );
+
+    articulos.forEach((e){
+      tableRows.add(TableRow(children: [Divider(color: Colors.white),Divider(color: Colors.white),Divider(color: Colors.white)]));
+      tableRows.add(
+        TableRow(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 2.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('${e.jerarquia01}, ${e.jerarquia02},'.toUpperCase(), style: Constants.subtituloStyle),
+                  Text('${e.jerarquia03}, ${e.jerarquia04}'.toUpperCase(), style: Constants.subtituloStyle),
+                ],
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('cantidad: ${e.cantidad}'.toUpperCase(), style: Constants.subtituloStyle),
+                Text('talla: ${e.talla}'.toUpperCase(), style: Constants.subtituloStyle),
+                Text('color: ${e.color}'.toUpperCase(), style: Constants.subtituloStyle),
+                Text('estilo: ${e.estilo}'.toUpperCase(), style: Constants.subtituloStyle),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('\$ ${e.totalPrecioNeto}', style: Constants.subtituloStyle),
+              ],
+            ),
+          ]
+        )
+      );
+    });
+
+    Widget table = Table(
+      children: tableRows
+    );
+
+    _articulos = table;
+  } 
+  
   @override
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: BodyContent(
-        appBar: _appBar(_height),
-        contenido: SingleChildScrollView(
-          child: Column(
-            children: [
-              _encabezado(_height),
-              _capital(_height, context)
-            ] 
+      body: Stack(
+        children: [
+          BodyContent(
+            appBar: _appBar(_height),
+            contenido: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _encabezado(_height),
+                  _capital(_height, context)
+                ] 
+              ),
+            ),
           ),
-        ),
+          _articulosVenta()
+        ],
       ),
+    );
+  }
+
+
+  Widget _articulosVenta(){
+    return !_verVenta ? SizedBox() :
+    CustomDraggable(
+      closeAction: (){setState((){_verVenta = false;});}, 
+      title: 'Artículos',
+      child: _articulos,
     );
   }
 
@@ -105,12 +190,13 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _subtitulo('ConfiaShop'),
         _confiashop(_height, context),
         SizedBox(height: 30.0),
-        _subtitulo('Capital (Renovación)'),
+        Divider(),
+        _subtitulo('Importe Capital (Renovación)'),
         _monto(),
         SizedBox(height: 30.0),
+        Divider(),
         _subtitulo('Informacion último Crédito'),
         _tablaInformacion()
       ],
@@ -119,25 +205,59 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
 
   Widget _confiashop(double _height, BuildContext context){
     return Container(
+      width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 20.0),
-      child: Row(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
         children: [
           Image(
             image: AssetImage(Constants.confiashop),
             //color: Colors.white,
-            height: _height / 12,
+            height: _height / 10,
             fit: BoxFit.contain,
           ),
-          ShakeTransition(
-            child: CustomRaisedButton(
-              elevation: 8.0,
-              label: 'ir a tienda',
-              borderColor: Colors.blue,
-              primaryColor: Colors.blue,
-              textColor: Colors.white,
-              action: ()=>Navigator.push(context, _customRoute.crearRutaSlide(Constants.confiashopPage, {})),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              widget.params['ticket'] == null ? Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0), 
+                child: Row(
+                  children: [
+                    Icon(Icons.shopping_cart, color: Colors.white),
+                    Text(' carrito vacío'.toUpperCase(), style: Constants.encabezadoStyle),
+                  ],
+                )
+              ) : ShakeTransition(
+                child: CustomRaisedButton(
+                  elevation: 8.0,
+                  label: 'ver compra',
+                  borderColor: Constants.primaryColor,
+                  primaryColor: Colors.blue,
+                  textColor: Colors.white,
+                  action: (){
+                    _articulos = null;
+                    _getArticulos();
+                    print('ticket => ${widget.params['ticket']}');
+                    setState((){_verVenta = true;});
+                  },
+                ),
+              ),
+              ShakeTransition(
+                child: CustomRaisedButton(
+                  elevation: 8.0,
+                  label: 'ir a tienda',
+                  borderColor: Colors.blue,
+                  primaryColor: Colors.blue,
+                  textColor: Colors.white,
+                  action: ()=>Navigator.push(context, _customRoute.crearRutaSlide(Constants.confiashopPage, {'index': widget.params['index']}, setTicket: _actulizaTicket)),
+                ),
+              ),
+            ],
           )
         ],
       ),
@@ -282,5 +402,10 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
       widget.setMonto(widget.params['index'], double.parse(importeCapital.text));
       setState(() {widget.params['capitalSolicitado'] = importeCapital.text;});
     }
+  }
+
+  _actulizaTicket(int index, String ticket){
+    widget.setTicket(index, ticket);
+    setState(() {widget.params['ticket'] = ticket;});
   }
 }

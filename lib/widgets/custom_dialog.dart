@@ -11,7 +11,8 @@ class CustomDialog{
     Widget form,
     String cancel = 'Cancelar',
     String cntinue = 'Continuar',
-    @required VoidCallback action
+    @required VoidCallback action,
+    VoidCallback cancelAction
   }){
     showDialog(
       context: context,
@@ -44,7 +45,7 @@ class CustomDialog{
             actions: <Widget>[
               FlatButton(
                 child: Text(cancel.toUpperCase()),
-                onPressed: ()=>Navigator.pop(context)
+                onPressed: ()async{cancelAction == null ? Navigator.pop(context) : cancelAction();}
               ),
               FlatButton(
                 child: Text(cntinue.toUpperCase()),

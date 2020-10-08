@@ -158,47 +158,50 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      key: _scaffoldKey,
-      body: BodyContent(
-        appBar: _appBar(_height),
-        contenido: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
-              //height: 70,
-              width: double.infinity,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('${widget.params['nombre']} | ${widget.params['contrato']}'.toUpperCase(), style: Constants.mensajeCentral),
-                      Text('Integrantes: $_integrantesCant'.toUpperCase(), style: _renovacionIntegranteCheck.where((d) => d ).length >= _validaIntegrantesCant ? Constants.mensajeCentral2 : Constants.mensajeCentral2error),
-                      Text('Total: \$ ${_capital.toStringAsFixed(2)}'.toUpperCase(), style: Constants.mensajeCentral3),
-                    ]
-                  ),
-                  Column(
-                    children: [
-                      Icon(Icons.group, color: Constants.primaryColor),
-                      Text('Estatus: ${widget.params['status']}'.toUpperCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor)),
-                    ],
-                  ),
-                ],
+    return WillPopScope(
+      onWillPop: ()=>_confirmBack(),
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: BodyContent(
+          appBar: _appBar(_height),
+          contenido: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
+                //height: 70,
+                width: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('${widget.params['nombre']} | ${widget.params['contrato']}'.toUpperCase(), style: Constants.mensajeCentral),
+                        Text('Integrantes: $_integrantesCant'.toUpperCase(), style: _renovacionIntegranteCheck.where((d) => d ).length >= _validaIntegrantesCant ? Constants.mensajeCentral2 : Constants.mensajeCentral2error),
+                        Text('Total: \$ ${_capital.toStringAsFixed(2)}'.toUpperCase(), style: Constants.mensajeCentral3),
+                      ]
+                    ),
+                    Column(
+                      children: [
+                        Icon(Icons.group, color: Constants.primaryColor),
+                        Text('Estatus: ${widget.params['status']}'.toUpperCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor)),
+                      ],
+                    ),
+                  ],
+                )
+              ),
+              Divider(),
+              Expanded(
+                child: _bodyContent()
               )
-            ),
-            Divider(),
-            Expanded(
-              child: _bodyContent()
-            )
-          ] 
+            ] 
+          ),
+          bottom: _cargando ? Container() : _buttonRenovacion(),
         ),
-        bottom: _cargando ? Container() : _buttonRenovacion(),
+        //floatingActionButton: _cargando ? null : 
+        //ShakeTransition(axis: Axis.vertical, duration: Duration(milliseconds: 2000) ,child: _floatingButton(_height))
       ),
-      //floatingActionButton: _cargando ? null : 
-      //ShakeTransition(axis: Axis.vertical, duration: Duration(milliseconds: 2000) ,child: _floatingButton(_height))
     );
   }
 
@@ -224,12 +227,34 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
           child: IconButton(
             icon: Icon(Icons.arrow_back_ios, size: 40.0), 
             onPressed: ()async{
-              setState(() {_showIcon = false;});
-              Navigator.pop(context);
+              _confirmBack();
+              //Navigator.pop(context);
             }
           )
         ),
     );
+  }
+
+  _confirmBack(){
+    if(_renovadoCheck){
+      setState(() {_showIcon = false;});
+      Navigator.pop(context);
+    }else{
+      CustomDialog customDialog = CustomDialog();
+      customDialog.showCustomDialog(
+        context,
+        title: 'Adevertencia',
+        icon: Icons.error_outline,
+        textContent: '¿Desea salir del grupo \'${widget.params['nombre']}\' sin solicitar su renovación?',
+        cancel: 'No, cancelar',
+        cntinue: 'Si, salir',
+        action: ()async{
+          setState(() {_showIcon = false;});
+          Navigator.pop(context);
+          Navigator.pop(context);
+        }
+      );
+    } 
   }
 
   Widget _buttonRenovacion(){
@@ -292,10 +317,22 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
     List<ListTileModel> listTiles = List();
     _renovacionIntegrantes.asMap().forEach((index, integrante) {
       final listTile = ListTileModel(
-        title: Text(
-          integrante.nombreCompleto, 
-          style: _renovacionIntegranteCheck[index] ? Constants.mensajeCentral : Constants.mensajeCentralNot, 
-          overflow: TextOverflow.ellipsis
+        title: Row(
+          children: [
+            Text(
+              '${integrante.nombreCompleto} ', 
+              style: _renovacionIntegranteCheck[index] ? Constants.mensajeCentral : Constants.mensajeCentralNot, 
+              overflow: TextOverflow.ellipsis
+            ),
+            integrante.ticket == null ?
+            SizedBox() :
+            Image(
+              image: AssetImage(Constants.confiashop),
+              height: 20.0,
+              fit: BoxFit.contain,
+            )
+               
+          ],
         ),
         subtitle: '${integrante.tesorero == 1 ? 'tesorero\n' : integrante.presidente == 1 ? 'presidente\n' : ''}capital: ${integrante.capitalSolicitado}'.toUpperCase(),
         leading: Checkbox(
@@ -333,8 +370,9 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
                   'noCda'       : _renovacionIntegrantes[index].noCda,
                   'tesorero'    : _renovacionIntegrantes[index].tesorero,
                   'presidente'  : _renovacionIntegrantes[index].presidente,
+                  'ticket'      : _renovacionIntegrantes[index].ticket
                 };
-                if(_renovacionIntegranteCheck[index]) Navigator.push(context, _customRoute.crearRutaSlide(Constants.renovacionIntegrantePage, json, setMonto: _setMonto));
+                if(_renovacionIntegranteCheck[index]) Navigator.push(context, _customRoute.crearRutaSlide(Constants.renovacionIntegrantePage, json, setMonto: _setMonto, setTicket: _setTicket));
               },
               child: CustomListTile(
                 title: listTiles[index].title,
@@ -352,6 +390,11 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   _setMonto(int index, double monto){
     _renovacionIntegrantes[index].capitalSolicitado = monto;
     _getTotal();
+  }
+
+  _setTicket(int index, String ticket){
+    _renovacionIntegrantes[index].ticket= ticket;
+    setState(() {});
   }
 
   _getTotal(){
