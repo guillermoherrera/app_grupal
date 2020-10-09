@@ -10,6 +10,8 @@ class Constants{
   static final String renovacionIntegrantePage = 'renovacionIntegrante';
   static final String confiashopPage = 'confiashop';
   static final String solicitudPage = 'solicitud';
+  static final String infoPage = 'infoPage';
+  static final String passwordPage = 'paswwordPage';
 
   static final Color primaryColor = Color(0xff76BD21);
   static final Color defaultColor = Color(0xfff2f2f2);
@@ -27,6 +29,13 @@ class Constants{
   static final String consultaIntegrantes = 'contratoDetalle';
 
   static final String homeText = 'Puedes comenzar a capturar nuevas solicitudes de crédito grupal o revisar la información de los grupos con los que ya estas trabajando, solo ve a la barra de navegación inferior y selecciona la opción que necesites.';
+  static final String info1 = 'Aplicación desarrollada para operar como una herramienta de trabajo en apoyo a la operación de los asesores de créditos grupales. ';
+  static final String info2 = '''La principal función de esta app es la de facilitar y validar la captura de solicitudes de crédito para agilizar el proceso de originación y mejorar la calidad del servicio. Algunas de las características principales que se encuentran en la app son:
+    \n * Renovaciones.
+  * Captura de nuevos integrantes.
+  * Seguimiento de solicitudes.
+  * Revición de cartera.
+  * ConfiaShop.''';
 
   static final TextStyle encabezadoStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, color: Colors.white);
   static final TextStyle subtituloStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.white70);
@@ -37,6 +46,7 @@ class Constants{
   static final TextStyle mensajeCentralNot = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.grey[300], decoration: TextDecoration.lineThrough);
   static final TextStyle mensajeCentralNotMedium = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.grey);
   static final TextStyle mensajeMonto = TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0);
+  static final TextStyle mensajeInfo = TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0, color: Colors.white);
 
   static String errorAuth(error){
     if(error.contains("invalid-email")){

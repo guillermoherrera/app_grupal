@@ -1,4 +1,5 @@
 import 'package:app_grupal/pages/confiashop/confiashop_page.dart';
+import 'package:app_grupal/pages/drawer/info_page.dart';
 import 'package:app_grupal/pages/solicitud/solicitud_page.dart';
 import 'package:flutter/material.dart';
 
@@ -47,6 +48,8 @@ class CustomRouteTransition{
       return ConfiashopPage(params: params, setTicket: setTicket);
     }else if(ruta == Constants.solicitudPage){
       return SolicitudPage(params: params, getNewIntegrante: getNewIntegrante);
+    }else if(ruta == Constants.infoPage){
+      return InfoPage();
     }
     return RootPage();
   }

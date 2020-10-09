@@ -1,3 +1,5 @@
+import 'package:app_grupal/pages/drawer/info_page.dart';
+import 'package:app_grupal/pages/drawer/paswword_page.dart';
 import 'package:app_grupal/pages/renovaciones/renovaciones_grupo.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +42,9 @@ class MyApp extends StatelessWidget {
               Constants.rootPage  : (BuildContext context) => RootPage(),
               Constants.loginPage : (BuildContext context) => LoginPage(),
               Constants.homePage  : (BuildContext context) => HomePage(),
-              Constants.renovacionGrupoPage  : (BuildContext context) => RenovacionesGrupoPage(params: null)
+              Constants.renovacionGrupoPage  : (BuildContext context) => RenovacionesGrupoPage(params: null),
+              Constants.infoPage : (BuildContext context) => InfoPage(),
+              Constants.passwordPage : (BuildContext context) => PasswordPage()
             },
             localizationsDelegates: [
               // ... app-specific localization delegate[s] here

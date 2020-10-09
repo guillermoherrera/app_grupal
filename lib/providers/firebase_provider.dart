@@ -204,4 +204,8 @@ class FirebaseProvider{
     }
     return documentos;
   }
+
+  actualizaTipoUsuario(String documentID)async{
+    await _firestore.collection("UsuariosTipos").doc(documentID).update({"passGenerico": false});
+  }
 }

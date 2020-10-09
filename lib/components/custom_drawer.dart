@@ -1,3 +1,4 @@
+import 'package:app_grupal/components/page_route_builder.dart';
 import 'package:app_grupal/widgets/custom_fade_transition.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
@@ -14,6 +15,7 @@ class CustomDrawer extends StatefulWidget {
 
 class _CustomDrawerState extends State<CustomDrawer> {
   SharedActions _sharedActions = SharedActions();
+  final _customRoute = CustomRouteTransition();
   Map<String, dynamic> userInfo = {};
   Map<String, dynamic> sincRegistroInfo = {};
   
@@ -141,8 +143,24 @@ class _CustomDrawerState extends State<CustomDrawer> {
     );
   }
 
+  String getHeroTag(String texto){
+    switch (texto) {
+      case 'Inicio':
+        return 'inicio';
+        break;
+      case 'Contraseña':
+        return 'contraseña';
+        break;
+      case 'Información':
+        return 'info';
+        break;
+      default:
+        return 'logout';
+    }
+  }
+
   Widget _creaBoton(Color color, IconData icono, String texto, VoidCallback action){
-    //String heroTag = getHeroTag(icono.codePoint);
+    String heroTag = getHeroTag(texto);
     return GestureDetector(
       onTap: ()=> action(),
       child: Container(
@@ -165,7 +183,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 CircleAvatar(
                   backgroundColor: color,
                   radius: 40.0,
-                  child: Icon(icono, color: Colors.white, size: 30.0),
+                  child: Hero(tag: heroTag,child: Icon(icono, color: Colors.white, size: 30.0)),
                 ),
                 Text(
                   texto.toUpperCase(),
@@ -206,10 +224,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
     
     switch (action) {
       case 1:
-        Navigator.pop(context);
+        Navigator.pushNamed(context, Constants.passwordPage, arguments: true);
         break;
       case 2:
-        Navigator.pop(context);
+        Navigator.pushNamed(context, Constants.infoPage, arguments: true);
         break;
       case 3:
         await _authFirebase.signOut();

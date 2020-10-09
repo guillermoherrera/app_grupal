@@ -32,13 +32,16 @@ class AuthFirebase{
     return firebaseAuth.signOut();
   }
 
-  Future<bool> changePass(String currentPass, String user, String newPass) async{
+  Future<bool> changePass(String user, String pass, String newPass) async{
     bool result = false;
     try{
+      await firebaseAuth
+        .signInWithEmailAndPassword(email: '$user@confia.com', password: pass)
+        .timeout(Duration(milliseconds: 10000));
       await firebaseAuth.currentUser.updatePassword(newPass).timeout(Duration(milliseconds: 10000));
       result = true;
     }catch(e){
-      print(e);
+      print('Error changePass $e');
     }
     return result;
   }

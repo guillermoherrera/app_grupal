@@ -18,6 +18,11 @@ class SharedActions{
 
   }
 
+  setPassInfo(String pass) async{
+    preferences.setString('pass', pass);
+    preferences.setBool("passGenerico", false);
+  }
+
   Future<Map<String, dynamic>> getUserInfo() async{
     await init();
     return {
@@ -26,6 +31,10 @@ class SharedActions{
       'uid'     : preferences.getString('uid'),
       'sistema' : preferences.getInt('sistema'),
       'sistemaDesc' : preferences.getString('sistemaDesc'),
+      'pass'    : preferences.getString('pass'),
+      'tipoUsuario' : preferences.getInt('tipoUsuario'),
+      'documentID'    : preferences.getString('documentID'),
+      'passGenerico'    : preferences.getBool('passGenerico'),
     };
   }
 
