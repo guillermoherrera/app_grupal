@@ -156,7 +156,7 @@ class FirebaseProvider{
         firebaseRenovacion = _firebaseRenovacion.getFirebaseRenovacion(e, grupoID, contratoId);
       }else{
         Solicitud solicitud = await DBProvider.db.getSolicitudById(e.idSolicitud);
-        firebaseRenovacion = await _buildFirebaseSolicitud(solicitud, grupoID);
+        firebaseRenovacion = await _buildFirebaseSolicitud(solicitud, grupoID, e);
       }
       if(firebaseRenovacion != null){
         firebaseRenovacion.contratoId = contratoId;
@@ -176,12 +176,12 @@ class FirebaseProvider{
     }
   }
 
-  Future<FirebaseSolicitud> _buildFirebaseSolicitud(Solicitud solicitud, String grupoID)async{
+  Future<FirebaseSolicitud> _buildFirebaseSolicitud(Solicitud solicitud, String grupoID, Renovacion renovacion)async{
     List<Documento> documentosSolicitud = await _getDocumentos(solicitud);
     if(documentosSolicitud.length > 0){
       final persona = _firebasePersona.getFirebasePersona(solicitud);
       final direccion = _firebaseDireccion.getFirebaseDireccion(solicitud);
-      _firebaseSolicitud = _firebaseSolicitud.getFirebaseSolicitud(solicitud, persona.toJson(), direccion.toJson(), documentosSolicitud, grupoID);
+      _firebaseSolicitud = _firebaseSolicitud.getFirebaseSolicitud(solicitud, persona.toJson(), direccion.toJson(), documentosSolicitud, grupoID, renovacion);
     }else{
       _firebaseSolicitud = null;
     }

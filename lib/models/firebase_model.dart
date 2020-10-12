@@ -144,7 +144,8 @@ class FirebaseSolicitud{
   String grupoNombre;
   int contratoId;
   String grupoID;
-  //int grupo_Id;
+  bool presidente;
+  bool tesorero;
 
   FirebaseSolicitud({
     this.persona,
@@ -158,7 +159,8 @@ class FirebaseSolicitud{
     this.contratoId,
     this.grupoNombre,
     this.grupoID,
-    //this.grupo_Id
+    this.presidente,
+    this.tesorero
   });
 
   Map<String, dynamic> toJson()=>{
@@ -172,10 +174,12 @@ class FirebaseSolicitud{
     'status'         : status,
     'grupoNombre'    : grupoNombre,
     'grupoID'        : grupoID,
-    'contratoId'     : contratoId
+    'contratoId'     : contratoId,
+    'presidente'     : presidente,
+    'tesorero'       : tesorero
   };
 
-  FirebaseSolicitud getFirebaseSolicitud(Solicitud solicitud, Map persona, Map direccion, List<Documento> documentos, String grupoID){
+  FirebaseSolicitud getFirebaseSolicitud(Solicitud solicitud, Map persona, Map direccion, List<Documento> documentos, String grupoID, Renovacion renovacion){
     return new FirebaseSolicitud(
       persona: persona,
       direccion: direccion,
@@ -186,7 +190,9 @@ class FirebaseSolicitud{
       documentos: documentos.map((e) => e.toFirebaseJson()).toList(),
       status: 1,
       grupoNombre: solicitud.nombreGrupo, 
-      grupoID: grupoID
+      grupoID: grupoID,
+      presidente: renovacion.presidente == 1,
+      tesorero: renovacion.tesorero == 1
     );
   }
 }
