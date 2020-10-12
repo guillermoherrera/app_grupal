@@ -372,7 +372,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
                   'presidente'  : _renovacionIntegrantes[index].presidente,
                   'ticket'      : _renovacionIntegrantes[index].ticket
                 };
-                if(_renovacionIntegranteCheck[index]) Navigator.push(context, _customRoute.crearRutaSlide(Constants.renovacionIntegrantePage, json, setMonto: _setMonto, setTicket: _setTicket));
+                if(_renovacionIntegranteCheck[index]) Navigator.push(context, _customRoute.crearRutaSlide(Constants.renovacionIntegrantePage, json, setMonto: _setMonto, setTicket: _setTicket, setRolGrupo: _setRolGrupo));
               },
               child: CustomListTile(
                 title: listTiles[index].title,
@@ -397,6 +397,17 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
     setState(() {});
   }
 
+  _setRolGrupo(int index, int opc){
+    opc == 1 ? 
+      _renovacionIntegrantes.firstWhere((e) => e.presidente == 1).presidente = 0 :
+      _renovacionIntegrantes.firstWhere((e) => e.tesorero == 1).tesorero = 0;
+    
+    opc == 1 ?
+      _renovacionIntegrantes[index].presidente = 1 :
+      _renovacionIntegrantes[index].tesorero = 1;
+    setState(() {});
+  }
+
   _getTotal(){
     _capital = 0;
     _renovacionIntegrantes.asMap().forEach((i,e){
@@ -405,6 +416,14 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
   }
   
   void itemChange(bool val,int index){
+    if(_renovacionIntegrantes[index].presidente == 1){
+      _error('No puedes eliminar al presidente\nelije a otro miembro como presidente antes de elimar a ${_renovacionIntegrantes[index].nombreCompleto}');
+      return null;
+    }
+    if(_renovacionIntegrantes[index].tesorero == 1){
+      _error('No puedes eliminar al tesorero\nelije a otro miembro como tesorero antes de elimar a ${_renovacionIntegrantes[index].nombreCompleto}');
+      return null;
+    }
     setState(() {
       _renovacionIntegranteCheck[index] = val;
       _integrantesCant = val ? _integrantesCant + 1 : _integrantesCant - 1;

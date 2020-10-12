@@ -1,4 +1,3 @@
-import 'package:app_grupal/components/page_route_builder.dart';
 import 'package:app_grupal/widgets/custom_fade_transition.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
@@ -15,7 +14,6 @@ class CustomDrawer extends StatefulWidget {
 
 class _CustomDrawerState extends State<CustomDrawer> {
   SharedActions _sharedActions = SharedActions();
-  final _customRoute = CustomRouteTransition();
   Map<String, dynamic> userInfo = {};
   Map<String, dynamic> sincRegistroInfo = {};
   

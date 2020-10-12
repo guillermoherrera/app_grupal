@@ -63,6 +63,8 @@ class FirebaseRenovacion{
   int contratoId;
   int tipoContrato;
   double historicoImporte;
+  bool tesorero;
+  bool presidente;
 
   FirebaseRenovacion({
     this.noCda,
@@ -80,7 +82,9 @@ class FirebaseRenovacion{
     this.fechaCaptura,
     this.contratoId,
     this.tipoContrato,
-    this.historicoImporte
+    this.historicoImporte,
+    this.presidente,
+    this.tesorero
   });
 
   Map<String, dynamic> toJson()=>{
@@ -99,7 +103,9 @@ class FirebaseRenovacion{
     'fechaCaptura'     : fechaCaptura,
     'contratoId'       : contratoId,
     'tipoContrato'     : tipoContrato,
-    'historicoImporte' : historicoImporte
+    'historicoImporte' : historicoImporte,
+    'presidente'       : presidente,
+    'tesorero'         : tesorero
   };
 
   FirebaseRenovacion getFirebaseRenovacion(Renovacion renovacion, String grupoID, int contratoId){
@@ -119,6 +125,8 @@ class FirebaseRenovacion{
       contratoId: contratoId,
       tipoContrato: 2,
       historicoImporte: renovacion.importe,
+      presidente: renovacion.presidente == 1,
+      tesorero:  renovacion.tesorero == 1
     );
   }
 }

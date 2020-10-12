@@ -84,8 +84,10 @@ class FirebaseProvider{
       _querySnapshot = await _query.get().timeout(_timeOutDutaion);
       for (DocumentSnapshot value in _querySnapshot.docs) {
         final renovacion = Renovacion(
-          nombreCompleto: value.data()['nombre'] != null ? value.data()['nombre'] : '${value.data()['persona']['nombre']} ${value.data()['persona']['apellido']}' ,
-          capitalSolicitado: value.data()['capitalSolicitado']
+          nombreCompleto    : value.data()['nombre'] != null ? value.data()['nombre'] : '${value.data()['persona']['nombre']} ${value.data()['persona']['apellido']}' ,
+          capitalSolicitado : value.data()['capitalSolicitado'],
+          presidente        : value.data()['presidente'] ? 1 : 0 ,
+          tesorero          : value.data()['tesorero'] ? 1 : 0
         );
         list.add(renovacion);
       }

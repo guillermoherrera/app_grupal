@@ -38,7 +38,7 @@ class _PasswordPageState extends State<PasswordPage> {
         contenido: _formulario(), 
         bottom: _buttons(),
       ),
-    );;
+    );
   }
 
   Widget _appBar(double _height){

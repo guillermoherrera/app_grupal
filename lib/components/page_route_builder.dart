@@ -10,9 +10,9 @@ import 'package:app_grupal/pages/root_page.dart';
 
 class CustomRouteTransition{
   
-  Route crearRutaSlide(String route, Map<String, dynamic> params, {void Function(int, double) setMonto, void Function(int, String) setTicket, void Function(int) getNewIntegrante, VoidCallback getLastGrupos, Future<bool> Function() sincroniza}){
+  Route crearRutaSlide(String route, Map<String, dynamic> params, {void Function(int, double) setMonto, void Function(int, String) setTicket, void Function(int, int) setRolGrupo, void Function(int) getNewIntegrante, VoidCallback getLastGrupos, Future<bool> Function() sincroniza}){
 
-    Widget ruta = _getPage(route, params, setMonto, setTicket, getNewIntegrante, getLastGrupos, sincroniza);
+    Widget ruta = _getPage(route, params, setMonto, setTicket, setRolGrupo, getNewIntegrante, getLastGrupos, sincroniza);
 
     return PageRouteBuilder(
       pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) => ruta,
@@ -39,11 +39,11 @@ class CustomRouteTransition{
     );
   }
 
-  Widget _getPage(String ruta, Map<String, dynamic> params, void Function(int, double) setMonto, void Function(int, String) setTicket, void Function(int) getNewIntegrante, VoidCallback getLastGrupos, Future<bool> Function() sincroniza){
+  Widget _getPage(String ruta, Map<String, dynamic> params, void Function(int, double) setMonto, void Function(int, String) setTicket, void Function(int, int) setRolGrupo, void Function(int) getNewIntegrante, VoidCallback getLastGrupos, Future<bool> Function() sincroniza){
     if(ruta == Constants.renovacionGrupoPage){
       return RenovacionesGrupoPage(params: params, getLastGrupos: getLastGrupos, sincroniza: sincroniza);
     }else if(ruta == Constants.renovacionIntegrantePage){
-      return RenovacionesIntegrentePage(params: params, setMonto: setMonto, setTicket: setTicket);
+      return RenovacionesIntegrentePage(params: params, setMonto: setMonto, setTicket: setTicket, setRolGrupo: setRolGrupo);
     }else if(ruta == Constants.confiashopPage){
       return ConfiashopPage(params: params, setTicket: setTicket);
     }else if(ruta == Constants.solicitudPage){

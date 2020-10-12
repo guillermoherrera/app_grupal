@@ -17,12 +17,14 @@ class RenovacionesIntegrentePage extends StatefulWidget {
     Key key, 
     this.params,
     this.setMonto,
-    this.setTicket
+    this.setTicket,
+    this.setRolGrupo
   }) : super(key: key);
 
   final Map<String, dynamic> params;
   final void Function(int, double) setMonto;
   final void Function(int, String) setTicket;
+  final void Function(int, int) setRolGrupo;
   @override
   _RenovacionesIntegrentePageState createState() => _RenovacionesIntegrentePageState();
 }
@@ -112,7 +114,7 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
               child: Column(
                 children: [
                   _encabezado(_height),
-                  _capital(_height, context)
+                  _capital(_height, context),
                 ] 
               ),
             ),
@@ -198,7 +200,10 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
         SizedBox(height: 30.0),
         Divider(),
         _subtitulo('Informacion último Crédito'),
-        _tablaInformacion()
+        _tablaInformacion(),
+        SizedBox(height: 30.0),
+        Divider(),
+        _puestoGrupo(),
       ],
     );
   }
@@ -394,6 +399,55 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
         check500s: true,
       )
     );
+  }
+
+  Widget _puestoGrupo(){
+    bool hasRol = widget.params['presidente'] == 1 || widget.params['tesorero'] == 1; 
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20.0),
+      child: Column(
+        children: [
+          CheckboxListTile(
+            title: Text('Presidente'.toUpperCase(), style: Constants.mensajeCentral),
+            secondary: Icon(Icons.account_balance),
+            controlAffinity: ListTileControlAffinity.platform,
+            value: widget.params['presidente'] == 1,
+            onChanged: (value)=> hasRol ? null : _confirmChangePuesto(value, 1)
+          ),
+          CheckboxListTile(
+            title: Text('Tesorero'.toUpperCase(), style: Constants.mensajeCentral),
+            secondary: Icon(Icons.attach_money),
+            controlAffinity: ListTileControlAffinity.platform,
+            value: widget.params['tesorero'] == 1,
+            onChanged: (value)=> hasRol ? null : _confirmChangePuesto(value, 2)
+          )
+        ],
+      ),
+    );
+  }
+
+  _confirmChangePuesto(bool val, int opc){
+    String rol = opc == 1 ? 'Presidente' : 'Tesorero';
+    CustomDialog customDialog = CustomDialog();
+    customDialog.showCustomDialog(
+      context,
+      title: 'Atención',
+      icon: Icons.error_outline,
+      textContent: '¿Esta seguro de querer hacer a ${widget.params['nombreCom']} $rol de grupo?',
+      cancel: 'no, Cancelar',
+      cntinue: 'si, asignar',
+      action: ()=>_changePuesto(val, opc)
+    );
+  }
+
+  _changePuesto(bool val, int opc){
+    if(val){
+      if(opc == 1) widget.params['presidente'] = 1;
+      if(opc == 2) widget.params['tesorero'] = 1;
+      widget.setRolGrupo(widget.params['index'], opc);
+      setState((){});
+      Navigator.pop(context);
+    }
   }
 
   _actulizaMonto(){
