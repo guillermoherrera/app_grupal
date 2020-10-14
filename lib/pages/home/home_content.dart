@@ -2,6 +2,7 @@ import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/components/encabezado.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/grupos_model.dart';
+import 'package:app_grupal/pages/cartera/cartera_page.dart';
 import 'package:app_grupal/pages/home/home_dashboard.dart';
 import 'package:app_grupal/pages/home/home_empty_page.dart';
 import 'package:app_grupal/pages/renovaciones/renovaciones.dart';
@@ -36,7 +37,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _getLastGrupos();
     super.initState();
   }
@@ -106,6 +107,11 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
         iconMargin: EdgeInsets.all(0),
       ),
       Tab(
+        icon: Icon(Icons.account_balance_wallet),
+        text: 'CARTERA',
+        iconMargin: EdgeInsets.all(0),
+      ),
+      Tab(
         icon: Icon(Icons.cached),
         text: 'RENOVACIONES',
         iconMargin: EdgeInsets.all(0),
@@ -119,7 +125,8 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
       children: [
         cargando ? CustomCenterLoading(texto: 'Iniciando App') : 
           _ultimosq15Grupos.isEmpty ? _emptyPage() : HomeDashboardPage(grupos: _ultimosq15Grupos, scaffoldKey: widget.scaffoldKey, getLastGrupos: ()=>_getLastGrupos(), sincroniza: _sincroniza),
-        RenovacionesPage(getLastGrupos: ()=>_getLastGrupos(), sincroniza: _sincroniza)
+        CarteraPage(),
+        RenovacionesPage(getLastGrupos: ()=>_getLastGrupos(), sincroniza: _sincroniza),
       ],
       controller: _tabController,
     );
@@ -143,6 +150,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
             icon: cargando ? Icons.watch_later : _gruposSinEnviar.isEmpty ? Icons.check_circle_outline : Icons.error_outline,
             encabezado: cargando ? 'Iniciando App' : _gruposSinEnviar.isEmpty ? 'Créditos Grupales' : 'Hay Grupos pendientes', 
             subtitulo: cargando ? 'Cargando información' : _gruposSinEnviar.isEmpty ? 'Sin solicitudes por enviar' : 'Tienes ${_gruposSinEnviar.length} grupo(s) pendiente(s) de enviar'),
+          Encabezado(icon: Icons.assignment, encabezado: 'Cartera', subtitulo: 'Grupos en mi cartera.'),
           Encabezado(icon: Icons.assignment, encabezado: 'Renovaciones', subtitulo: 'Grupos proximos a liquidar.'),
         ],
         controller: _tabController,

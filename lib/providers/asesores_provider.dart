@@ -12,6 +12,8 @@ class AsesoresProvider {
   Future<List<dynamic>> procesaRespuestaLista(url, headers, clase) async{
     List<dynamic> listaRespuesta;
     try{
+      print('url: $url');
+      print('headers: $headers');
       final resp = await http.get(url, headers: headers).timeout(Duration(seconds: 10));
       final decodeData = json.decode(resp.body);
       listaRespuesta = clase.fromJsonList(decodeData['data']);
@@ -36,6 +38,18 @@ class AsesoresProvider {
     return listaProcesada.cast<Contrato>();
   }
 
+  Future<List<Contrato>> consultaCartera()async{
+    final url = Uri.https(Constants.baseURL, '/cartera/${Constants.consultaContratos}');
+    Map<String, String> headers= {
+      'x-api-key'  : Constants.apiKey,
+      'userID'     : await _sharedActions.getUserId()};
+    
+    Contratos contratos = new Contratos();
+    List<dynamic> listaProcesada = await procesaRespuestaLista(url, headers, contratos);
+    
+    return listaProcesada.cast<Contrato>();
+  }
+
   Future<List<Integrante>> consultaIntegrantesRenovacion(int contrato) async{
     final url = Uri.https(Constants.baseURL, '/cartera/${Constants.consultaIntegrantes}');
     Map<String, String> headers = {
@@ -47,6 +61,19 @@ class AsesoresProvider {
     List<dynamic> listaProcesada = await procesaRespuestaLista(url, headers, integrantes);
     
     return listaProcesada.cast<Integrante>();
+  }
+
+  Future<ContratoDetalle> consultaContratoDetalle(int contrato) async{
+    final url = Uri.https(Constants.baseURL, '/cartera/${Constants.consultaIntegrantes}');
+    Map<String, String> headers = {
+      'x-api-key'  : Constants.apiKey,
+      'userID'     : await _sharedActions.getUserId(),
+      'contrato': '$contrato'};
+
+    ContratoDetalle contratoDetalle = new ContratoDetalle();
+    List<dynamic> listaProcesada = await procesaRespuestaLista(url, headers, contratoDetalle);
+
+    return listaProcesada.isEmpty ? ContratoDetalle() : listaProcesada[0];
   }
 
 }

@@ -12,6 +12,8 @@ class Constants{
   static final String solicitudPage = 'solicitud';
   static final String infoPage = 'infoPage';
   static final String passwordPage = 'paswwordPage';
+  static final String carteraGrupoPage = 'carteraGrupoPage';
+  static final String carteraIntegrantePage = 'carteraIntegrantePage';
 
   static final Color primaryColor = Color(0xff76BD21);
   static final Color defaultColor = Color(0xfff2f2f2);
@@ -41,12 +43,15 @@ class Constants{
   static final TextStyle subtituloStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.white70);
   static final TextStyle mensajeCentral = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.grey[600]);
   static final TextStyle mensajeCentral2 = TextStyle(fontSize: 11.0, color: Colors.grey);
+  static final TextStyle mensajeCentral2bold = TextStyle(fontSize: 12.0, color: Colors.grey, fontWeight: FontWeight.bold);
   static final TextStyle mensajeCentral2error = TextStyle(fontSize: 11.0, color: Colors.red);
   static final TextStyle mensajeCentral3 = TextStyle(fontSize: 11.0);
   static final TextStyle mensajeCentralNot = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.grey[300], decoration: TextDecoration.lineThrough);
   static final TextStyle mensajeCentralNotMedium = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.grey);
   static final TextStyle mensajeMonto = TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0);
   static final TextStyle mensajeInfo = TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0, color: Colors.white);
+  static final TextStyle mensajeMonto2 = TextStyle(fontSize: 22,fontWeight: FontWeight.bold, color: Colors.grey[400]);
+  static final TextStyle mensajeMonto3 = TextStyle(fontSize: 22,fontWeight: FontWeight.bold);
 
   static String errorAuth(error){
     if(error.contains("invalid-email")){

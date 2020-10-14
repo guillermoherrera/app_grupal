@@ -87,7 +87,8 @@ class FirebaseProvider{
           nombreCompleto    : value.data()['nombre'] != null ? value.data()['nombre'] : '${value.data()['persona']['nombre']} ${value.data()['persona']['apellido']}' ,
           capitalSolicitado : value.data()['capitalSolicitado'],
           presidente        : value.data()['presidente'] ? 1 : 0 ,
-          tesorero          : value.data()['tesorero'] ? 1 : 0
+          tesorero          : value.data()['tesorero'] ? 1 : 0,
+          ticket            : value.data()['ticket']
         );
         list.add(renovacion);
       }

@@ -1,3 +1,5 @@
+import 'package:app_grupal/models/integrantes_model.dart';
+
 class Contratos{
   List<Contrato> items = List();
   
@@ -25,7 +27,7 @@ class Contrato{
   double saldoAtrazado;
   int diasAtrazo;
   double pagoXPlazo;
-  int ultimoPagoPlazo;
+  int ultimoPlazoPag;
   int plazos;
   double capital;
   double interes;
@@ -51,7 +53,7 @@ class Contrato{
     this.saldoActual,
     this.saldoAtrazado,
     this.status,
-    this.ultimoPagoPlazo,
+    this.ultimoPlazoPag,
     this.renovado
   });
 
@@ -60,19 +62,50 @@ class Contrato{
     fechaTermina = json['fechaTermina']; 
     nombreGeneral = json['nombreGeneral']; 
 
-    capital = json['capital']; 
+    capital = json['capital'] == null ? json['capital'] : json['capital'] / 1 ; 
     contacto = json['contacto']; 
     diasAtrazo = json['diasAtrazo']; 
     fechaInicio = json['fechaInicio']; 
-    importe = json['importe']; 
+    importe = json['importe'] == null ? json['importe'] : json['importe'] / 1; 
     integrantesCant = json['integrantesCant']; 
-    interes = json['interes']; 
-    pagoXPlazo = json['pagoXPlazo']; 
+    interes = json['interes'] == null ? json['interes'] : json['interes'] / 1; 
+    pagoXPlazo = json['pagoXPlazo'] == null ? json['pagoXPlazo'] : json['pagoXPlazo'] / 1; 
     plazos = json['plazos']; 
-    saldoActual = json['saldoActual']; 
-    saldoAtrazado = json['saldoAtrazado']; 
+    saldoActual = json['saldoActual'] == null ? json['saldoActual'] : json['saldoActual'] / 1; 
+    saldoAtrazado = json['saldoAtrazado'] == null ? json['saldoAtrazado'] : json['saldoAtrazado'] / 1; 
     status = json['status']; 
-    ultimoPagoPlazo = json['ultimoPagoPlazo']; 
+    ultimoPlazoPag = json['ultimoPlazoPag']; 
     renovado = json['renovado'];
+  }
+}
+
+class ContratoDetalle{
+  bool result;
+  String mensaje;
+  Contrato contrato;
+  List<Integrante> integrantes;
+
+  ContratoDetalle({
+    this.contrato,
+    this.integrantes
+  });
+
+  List<ContratoDetalle> items = List();
+  //ContratoDetalle();
+
+  List<ContratoDetalle> fromJsonList(dynamic jsonList){
+    Contrato contrato = Contrato.jsonMap(jsonList);
+
+    List<Integrante> integrantes = List();
+    if(jsonList == null) return List();
+    for(var item in jsonList['integrantes']){
+      final integrante = Integrante.jsonMap(item);
+      integrante.renovado = jsonList['renovado'];
+      integrantes.add(integrante);
+    }
+
+    items.add(ContratoDetalle(contrato: contrato,integrantes:  integrantes));
+    print(items);
+    return items;
   }
 }

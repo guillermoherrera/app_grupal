@@ -8,7 +8,8 @@ class CustomDraggable extends StatelessWidget {
     this.initialChildSize = 0.15,
     this.maxChildSize = 0.45,
     this.minChildSize = 0.05,
-    @required this.closeAction,
+    this.closeAction,
+    this.iconCloseAction = Icons.close,
     @required this.title,
     @required this.child
   }) : super(key: key);
@@ -17,6 +18,7 @@ class CustomDraggable extends StatelessWidget {
   final double maxChildSize;
   final double minChildSize;
   final VoidCallback closeAction;
+  final IconData iconCloseAction;
   final String title;
   final Widget child;
 
@@ -33,12 +35,12 @@ class CustomDraggable extends StatelessWidget {
               controller: controller,
               child: Column(
                 children: [
-                  Container(
+                  closeAction == null ? SizedBox(height: 10.0,) : Container(
                     padding: EdgeInsets.all(10.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        GestureDetector(child: Icon(Icons.close, color: Colors.white), onTap: closeAction)
+                        GestureDetector(child: Icon(iconCloseAction, color: Colors.white), onTap: closeAction)
                       ],
                     ),
                   ),
