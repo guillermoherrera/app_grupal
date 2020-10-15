@@ -76,4 +76,18 @@ class AsesoresProvider {
     return listaProcesada.isEmpty ? ContratoDetalle() : listaProcesada[0];
   }
 
+  Future<List<Integrante>> consultaIntegrantesCartera(int contrato, String cveCliente) async{
+    final url = Uri.https(Constants.baseURL, '/cartera/${Constants.creditoDetalle}');
+    Map<String, String> headers = {
+      'x-api-key'  : Constants.apiKey,
+      'userID'     : await _sharedActions.getUserId(),
+      'contrato'   : '$contrato',
+      'cveCliente' : cveCliente};
+
+    Integrantes integrantes = new Integrantes();
+    List<dynamic> listaProcesada = await procesaRespuestaLista(url, headers, integrantes);
+    
+    return listaProcesada.isEmpty ? [] : listaProcesada.cast<Integrante>();
+  }
+
 }

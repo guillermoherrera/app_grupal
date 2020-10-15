@@ -234,6 +234,7 @@ class _CarteraGrupoPageState extends State<CarteraGrupoPage> {
                     'noCda'       : _contratoDetalle.integrantes[index].noCda,
                     'tesorero'    : _contratoDetalle.integrantes[index].tesorero,
                     'presidente'  : _contratoDetalle.integrantes[index].presidente,
+                    'contrato'    : widget.params['contrato']
                   };
                   print(json);
                   Navigator.push(context, _customRoute.crearRutaSlide(Constants.carteraIntegrantePage, json));

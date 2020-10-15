@@ -193,7 +193,7 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
       initialFirstDate: startDate, 
       initialLastDate: endDate, 
       firstDate: DateTime(2015), 
-      lastDate: DateTime(DateTime.now().year +1)
+      lastDate: DateTime(DateTime.now().year +2)
     );
     if(picked != null && picked.length == 2){
       _getRenovaciones();

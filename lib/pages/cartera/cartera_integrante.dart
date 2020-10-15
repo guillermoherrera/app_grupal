@@ -1,6 +1,8 @@
 import 'package:app_grupal/components/body_content.dart';
 import 'package:app_grupal/components/empty_image.dart';
 import 'package:app_grupal/helpers/constants.dart';
+import 'package:app_grupal/models/integrantes_model.dart';
+import 'package:app_grupal/providers/asesores_provider.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/custom_center_loading.dart';
 import 'package:app_grupal/widgets/custom_fade_transition.dart';
@@ -20,8 +22,22 @@ class CarteraIntegrantePage extends StatefulWidget {
 }
 
 class _CarteraIntegrantePageState extends State<CarteraIntegrantePage> {
+  final _asesoresProvider = AsesoresProvider();
+  List<Integrante> _integrantes = List();
   bool _cargando = true;
   bool _showIcon = true;
+
+  @override
+  void initState(){
+    _buscarInformacion();
+    super.initState();
+  }
+
+  _buscarInformacion()async{
+    await Future.delayed(Duration(milliseconds: 1000));
+    _integrantes = await _asesoresProvider.consultaIntegrantesCartera(widget.params['contrato'], widget.params['cveCli']);
+    setState((){_cargando = false;});
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -56,12 +72,12 @@ class _CarteraIntegrantePageState extends State<CarteraIntegrantePage> {
   }
 
   _bodyContent(){
-    return !_cargando ? 
+    return _cargando ? 
     CustomCenterLoading(texto: 'Cargando información') : _showResult();
   }
 
   Widget _showResult(){
-    return true ? _infoView() : _noData();
+    return _integrantes.length > 0 ? _infoView() : _noData();
   }
 
   Widget _noData(){
@@ -86,8 +102,8 @@ class _CarteraIntegrantePageState extends State<CarteraIntegrantePage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children:[
-                  Text('Fecha Termino         : '.toUpperCase(), style: Constants.mensajeCentral2bold),
-                  Text('Fecha Ultimo Pago : '.toUpperCase(), style: Constants.mensajeCentral2bold),
+                  Text('Fecha Termino         : ${_integrantes[0].fechaTermina.substring(0,10)}'.toUpperCase(), style: Constants.mensajeCentral2bold),
+                  Text('Fecha Ultimo Pago : ${_integrantes[0].fechaUltimoPago.substring(0,10)}'.toUpperCase(), style: Constants.mensajeCentral2bold),
                 ]
               )
             ],
@@ -97,10 +113,10 @@ class _CarteraIntegrantePageState extends State<CarteraIntegrantePage> {
             children: [
               _tableRow("Nombre ", '${widget.params['nombreCom']}'),
               _tableRow("Cliente ", '${widget.params['cveCli']}'),
-              _tableRow("Importe ", '\$'),
-              _tableRow("Saldo Actual ", '\$'),
-              _tableRow("Saldo Atrasado ", '\$'),
-              _tableRow("Días Atraso ", '0'),
+              _tableRow("Importe ", '\$${_integrantes[0].importeT}'),
+              _tableRow("Saldo Actual ", '\$${_integrantes[0].saldoActual}'),
+              _tableRow("Saldo Atrasado ", '\$${_integrantes[0].salAtr}'),
+              _tableRow("Días Atraso ", '${_integrantes[0].diaAtr}'),
             ],
           ),
           SizedBox(height: 20.0),
@@ -136,13 +152,13 @@ class _CarteraIntegrantePageState extends State<CarteraIntegrantePage> {
         child:  Padding(
           padding: EdgeInsets.all(25.0),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start ,children: <Widget>[
-            Text('', style: Constants.mensajeMonto3),
+            Text('${_integrantes[0].noCda}', style: Constants.mensajeMonto3),
             Text("No. corrida".toUpperCase(), style: TextStyle(color: Constants.primaryColor, fontSize: 15)),
             SizedBox(height: 10.0),
-            Text('', style: Constants.mensajeMonto3),
+            Text('${_integrantes[0].folio}', style: Constants.mensajeMonto3),
             Text("Folio".toUpperCase(), style: TextStyle(color: Constants.primaryColor, fontSize: 15)),
             SizedBox(height: 10.0),
-            Text('', style: Constants.mensajeMonto3),
+            Text('${_integrantes[0].pagos}', style: Constants.mensajeMonto3),
             Text("Pagos".toUpperCase(), style: TextStyle(color: Constants.primaryColor, fontSize: 15)),
           ])
         ),
@@ -161,10 +177,10 @@ class _CarteraIntegrantePageState extends State<CarteraIntegrantePage> {
         child:  Padding(
           padding: EdgeInsets.all(25.0),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start ,children: <Widget>[
-            FittedBox(child: Text('\$', style: Constants.mensajeMonto3)),
+            FittedBox(child: Text('\$${_integrantes[0].capital}', style: Constants.mensajeMonto3)),
             Text("Capital".toUpperCase(), style: TextStyle(color: Constants.primaryColor, fontSize: 15)),
             SizedBox(height: 10.0),
-            Text('\$', style: Constants.mensajeMonto3),
+            Text('\$${_integrantes[0].interes}', style: Constants.mensajeMonto3),
             Text("Intereses".toUpperCase(), style: TextStyle(color: Constants.primaryColor, fontSize: 15)),
             SizedBox(height: 10.0),
             Text('${widget.params['telefonoCel']}', style: Constants.mensajeMonto3),
