@@ -1,6 +1,5 @@
 import 'package:app_grupal/components/body_content.dart';
 import 'package:app_grupal/helpers/constants.dart';
-import 'package:app_grupal/widgets/card_swiper.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
 import 'package:flutter/material.dart';
@@ -39,44 +38,38 @@ class InfoPage extends StatelessWidget {
         child: Column(
           children: [
             Hero(tag: 'info', child: Icon(Icons.info, color: Colors.white, size: 40.0,)),
-            SizedBox(height: 10.0,),
-            Text('Versión 1.0'.toUpperCase(), style: Constants.encabezadoStyle,),
-            CardSwiper(
-              listItems: _itemsCard(),
-            )
+            _texto(),
           ],
         )
       ),
     );
   }
 
-  List<Widget>_itemsCard(){
-    List<Widget> list = List();
-    for (var i = 0; i < 2; i++) {
-      list.add(
-        Container(
-          padding: EdgeInsets.all(10.0),
-          color: Color(0xffBCEA84).withOpacity(0.95),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('${i == 0 ? 'App Asesores' : 'Funciones'}'.toUpperCase(), style: Constants.mensajeInfo),
-              SizedBox(height: 10.0,),
-              i == 0 ? Image(
-                image: AssetImage(Constants.logo),
-                color: Constants.primaryColor,
-                height: 100,
-                fit: BoxFit.contain,
-              ) : Icon(Icons.settings, size: 40.0, color: Constants.primaryColor,) ,
-              Text(
-                '${i == 0 ? Constants.info1 : Constants.info2}'.toUpperCase(),
-                style: Constants.mensajeCentral,
-              )
-            ],
+  Widget _texto(){
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            child: Text(
+              Constants.info1.toUpperCase(),
+              style: Constants.subtituloStyle,
+              textAlign: TextAlign.justify,
+            ),
           ),
-        )
-      );
-    }
-    return list;
+          SizedBox(height: 10.0),
+          Container(
+            width: double.infinity,
+            child: Text(
+              Constants.info2.toUpperCase(),
+              style: Constants.subtituloStyle,
+              textAlign: TextAlign.justify,
+            ),
+          )
+        ],
+      ),
+    );
   }
+
 }

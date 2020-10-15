@@ -129,36 +129,11 @@ class _CarteraGrupoPageState extends State<CarteraGrupoPage> {
           SizedBox(height: 20.0),
           Table(
             children: [
-              TableRow(
-                children: [
-                  Container(padding: EdgeInsets.only(bottom: 10.0),child: Text("Contrato ".toUpperCase(), style: Constants.mensajeMonto2)),
-                  Align(child:Text( '${widget.params['contrato']}', style: Constants.mensajeMonto3), alignment: Alignment.centerRight),
-                ]
-              ),
-              TableRow(
-                children: [
-                  Container(padding: EdgeInsets.only(bottom: 10.0),child: Text("Importe Total ".toUpperCase(), style: Constants.mensajeMonto2)),
-                  Align(child:Text('\$${_contratoDetalle.contrato.importe.toStringAsFixed(2)}', style:Constants.mensajeMonto3), alignment: Alignment.centerRight),
-                ]
-              ),
-              TableRow(
-                children: [
-                  Container(padding: EdgeInsets.only(bottom: 10.0),child: Text("Saldo Actual ".toUpperCase(), style: Constants.mensajeMonto2)),
-                  Align(child:Text('\$${_contratoDetalle.contrato.saldoActual.toStringAsFixed(2)}', style: Constants.mensajeMonto3), alignment: Alignment.centerRight),
-                ]
-              ),
-              TableRow(
-                children: [
-                  Container(padding: EdgeInsets.only(bottom: 10.0),child: Text("Saldo Atrasado ".toUpperCase(), style: Constants.mensajeMonto2)),
-                  Align(child:Text('\$${_contratoDetalle.contrato.saldoAtrazado.toStringAsFixed(2)}', style: Constants.mensajeMonto3), alignment: Alignment.centerRight),
-                ]
-              ),
-              TableRow(
-                children: [
-                  Container(padding: EdgeInsets.only(bottom: 10.0),child: Text("Días Atraso ".toUpperCase(), style: Constants.mensajeMonto2)),
-                  Align(child:Text('${_contratoDetalle.contrato.diasAtrazo}', style: Constants.mensajeMonto3), alignment: Alignment.centerRight),
-                ]
-              ),
+              _tableRow('Contrato'      , '${widget.params['contrato']}'),
+              _tableRow('Importe Total' , '\$${_contratoDetalle.contrato.importe.toStringAsFixed(2)}'),
+              _tableRow('Saldo Actual'  , '\$${_contratoDetalle.contrato.saldoActual.toStringAsFixed(2)}'),
+              _tableRow('Saldo Atrasado', '\$${_contratoDetalle.contrato.saldoAtrazado.toStringAsFixed(2)}'),
+              _tableRow('Días Atraso'   , '${_contratoDetalle.contrato.diasAtrazo}'),
             ],
           ),
           SizedBox(height: 20.0),
@@ -171,6 +146,15 @@ class _CarteraGrupoPageState extends State<CarteraGrupoPage> {
           )
         ],
       ),
+    );
+  }
+
+  TableRow _tableRow(String title, String data){
+    return TableRow(
+      children: [
+        Container(padding: EdgeInsets.only(bottom: 10.0),child: Text(title.toUpperCase(), style: Constants.mensajeMonto2)),
+        Align(child:Text(data, style: Constants.mensajeMonto3), alignment: Alignment.centerRight),
+      ]
     );
   }
 
@@ -251,6 +235,7 @@ class _CarteraGrupoPageState extends State<CarteraGrupoPage> {
                     'tesorero'    : _contratoDetalle.integrantes[index].tesorero,
                     'presidente'  : _contratoDetalle.integrantes[index].presidente,
                   };
+                  print(json);
                   Navigator.push(context, _customRoute.crearRutaSlide(Constants.carteraIntegrantePage, json));
                 },
                 child: ListTile(

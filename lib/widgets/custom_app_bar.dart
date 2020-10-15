@@ -20,22 +20,27 @@ class CustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 50.0, bottom: 25.0),
-      child: AppBar(
-        centerTitle: true,
-        elevation: 0.0,
-        backgroundColor: Colors.transparent,
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Hero(
-          tag: heroTag,
-          child: Image(
-            image: AssetImage(Constants.logo),
-            color: Colors.white,
-            height: height / 13,
-            fit: BoxFit.contain,
+      child: Column(
+        children: [
+          AppBar(
+            centerTitle: true,
+            elevation: 0.0,
+            backgroundColor: Colors.transparent,
+            iconTheme: IconThemeData(color: Colors.white),
+            title: Hero(
+              tag: heroTag,
+              child: Image(
+                image: AssetImage(Constants.logo),
+                color: Colors.white,
+                height: height / 13,
+                fit: BoxFit.contain,
+              ),
+            ),
+            actions: actions,
+            leading: leading,
           ),
-        ),
-        actions: actions,
-        leading: leading,
+          Text('v 1.0'.toUpperCase(), style: Constants.encabezadoStyle,),
+        ],
       ),
     );
   }

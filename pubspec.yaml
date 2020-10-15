@@ -44,7 +44,6 @@ dependencies:
   diacritic: ^0.1.1
   firebase_storage: ^4.0.1
   mime_type: ^0.3.2
-  flutter_swiper: ^1.1.6
 
 dev_dependencies:
   flutter_test:
