@@ -19,14 +19,16 @@ class ConfiashopPage extends StatefulWidget {
 
 class _ConfiashopPageState extends State<ConfiashopPage> {
   final _flutterWebviewPlugin = FlutterWebviewPlugin();
-  String _selectedUrl = 'https://confia-dev.supernova-desarrollo.com/?meta=1&page=mobile&env=dist&tk1=D865&tk2=&benefit=1';
+  String _selectedUrl = '';
   bool _getTicket = false;
   bool cargando = true;
 
   @override
   void initState() {
+    _selectedUrl = 'https://confia-dev.supernova-desarrollo.com/?meta=1&page=mobile&env=dist&tk1=${widget.params['cveCli']}&tk2=&benefit=${widget.params['categoria']}';
     
     _flutterWebviewPlugin.onStateChanged.listen((state) async {
+      print('URL --> ${state.url}');
       if (state.type == WebViewState.finishLoad) {
         String script =
             'window.addEventListener("message", receiveMessage, false);' +
@@ -42,6 +44,7 @@ class _ConfiashopPageState extends State<ConfiashopPage> {
       }
     });
 
+    setState(() {});
     super.initState();
   }
 

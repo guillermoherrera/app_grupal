@@ -259,7 +259,7 @@ class _RenovacionesIntegrentePageState extends State<RenovacionesIntegrentePage>
                   borderColor: Colors.blue,
                   primaryColor: Colors.blue,
                   textColor: Colors.white,
-                  action: ()=>Navigator.push(context, _customRoute.crearRutaSlide(Constants.confiashopPage, {'index': widget.params['index']}, setTicket: _actulizaTicket)),
+                  action: ()=>Navigator.push(context, _customRoute.crearRutaSlide(Constants.confiashopPage, {'index': widget.params['index'], 'cveCli': 'D865', 'categoria': 1}, setTicket: _actulizaTicket)),
                 ),
               ),
             ],

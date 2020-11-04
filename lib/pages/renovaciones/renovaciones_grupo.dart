@@ -317,7 +317,7 @@ class _RenovacionesGrupoPageState extends State<RenovacionesGrupoPage> {
     List<ListTileModel> listTiles = List();
     _renovacionIntegrantes.asMap().forEach((index, integrante) {
       final listTile = ListTileModel(
-        title: Row(
+        title: Wrap(
           children: [
             Text(
               '${integrante.nombreCompleto} ', 

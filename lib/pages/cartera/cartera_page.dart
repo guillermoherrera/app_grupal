@@ -26,9 +26,11 @@ class _CarteraPageState extends State<CarteraPage> with AutomaticKeepAliveClient
     contratos.clear();
     cargando = true;
     await Future.delayed(Duration(milliseconds: 1000));
-    contratos = await _asesoresProvider.consultaCartera();
-    cargando = false;
-    if(this.mounted)setState((){});
+    if(this.mounted){
+      contratos = await _asesoresProvider.consultaCartera();
+      cargando = false;
+      setState((){});
+    }
   }
 
   @override
