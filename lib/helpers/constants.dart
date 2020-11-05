@@ -14,6 +14,9 @@ class Constants{
   static final String passwordPage = 'paswwordPage';
   static final String carteraGrupoPage = 'carteraGrupoPage';
   static final String carteraIntegrantePage = 'carteraIntegrantePage';
+  static final String nuevoGrupoPage = 'nuevoGrupoPage';
+  static final String gruposPage = 'gruposPage';
+  static final String notificacionesPage = 'notificacionesPage';
 
   static final Color primaryColor = Color(0xff76BD21);
   static final Color defaultColor = Color(0xfff2f2f2);

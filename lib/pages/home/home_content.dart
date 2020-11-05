@@ -6,6 +6,7 @@ import 'package:app_grupal/pages/cartera/cartera_page.dart';
 import 'package:app_grupal/pages/home/home_dashboard.dart';
 import 'package:app_grupal/pages/home/home_empty_page.dart';
 import 'package:app_grupal/pages/renovaciones/renovaciones.dart';
+import 'package:app_grupal/pages/solicitudes/solicitudes_page.dart';
 import 'package:app_grupal/providers/db_provider.dart';
 import 'package:app_grupal/providers/firebase_provider.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
@@ -37,7 +38,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _getLastGrupos();
     super.initState();
   }
@@ -72,7 +73,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
       bottom: Container(
         color: Constants.defaultColor,
         child: TabBar(
-          labelStyle: TextStyle(fontWeight: FontWeight.bold),
+          labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
           labelColor: Colors.blue,
           unselectedLabelColor: Color.fromRGBO(116, 117, 152, 1.0),
           controller: _tabController,
@@ -107,13 +108,18 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
         iconMargin: EdgeInsets.all(0),
       ),
       Tab(
+        icon: Icon(Icons.group_add),
+        text: 'SOLICITUD',
+        iconMargin: EdgeInsets.all(0),
+      ),
+      Tab(
         icon: Icon(Icons.account_balance_wallet),
         text: 'CARTERA',
         iconMargin: EdgeInsets.all(0),
       ),
       Tab(
         icon: Icon(Icons.cached),
-        text: 'RENOVACIONES',
+        text: 'RENOVACION',
         iconMargin: EdgeInsets.all(0),
       )
     ];
@@ -125,6 +131,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
       children: [
         cargando ? CustomCenterLoading(texto: 'Iniciando App') : 
           _ultimosq15Grupos.isEmpty ? _emptyPage() : HomeDashboardPage(grupos: _ultimosq15Grupos, scaffoldKey: widget.scaffoldKey, getLastGrupos: ()=>_getLastGrupos(), sincroniza: _sincroniza),
+        SolicitudesPage(),
         CarteraPage(),
         RenovacionesPage(getLastGrupos: ()=>_getLastGrupos(), sincroniza: _sincroniza),
       ],
@@ -150,6 +157,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
             icon: cargando ? Icons.watch_later : _gruposSinEnviar.isEmpty ? Icons.check_circle_outline : Icons.error_outline,
             encabezado: cargando ? 'Iniciando App' : _gruposSinEnviar.isEmpty ? 'Créditos Grupales' : 'Hay Grupos pendientes', 
             subtitulo: cargando ? 'Cargando información' : _gruposSinEnviar.isEmpty ? 'Sin solicitudes por enviar' : 'Tienes ${_gruposSinEnviar.length} grupo(s) pendiente(s) de enviar'),
+          Encabezado(icon: Icons.assignment, encabezado: 'Solicitudes', subtitulo: 'Genera y revisa solicitudes de crédito.'),
           Encabezado(icon: Icons.assignment, encabezado: 'Cartera', subtitulo: 'Grupos en mi cartera.'),
           Encabezado(icon: Icons.assignment, encabezado: 'Renovaciones', subtitulo: 'Grupos proximos a liquidar.'),
         ],

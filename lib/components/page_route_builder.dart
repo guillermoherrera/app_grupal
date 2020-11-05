@@ -3,6 +3,9 @@ import 'package:app_grupal/pages/cartera/cartera_integrante.dart';
 import 'package:app_grupal/pages/confiashop/confiashop_page.dart';
 import 'package:app_grupal/pages/drawer/info_page.dart';
 import 'package:app_grupal/pages/solicitud/solicitud_page.dart';
+import 'package:app_grupal/pages/solicitudes/grupos.dart';
+import 'package:app_grupal/pages/solicitudes/notificaciones.dart';
+import 'package:app_grupal/pages/solicitudes/nuevo_grupo.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_grupal/helpers/constants.dart';
@@ -56,6 +59,12 @@ class CustomRouteTransition{
       return CarteraGrupoPage(params: params);
     }else if(ruta == Constants.carteraIntegrantePage){
       return CarteraIntegrantePage(params: params);
+    }else if(ruta == Constants.nuevoGrupoPage){
+      return NuevoGrupoPage(params: params);
+    }else if(ruta == Constants.gruposPage){
+      return GruposPage(params: params);
+    }else if(ruta == Constants.notificacionesPage){
+      return NotificacionPage();
     }
     return RootPage();
   }
