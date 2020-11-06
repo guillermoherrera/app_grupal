@@ -94,7 +94,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
         trailing: Column(
           children: [
             Text('Status'.toUpperCase(), style: Constants.mensajeCentral2),
-            Text('${grupo.status == 1 ? 'Pendiente' : 'Enviado'}'.toUpperCase(), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: grupo.status == 1 ? Colors.yellow[700] : grupo.status == 2 ? Constants.primaryColor : Colors.black),)
+            Text('${grupo.status == 0 ? 'Captura' : grupo.status == 1 ? 'Pendiente' : 'Enviado'}'.toUpperCase(), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: grupo.status == 1 ? Colors.yellow[700] : grupo.status == 2 ? Constants.primaryColor : Colors.grey),)
           ],
         )//Text('Status\n ${grupo.status == 1 ? 'Pendinte' : 'Enviado'}', textAlign: TextAlign.center,)
       );
@@ -183,8 +183,8 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
                   return WidgetANimator(
                     GestureDetector(
                       onTap: (){
-                        final json = {'nombre': widget.grupos[index].nombreGrupo, 'contrato': widget.grupos[index].contratoId, 'status': widget.grupos[index].status == 1 ? 'Pendiente' : 'Enviado'};
-                        Navigator.push(context, _customRoute.crearRutaSlide(Constants.renovacionGrupoPage, json));
+                        final json = {'nombre': widget.grupos[index].nombreGrupo, 'contrato': widget.grupos[index].contratoId, 'idGrupo': widget.grupos[index].idGrupo, 'status': widget.grupos[index].status == 1 ? 'Pendiente' : 'Enviado'};
+                        widget.grupos[index].contratoId > 0 ? Navigator.push(context, _customRoute.crearRutaSlide(Constants.renovacionGrupoPage, json)) : Navigator.push(context, _customRoute.crearRutaSlide(Constants.grupoPage, json));
                       },
                       child: CustomListTile(
                         title: listTiles[index].title,

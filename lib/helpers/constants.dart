@@ -17,6 +17,7 @@ class Constants{
   static final String nuevoGrupoPage = 'nuevoGrupoPage';
   static final String gruposPage = 'gruposPage';
   static final String notificacionesPage = 'notificacionesPage';
+  static final String grupoPage = 'grupoPage';
 
   static final Color primaryColor = Color(0xff76BD21);
   static final Color defaultColor = Color(0xfff2f2f2);

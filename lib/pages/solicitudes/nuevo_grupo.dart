@@ -1,5 +1,9 @@
+import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/components/body_content.dart';
+import 'package:app_grupal/components/page_route_builder.dart';
 import 'package:app_grupal/helpers/constants.dart';
+import 'package:app_grupal/models/grupos_model.dart';
+import 'package:app_grupal/providers/db_provider.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/custom_dialog.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
@@ -21,10 +25,13 @@ class NuevoGrupoPage extends StatefulWidget {
 }
 
 class _NuevoGrupoPageState extends State<NuevoGrupoPage> {
+  final _sharedActions = SharedActions();
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _formKeyDatos = new GlobalKey<FormState>();
   final _nombreGrupoController = TextEditingController();
   final _customSnakBar = new CustomSnakBar();
+  final _customRoute = CustomRouteTransition();
+  String userID;
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +173,25 @@ class _NuevoGrupoPageState extends State<NuevoGrupoPage> {
   }
 
   _crearGrupo() async{
-
+    Navigator.pop(context);
+    userID = await _sharedActions.getUserId();
+    Grupo grupo = Grupo(
+      cantidadSolicitudes: 0,
+      importeGrupo: 0,
+      nombreGrupo: _nombreGrupoController.text,
+      status: 0,
+      userID: userID,
+      contratoId: 0
+    );
+    try{
+      DBProvider.db.nuevoGrupo(grupo).then((value)async{
+        Navigator.push(context, _customRoute.crearRutaSlide(Constants.grupoPage, {'nombre': _nombreGrupoController.text, 'idGrupo': value}));
+        _nombreGrupoController.text = "";
+        setState((){});
+      });
+    }catch(e){
+      _error('No pudo crearse el grupo.\n$e');
+    }
   }
 
   _error(String error){

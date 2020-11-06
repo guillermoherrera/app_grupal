@@ -3,6 +3,7 @@ import 'package:app_grupal/pages/cartera/cartera_integrante.dart';
 import 'package:app_grupal/pages/confiashop/confiashop_page.dart';
 import 'package:app_grupal/pages/drawer/info_page.dart';
 import 'package:app_grupal/pages/solicitud/solicitud_page.dart';
+import 'package:app_grupal/pages/solicitudes/grupo.dart';
 import 'package:app_grupal/pages/solicitudes/grupos.dart';
 import 'package:app_grupal/pages/solicitudes/notificaciones.dart';
 import 'package:app_grupal/pages/solicitudes/nuevo_grupo.dart';
@@ -65,6 +66,8 @@ class CustomRouteTransition{
       return GruposPage(params: params);
     }else if(ruta == Constants.notificacionesPage){
       return NotificacionPage();
+    }else if(ruta == Constants.grupoPage){
+      return GrupoPage(params: params);
     }
     return RootPage();
   }

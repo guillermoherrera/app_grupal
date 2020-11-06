@@ -265,6 +265,13 @@ class DBProvider{
     return list;
   }
 
+  Future<List<Grupo>> getGruposCreados() async{
+    final db = await database;
+    final res = await db.query(Constants.gruposTable, where: '${Constants.contratoId} = ?', whereArgs: [0]);
+    List<Grupo> list = res.isNotEmpty ? res.map((e) => Grupo.fromjson(e)).toList() : [];
+    return list;
+  }
+
   Future<List<Grupo>> getLastGrupos(String uid) async{
     final db = await database;
     final res = await db.query(Constants.gruposTable, where: '${Constants.userID} = ?', whereArgs: [uid], orderBy: '${Constants.idGrupo} DESC', limit: 15);

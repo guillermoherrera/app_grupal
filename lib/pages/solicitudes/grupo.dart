@@ -1,45 +1,42 @@
 import 'package:app_grupal/components/body_content.dart';
-import 'package:app_grupal/components/empty_image.dart';
 import 'package:app_grupal/components/page_route_builder.dart';
 import 'package:app_grupal/helpers/constants.dart';
-import 'package:app_grupal/models/grupos_model.dart';
 import 'package:app_grupal/models/list_tile_model.dart';
+import 'package:app_grupal/models/solicitud_model.dart';
 import 'package:app_grupal/providers/db_provider.dart';
 import 'package:app_grupal/widgets/animator.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/custom_center_loading.dart';
-import 'package:app_grupal/widgets/custom_fade_transition.dart';
 import 'package:app_grupal/widgets/custom_list_tile.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
 import 'package:flutter/material.dart';
 
-class GruposPage extends StatefulWidget {
-  const GruposPage({
+class GrupoPage extends StatefulWidget {
+  const GrupoPage({
     Key key, 
     this.params
   }) : super(key: key);
 
   final Map<String, dynamic> params;
-
   @override
-  _GruposPageState createState() => _GruposPageState();
+  _GrupoPageState createState() => _GrupoPageState();
 }
 
-class _GruposPageState extends State<GruposPage> {
+class _GrupoPageState extends State<GrupoPage> {
   final _customRoute = CustomRouteTransition();
-  List<Grupo> _grupos = List();
+  List<Solicitud> _integrantes = [];
   bool _cargando = true;
   bool _showIcon = true;
 
   @override
   void initState() {
-    _buscarGrupos();
+    _buscarIntegrantes();
     super.initState();
   }
 
-  _buscarGrupos()async{
+  _buscarIntegrantes()async{
     await Future.delayed(Duration(milliseconds: 1000));
-    _grupos = await DBProvider.db.getGruposCreados();
+    _integrantes = await DBProvider.db.getSolicitudesByGrupo(widget.params['idGrupo']);
     _cargando = false;
     setState((){});
   }
@@ -47,7 +44,6 @@ class _GruposPageState extends State<GruposPage> {
   @override
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
-
     return Scaffold(
       body: BodyContent(
         appBar: _appBar(_height),
@@ -64,13 +60,13 @@ class _GruposPageState extends State<GruposPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Mis Grupos Creados'.toUpperCase(), style: Constants.mensajeCentral),
-                      Text('en este dispositivo'.toUpperCase(), style: Constants.mensajeCentral2),
+                      Text('${widget.params['nombre']}'.toUpperCase(), style: Constants.mensajeCentral),
+                      Text('Integrantes 0 | Capital 0.0'.toUpperCase(), style: Constants.mensajeCentral2),
                     ]
                   ),
                   Column(
                     children: [
-                      Icon(Icons.group, color: Constants.primaryColor),
+                      Icon(Icons.person, color: Constants.primaryColor),
                       Text('0'.toUpperCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor)),
                     ],
                   ),
@@ -91,6 +87,17 @@ class _GruposPageState extends State<GruposPage> {
     return CustomAppBar(
       height: _height,
       heroTag: 'logo',
+      actions: [
+        ShakeTransition(child: 
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20.0), 
+            child: IconButton(
+              icon: Icon(Icons.add_circle_outline, size: 40.0),
+              onPressed: () => Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, {'nombreGrupo': widget.params['nombre'], 'contratoId': widget.params['contrato'], 'idGrupo': widget.params['idGrupo']}))
+            )
+          )
+        ),
+      ],
       leading: !_showIcon ? Container() :
         ShakeTransition(
           child: IconButton(
@@ -110,34 +117,46 @@ class _GruposPageState extends State<GruposPage> {
   }
 
   Widget _showResult(){
-    return _grupos.length > 0 ? _lista() : _noData();
+    return _integrantes.length > 0 ? _lista() : _noData();
   }
 
   Widget _noData(){
-    return Container(
-      color: Colors.white,
-      child: Stack(children: [
-        CustomFadeTransition(child: EmptyImage(text: 'No hay grupos creados'), duration: Duration(milliseconds: 2000),),
-        ListView()
-      ]),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          color: Colors.white,
+          child: Wrap(
+            direction: Axis.horizontal,
+            children: [
+              Text('\nPresiona '.toUpperCase(), style: Constants.mensajeCentral),
+              IconButton(
+                icon: Icon(Icons.add_circle_outline, size: 30.0),
+                onPressed: () => Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, {'nombreGrupo': widget.params['nombre'], 'contratoId': widget.params['contrato'], 'idGrupo': widget.params['idGrupo']}))
+              ),
+              Text('\n para agregar integrantes'.toUpperCase(), style: Constants.mensajeCentral),
+            ],
+          )
+        ),
+      ],
     );
   }
 
   Widget _lista(){
     List<ListTileModel> listTiles = List();
-    _grupos.asMap().forEach((index, grupo) {
+    _integrantes.asMap().forEach((index, integrante) {
       final listTile = ListTileModel(
         title: Wrap(
           children: [
             Text(
-              '${grupo.nombreGrupo} ', 
+              '${integrante.nombre} ${integrante.segundoNombre} ${integrante.primerApellido} ${integrante.segundoApellido}', 
               style: Constants.mensajeCentral, 
               overflow: TextOverflow.ellipsis
             ),   
           ],
         ),
-        subtitle: 'Importe: ${grupo.importeGrupo} | Integrantes: ${grupo.cantidadSolicitudes}'.toUpperCase(),
-        trailing: Icon(Icons.arrow_forward_ios, color: Constants.primaryColor),
+        subtitle: 'Importe capital: ${integrante.capital}'.toUpperCase(),
+        //trailing: Icon(Icons.arrow_forward_ios, color: Constants.primaryColor),
       );
       listTiles.add(listTile);
     });
@@ -147,13 +166,13 @@ class _GruposPageState extends State<GruposPage> {
       removeTop: true,
       child: ListView.builder(
         physics: BouncingScrollPhysics(),
-        itemCount: _grupos.length,// + 1,
+        itemCount: _integrantes.length,// + 1,
         itemBuilder: (context, index){
           //if(index == _integrantes.length)
           //  return SizedBox(height: 50.0);
           return WidgetANimator(
             GestureDetector(
-              onTap: (){Navigator.push(context, _customRoute.crearRutaSlide(Constants.grupoPage, {'nombre': _grupos[index].nombreGrupo, 'idGrupo': _grupos[index].idGrupo}));},
+              onTap: (){},
               child: CustomListTile(
                 title: listTiles[index].title,
                 subtitle: listTiles[index].subtitle,

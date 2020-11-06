@@ -318,6 +318,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
   _crearSolicitud() async{
     _solicitud.contratoId = widget.params['contratoId'];
     _solicitud.nombreGrupo = widget.params['nombreGrupo'];
+    _solicitud.idGrupo = widget.params['idGrupo'];
     _solicitud.status = 0;
     _solicitud.tipoContrato = 2;
     _solicitud.userID = _userID;
@@ -332,7 +333,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
     Navigator.pop(context);//cierra el popUp
     //int id = await DBProvider.db.nuevaSolicitud(_solicitud);
     if(_solicitud.idSolicitud != null && _solicitud.idSolicitud > 0){
-      widget.getNewIntegrante(_solicitud.idSolicitud);
+      if(widget.getNewIntegrante != null) widget.getNewIntegrante(_solicitud.idSolicitud);
       _success('Solicitud creada con éxito');
       await Future.delayed(Duration(milliseconds: 2000));
       Navigator.pop(context);//cierra el formulairio

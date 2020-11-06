@@ -37,8 +37,8 @@ class _NotificacionPageState extends State<NotificacionPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Mis Notificaciones'.toUpperCase(), style: Constants.mensajeCentral),
-                      Text('en este dispositivo'.toUpperCase(), style: Constants.mensajeCentral2),
+                      Text('Mis Mensajes'.toUpperCase(), style: Constants.mensajeCentral),
+                      Text('de mesa de crédito'.toUpperCase(), style: Constants.mensajeCentral2),
                     ]
                   ),
                   Column(
@@ -90,7 +90,7 @@ class _NotificacionPageState extends State<NotificacionPage> {
     return Container(
       color: Colors.white,
       child: Stack(children: [
-        CustomFadeTransition(child: EmptyImage(text: 'No hay notificaciones'), duration: Duration(milliseconds: 2000),),
+        CustomFadeTransition(child: EmptyImage(text: 'No hay mensajes'), duration: Duration(milliseconds: 2000),),
         ListView()
       ]),
     );

@@ -41,7 +41,7 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
         ),
         TableRow(
           children: [
-            _creaBoton(Constants.primaryColor, Icons.notifications, 'Notificaciones', (){Navigator.push(context, _customRoute.crearRutaSlide(Constants.notificacionesPage, {}));}),
+            _creaBoton(Constants.primaryColor, Icons.notifications, 'Mensajes', (){Navigator.push(context, _customRoute.crearRutaSlide(Constants.notificacionesPage, {}));}),
           ]
         )
       ],
