@@ -61,13 +61,13 @@ class CustomRouteTransition{
     }else if(ruta == Constants.carteraIntegrantePage){
       return CarteraIntegrantePage(params: params);
     }else if(ruta == Constants.nuevoGrupoPage){
-      return NuevoGrupoPage(params: params);
+      return NuevoGrupoPage(params: params, getLastGrupos: getLastGrupos);
     }else if(ruta == Constants.gruposPage){
-      return GruposPage(params: params);
+      return GruposPage(params: params, getLastGrupos: getLastGrupos);
     }else if(ruta == Constants.notificacionesPage){
       return NotificacionPage();
     }else if(ruta == Constants.grupoPage){
-      return GrupoPage(params: params);
+      return GrupoPage(params: params, getLastGrupos: getLastGrupos);
     }
     return RootPage();
   }

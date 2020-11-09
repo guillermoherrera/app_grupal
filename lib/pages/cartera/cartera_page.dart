@@ -126,7 +126,7 @@ class _CarteraPageState extends State<CarteraPage> with AutomaticKeepAliveClient
               context: context,
               removeTop: true,
               child: ListView.builder(
-                physics: BouncingScrollPhysics(),
+                //physics: BouncingScrollPhysics(),
                 itemCount: contratos.length + 1,
                 itemBuilder: (context, index){
                   if(index == contratos.length)

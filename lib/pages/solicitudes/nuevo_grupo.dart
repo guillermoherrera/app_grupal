@@ -15,10 +15,12 @@ import 'package:flutter/material.dart';
 class NuevoGrupoPage extends StatefulWidget {
   const NuevoGrupoPage({
     Key key,
-    this.params
+    this.params,
+    this.getLastGrupos
   }) : super(key: key);
 
   final Map<String, dynamic> params;
+  final VoidCallback getLastGrupos;
   
   @override
   _NuevoGrupoPageState createState() => _NuevoGrupoPageState();
@@ -185,7 +187,7 @@ class _NuevoGrupoPageState extends State<NuevoGrupoPage> {
     );
     try{
       DBProvider.db.nuevoGrupo(grupo).then((value)async{
-        Navigator.push(context, _customRoute.crearRutaSlide(Constants.grupoPage, {'nombre': _nombreGrupoController.text, 'idGrupo': value}));
+        Navigator.pushReplacement(context, _customRoute.crearRutaSlide(Constants.grupoPage, {'nombre': _nombreGrupoController.text, 'idGrupo': value}, getLastGrupos: widget.getLastGrupos));
         _nombreGrupoController.text = "";
         setState((){});
       });

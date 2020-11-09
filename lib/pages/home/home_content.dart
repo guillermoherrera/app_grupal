@@ -131,7 +131,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
       children: [
         cargando ? CustomCenterLoading(texto: 'Iniciando App') : 
           _ultimosq15Grupos.isEmpty ? _emptyPage() : HomeDashboardPage(grupos: _ultimosq15Grupos, scaffoldKey: widget.scaffoldKey, getLastGrupos: ()=>_getLastGrupos(), sincroniza: _sincroniza),
-        SolicitudesPage(),
+        SolicitudesPage(getLastGrupos: ()=>_getLastGrupos(), sincroniza: _sincroniza),
         CarteraPage(),
         RenovacionesPage(getLastGrupos: ()=>_getLastGrupos(), sincroniza: _sincroniza),
       ],

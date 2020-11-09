@@ -16,16 +16,19 @@ import 'package:flutter/material.dart';
 class GruposPage extends StatefulWidget {
   const GruposPage({
     Key key, 
-    this.params
+    this.params,
+    this.getLastGrupos
   }) : super(key: key);
 
   final Map<String, dynamic> params;
+  final VoidCallback getLastGrupos;
 
   @override
   _GruposPageState createState() => _GruposPageState();
 }
 
 class _GruposPageState extends State<GruposPage> {
+  GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
   final _customRoute = CustomRouteTransition();
   List<Grupo> _grupos = List();
   bool _cargando = true;
@@ -42,6 +45,11 @@ class _GruposPageState extends State<GruposPage> {
     _grupos = await DBProvider.db.getGruposCreados();
     _cargando = false;
     setState((){});
+  }
+
+  _recargarGrupos()async{
+    widget.getLastGrupos();
+    await _buscarGrupos();
   }
 
   @override
@@ -71,7 +79,7 @@ class _GruposPageState extends State<GruposPage> {
                   Column(
                     children: [
                       Icon(Icons.group, color: Constants.primaryColor),
-                      Text('0'.toUpperCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor)),
+                      Text('${_grupos.length}'.toUpperCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor)),
                     ],
                   ),
                 ],
@@ -106,7 +114,12 @@ class _GruposPageState extends State<GruposPage> {
 
   _bodyContent(){
     return _cargando ? 
-    CustomCenterLoading(texto: 'Cargando información') : _showResult();
+    CustomCenterLoading(texto: 'Cargando información') :
+    RefreshIndicator(
+      key: _refreshKey,
+      onRefresh: () =>_buscarGrupos(),
+      child: _showResult()
+    );
   }
 
   Widget _showResult(){
@@ -146,14 +159,14 @@ class _GruposPageState extends State<GruposPage> {
       context: context,
       removeTop: true,
       child: ListView.builder(
-        physics: BouncingScrollPhysics(),
+        //physics: BouncingScrollPhysics(),
         itemCount: _grupos.length,// + 1,
         itemBuilder: (context, index){
           //if(index == _integrantes.length)
           //  return SizedBox(height: 50.0);
           return WidgetANimator(
             GestureDetector(
-              onTap: (){Navigator.push(context, _customRoute.crearRutaSlide(Constants.grupoPage, {'nombre': _grupos[index].nombreGrupo, 'idGrupo': _grupos[index].idGrupo}));},
+              onTap: (){Navigator.push(context, _customRoute.crearRutaSlide(Constants.grupoPage, {'nombre': _grupos[index].nombreGrupo, 'idGrupo': _grupos[index].idGrupo}, getLastGrupos: _recargarGrupos));},
               child: CustomListTile(
                 title: listTiles[index].title,
                 subtitle: listTiles[index].subtitle,

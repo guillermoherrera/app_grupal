@@ -5,6 +5,15 @@ import 'package:app_grupal/helpers/constants.dart';
 import 'package:flutter/material.dart';
 
 class SolicitudesPage extends StatefulWidget {
+  const SolicitudesPage({
+    Key key, 
+    this.getLastGrupos, 
+    this.sincroniza
+  }) : super(key: key);
+
+  final VoidCallback getLastGrupos;
+  final Future<bool> Function() sincroniza;
+
   @override
   _SolicitudesPageState createState() => _SolicitudesPageState();
 }
@@ -31,12 +40,12 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
       children: [
         TableRow(
           children: [
-            _creaBoton(Constants.primaryColor, Icons.group_add, 'Agregar Grupo Nuevo', (){Navigator.push(context, _customRoute.crearRutaSlide(Constants.nuevoGrupoPage, {}));} ),
+            _creaBoton(Constants.primaryColor, Icons.group_add, 'Agregar Grupo Nuevo', (){Navigator.push(context, _customRoute.crearRutaSlide(Constants.nuevoGrupoPage, {}, getLastGrupos: widget.getLastGrupos));} ),
           ]
         ),
         TableRow(
           children: [
-            _creaBoton(Constants.primaryColor, Icons.group, 'Ver Grupos Creados', (){Navigator.push(context, _customRoute.crearRutaSlide(Constants.gruposPage, {}));} )
+            _creaBoton(Constants.primaryColor, Icons.group, 'Ver Grupos Creados', (){Navigator.push(context, _customRoute.crearRutaSlide(Constants.gruposPage, {}, getLastGrupos: widget.getLastGrupos));} )
           ]
         ),
         TableRow(

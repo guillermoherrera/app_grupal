@@ -89,7 +89,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
     widget.grupos.forEach((grupo) {
       final listTile = ListTileModel(
         title: Text(grupo.nombreGrupo, style: Constants.mensajeCentral, overflow: TextOverflow.ellipsis),
-        subtitle: 'Capital Total: ${grupo.importeGrupo} | Integrantes: ${grupo.cantidadSolicitudes}\n${grupo.contratoId != null ? "contrato historial: ${grupo.contratoId}" : 'Grupo nuevo'}'.toUpperCase(),
+        subtitle: 'Capital Total: ${grupo.importeGrupo} | Integrantes: ${grupo.cantidadSolicitudes}\n${grupo.contratoId != 0 ? "contrato historial: ${grupo.contratoId}" : 'Grupo nuevo'}'.toUpperCase(),
         leading: Icon(Icons.group),
         trailing: Column(
           children: [
@@ -184,7 +184,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
                     GestureDetector(
                       onTap: (){
                         final json = {'nombre': widget.grupos[index].nombreGrupo, 'contrato': widget.grupos[index].contratoId, 'idGrupo': widget.grupos[index].idGrupo, 'status': widget.grupos[index].status == 1 ? 'Pendiente' : 'Enviado'};
-                        widget.grupos[index].contratoId > 0 ? Navigator.push(context, _customRoute.crearRutaSlide(Constants.renovacionGrupoPage, json)) : Navigator.push(context, _customRoute.crearRutaSlide(Constants.grupoPage, json));
+                        widget.grupos[index].contratoId > 0 ? Navigator.push(context, _customRoute.crearRutaSlide(Constants.renovacionGrupoPage, json, getLastGrupos: widget.getLastGrupos, sincroniza: widget.sincroniza)) : Navigator.push(context, _customRoute.crearRutaSlide(Constants.grupoPage, json, getLastGrupos: widget.getLastGrupos));
                       },
                       child: CustomListTile(
                         title: listTiles[index].title,

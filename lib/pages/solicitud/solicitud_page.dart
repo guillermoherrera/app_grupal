@@ -333,7 +333,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
     Navigator.pop(context);//cierra el popUp
     //int id = await DBProvider.db.nuevaSolicitud(_solicitud);
     if(_solicitud.idSolicitud != null && _solicitud.idSolicitud > 0){
-      if(widget.getNewIntegrante != null) widget.getNewIntegrante(_solicitud.idSolicitud);
+      widget.getNewIntegrante(_solicitud.idSolicitud);
       _success('Solicitud creada con éxito');
       await Future.delayed(Duration(milliseconds: 2000));
       Navigator.pop(context);//cierra el formulairio

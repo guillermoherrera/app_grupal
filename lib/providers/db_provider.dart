@@ -267,7 +267,7 @@ class DBProvider{
 
   Future<List<Grupo>> getGruposCreados() async{
     final db = await database;
-    final res = await db.query(Constants.gruposTable, where: '${Constants.contratoId} = ?', whereArgs: [0]);
+    final res = await db.query(Constants.gruposTable, where: '${Constants.contratoId} = ?', whereArgs: [0], orderBy: '${Constants.idGrupo} DESC');
     List<Grupo> list = res.isNotEmpty ? res.map((e) => Grupo.fromjson(e)).toList() : [];
     return list;
   }
@@ -295,6 +295,12 @@ class DBProvider{
   Future<int> updateGrupoGrupoID(int idGrupo, String grupoID)async{
     final db = await database;
     final res = db.update(Constants.gruposTable, {'${Constants.grupoID}': grupoID});
+    return res;
+  }
+
+  Future<int> updateGrupoGrupoCantidades(int idGrupo, double capital, int integrantes)async{
+    final db = await database;
+    final res = db.update(Constants.gruposTable, {'${Constants.importeGrupo}': capital, '${Constants.cantidadSolicitudes}': integrantes}, where: '${Constants.idGrupo} = ?', whereArgs: [idGrupo]);
     return res;
   }
 

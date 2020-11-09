@@ -13,11 +13,13 @@ import 'package:flutter/material.dart';
 
 class GrupoPage extends StatefulWidget {
   const GrupoPage({
-    Key key, 
+    Key key,
+    this.getLastGrupos,
     this.params
   }) : super(key: key);
 
   final Map<String, dynamic> params;
+  final VoidCallback getLastGrupos;
   @override
   _GrupoPageState createState() => _GrupoPageState();
 }
@@ -27,6 +29,7 @@ class _GrupoPageState extends State<GrupoPage> {
   List<Solicitud> _integrantes = [];
   bool _cargando = true;
   bool _showIcon = true;
+  double _capitalTotal = 0;
 
   @override
   void initState() {
@@ -37,7 +40,24 @@ class _GrupoPageState extends State<GrupoPage> {
   _buscarIntegrantes()async{
     await Future.delayed(Duration(milliseconds: 1000));
     _integrantes = await DBProvider.db.getSolicitudesByGrupo(widget.params['idGrupo']);
+    getCapitalTotal();
     _cargando = false;
+    setState((){});
+  }
+
+  getCapitalTotal(){
+    _capitalTotal = 0;
+    _integrantes.forEach((e){
+      _capitalTotal += e.capital;
+    });
+  }
+
+  _getNewIntegrante(int idSolicitud)async{
+    print('id nueva solicitud $idSolicitud');
+    await _buscarIntegrantes();
+    getCapitalTotal();
+    await DBProvider.db.updateGrupoGrupoCantidades(widget.params['idGrupo'], _capitalTotal, _integrantes.length);
+    widget.getLastGrupos();
     setState((){});
   }
 
@@ -61,13 +81,13 @@ class _GrupoPageState extends State<GrupoPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('${widget.params['nombre']}'.toUpperCase(), style: Constants.mensajeCentral),
-                      Text('Integrantes 0 | Capital 0.0'.toUpperCase(), style: Constants.mensajeCentral2),
+                      Text('Integrantes ${_integrantes.length} | Capital $_capitalTotal'.toUpperCase(), style: Constants.mensajeCentral2),
                     ]
                   ),
                   Column(
                     children: [
                       Icon(Icons.person, color: Constants.primaryColor),
-                      Text('0'.toUpperCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor)),
+                      Text('${_integrantes.length}'.toUpperCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor)),
                     ],
                   ),
                 ],
@@ -93,7 +113,7 @@ class _GrupoPageState extends State<GrupoPage> {
             padding: EdgeInsets.symmetric(horizontal: 20.0), 
             child: IconButton(
               icon: Icon(Icons.add_circle_outline, size: 40.0),
-              onPressed: () => Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, {'nombreGrupo': widget.params['nombre'], 'contratoId': widget.params['contrato'], 'idGrupo': widget.params['idGrupo']}))
+              onPressed: () => Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, {'nombreGrupo': widget.params['nombre'], 'contratoId': widget.params['contrato'], 'idGrupo': widget.params['idGrupo']}, getNewIntegrante: _getNewIntegrante))
             )
           )
         ),
@@ -132,7 +152,7 @@ class _GrupoPageState extends State<GrupoPage> {
               Text('\nPresiona '.toUpperCase(), style: Constants.mensajeCentral),
               IconButton(
                 icon: Icon(Icons.add_circle_outline, size: 30.0),
-                onPressed: () => Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, {'nombreGrupo': widget.params['nombre'], 'contratoId': widget.params['contrato'], 'idGrupo': widget.params['idGrupo']}))
+                onPressed: () => Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, {'nombreGrupo': widget.params['nombre'], 'contratoId': widget.params['contrato'], 'idGrupo': widget.params['idGrupo']}, getNewIntegrante: _getNewIntegrante))
               ),
               Text('\n para agregar integrantes'.toUpperCase(), style: Constants.mensajeCentral),
             ],

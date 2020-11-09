@@ -144,7 +144,7 @@ class _RenovacionesPageState extends State<RenovacionesPage> with AutomaticKeepA
               context: context,
               removeTop: true,
               child: ListView.builder(
-                physics: BouncingScrollPhysics(),
+                //physics: BouncingScrollPhysics(),
                 itemCount: contratos.length + 1,
                 itemBuilder: (context, index){
                   if(index == contratos.length)
