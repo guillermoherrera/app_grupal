@@ -184,7 +184,8 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
                     GestureDetector(
                       onTap: (){
                         final json = {'nombre': widget.grupos[index].nombreGrupo, 'contrato': widget.grupos[index].contratoId, 'idGrupo': widget.grupos[index].idGrupo, 'status': widget.grupos[index].status == 1 ? 'Pendiente' : 'Enviado'};
-                        widget.grupos[index].contratoId > 0 ? Navigator.push(context, _customRoute.crearRutaSlide(Constants.renovacionGrupoPage, json, getLastGrupos: widget.getLastGrupos, sincroniza: widget.sincroniza)) : Navigator.push(context, _customRoute.crearRutaSlide(Constants.grupoPage, json, getLastGrupos: widget.getLastGrupos));
+                        final jsonGrupo = {'nombre': widget.grupos[index].nombreGrupo, 'idGrupo': widget.grupos[index].idGrupo, 'status': widget.grupos[index].status};
+                        widget.grupos[index].contratoId > 0 ? Navigator.push(context, _customRoute.crearRutaSlide(Constants.renovacionGrupoPage, json, getLastGrupos: widget.getLastGrupos, sincroniza: widget.sincroniza)) : Navigator.push(context, _customRoute.crearRutaSlide(Constants.grupoPage, jsonGrupo, getLastGrupos: widget.getLastGrupos, sincroniza: widget.sincroniza));
                       },
                       child: CustomListTile(
                         title: listTiles[index].title,

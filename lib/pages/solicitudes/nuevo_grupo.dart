@@ -16,11 +16,13 @@ class NuevoGrupoPage extends StatefulWidget {
   const NuevoGrupoPage({
     Key key,
     this.params,
-    this.getLastGrupos
+    this.getLastGrupos,
+    this.sincroniza
   }) : super(key: key);
 
   final Map<String, dynamic> params;
   final VoidCallback getLastGrupos;
+  final Future<bool> Function() sincroniza;
   
   @override
   _NuevoGrupoPageState createState() => _NuevoGrupoPageState();
@@ -187,7 +189,7 @@ class _NuevoGrupoPageState extends State<NuevoGrupoPage> {
     );
     try{
       DBProvider.db.nuevoGrupo(grupo).then((value)async{
-        Navigator.pushReplacement(context, _customRoute.crearRutaSlide(Constants.grupoPage, {'nombre': _nombreGrupoController.text, 'idGrupo': value}, getLastGrupos: widget.getLastGrupos));
+        Navigator.pushReplacement(context, _customRoute.crearRutaSlide(Constants.grupoPage, {'nombre': _nombreGrupoController.text, 'idGrupo': value}, getLastGrupos: widget.getLastGrupos, sincroniza: widget.sincroniza));
         _nombreGrupoController.text = "";
         setState((){});
       });

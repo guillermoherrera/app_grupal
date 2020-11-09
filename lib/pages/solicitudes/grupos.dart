@@ -17,11 +17,13 @@ class GruposPage extends StatefulWidget {
   const GruposPage({
     Key key, 
     this.params,
-    this.getLastGrupos
+    this.getLastGrupos,
+    this.sincroniza
   }) : super(key: key);
 
   final Map<String, dynamic> params;
   final VoidCallback getLastGrupos;
+  final Future<bool> Function() sincroniza;
 
   @override
   _GruposPageState createState() => _GruposPageState();
@@ -166,7 +168,7 @@ class _GruposPageState extends State<GruposPage> {
           //  return SizedBox(height: 50.0);
           return WidgetANimator(
             GestureDetector(
-              onTap: (){Navigator.push(context, _customRoute.crearRutaSlide(Constants.grupoPage, {'nombre': _grupos[index].nombreGrupo, 'idGrupo': _grupos[index].idGrupo}, getLastGrupos: _recargarGrupos));},
+              onTap: (){Navigator.push(context, _customRoute.crearRutaSlide(Constants.grupoPage, {'nombre': _grupos[index].nombreGrupo, 'idGrupo': _grupos[index].idGrupo, 'status': _grupos[index].status}, getLastGrupos: _recargarGrupos, sincroniza: widget.sincroniza));},
               child: CustomListTile(
                 title: listTiles[index].title,
                 subtitle: listTiles[index].subtitle,
