@@ -212,7 +212,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
       try{
         //if(!(await _firebaseProvider.sincronizar(widget.getLastGrupos)))
         if(!(await widget.sincroniza()))
-          _error('Error desconocido, revisa tu conexión o vuelve a iniciar sesión.');
+          _error('La sincronización no puede realizarse en este momento.');
       }catch(e){
         _error('Error desconocido, revisa tu conexión o vuelve a iniciar sesión.');
       }

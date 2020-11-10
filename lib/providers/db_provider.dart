@@ -331,6 +331,12 @@ class DBProvider{
     return res.isNotEmpty ? Solicitud.fromjson(res.first) : null;
   }
 
+  Future<int> updateSolicitudStatus(int idSolicitud, int status)async{
+    final db = await database;
+    final res = db.update(Constants.solicitudesTable, {'${Constants.status}': status}, where:'${Constants.idSolicitud} = ?', whereArgs: [idSolicitud]);
+    return res;
+  }
+
   //Repositorio Docuementos Solicitudes
   Future<int> nuevoDocumento(Documento documento)async{
     final db = await database;
@@ -362,6 +368,14 @@ class DBProvider{
     final res = await db.query(Constants.renovacionesTable, where: '${Constants.idGrupo} = ? AND ${Constants.status} = 0', whereArgs: [idGrupo]);
     
     List<Renovacion> list = res.isNotEmpty ? res.map((e) => Renovacion.fromjson(e)).toList() : [];
+    return list;
+  }
+
+  Future<List<Solicitud>> getSolicitudesPendientesByGrupo(int idGrupo) async{
+    final db = await database;
+    final res = await db.query(Constants.solicitudesTable, where: '${Constants.idGrupo} = ? AND ${Constants.status} = 0', whereArgs: [idGrupo]);
+    
+    List<Solicitud> list = res.isNotEmpty ? res.map((e) => Solicitud.fromjson(e)).toList() : [];
     return list;
   }
   
