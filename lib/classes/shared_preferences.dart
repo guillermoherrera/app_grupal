@@ -51,6 +51,7 @@ class SharedActions{
     preferences.setString("documentID", documentSnapshot.id);
     preferences.setInt("sistema", documentSnapshot.data()['sistema']);
     preferences.setString("sistemaDesc", documentSnapshot.data()['sistemaDesc']);
+    preferences.setBool('Sincronizando?', false);
   }
 
   Future<void> removeUserInfo()async{
@@ -90,22 +91,22 @@ class SharedActions{
     await init();
     Solicitud solicitud = new Solicitud();
     try{
-    solicitud.capital             = double.parse(preferences.getString('importe'));
-    solicitud.nombre              = preferences.getString('nombrePrimero');
-    solicitud.segundoNombre       = preferences.getString('nombreSegundo');
-    solicitud.primerApellido      = preferences.getString('apellidoPrimero');
-    solicitud.segundoApellido     = preferences.getString('apellidoSegundo');
-    solicitud.fechaNacimiento     = preferences.getInt('fechaNacimiento');
-    solicitud.curp                = preferences.getString('curp');
-    solicitud.rfc                 = preferences.getString('rfc');
-    solicitud.telefono            = preferences.getString('telefono');
-    solicitud.direccion1          = preferences.getString('direccion1');
-    solicitud.coloniaPoblacion    = preferences.getString('coloniaPoblacion');
-    solicitud.delegacionMunicipio = preferences.getString('delegacionMunicipio');
-    solicitud.ciudad              = preferences.getString('ciudad');
-    solicitud.estado              = preferences.getString('estado');
-    solicitud.cp                  = preferences.getString('cp') != null ? int.parse(preferences.getString('cp')) : null;
-    solicitud.pais                = preferences.getString('pais');
+      solicitud.capital             = double.parse(preferences.getString('importe'));
+      solicitud.nombre              = preferences.getString('nombrePrimero');
+      solicitud.segundoNombre       = preferences.getString('nombreSegundo');
+      solicitud.primerApellido      = preferences.getString('apellidoPrimero');
+      solicitud.segundoApellido     = preferences.getString('apellidoSegundo');
+      solicitud.fechaNacimiento     = preferences.getInt('fechaNacimiento');
+      solicitud.curp                = preferences.getString('curp');
+      solicitud.rfc                 = preferences.getString('rfc');
+      solicitud.telefono            = preferences.getString('telefono');
+      solicitud.direccion1          = preferences.getString('direccion1');
+      solicitud.coloniaPoblacion    = preferences.getString('coloniaPoblacion');
+      solicitud.delegacionMunicipio = preferences.getString('delegacionMunicipio');
+      solicitud.ciudad              = preferences.getString('ciudad');
+      solicitud.estado              = preferences.getString('estado');
+      solicitud.cp                  = preferences.getString('cp') != null ? int.parse(preferences.getString('cp')) : null;
+      solicitud.pais                = preferences.getString('pais');
     }
     catch(e){
       solicitud.capital = 0.0;

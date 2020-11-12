@@ -169,13 +169,13 @@ class FirebaseProvider{
 
   _sendIntegrantesGrupo(List<Solicitud> solicitudes, String grupoID, int contratoId, int sistema, VoidCallback getLastGrupos)async{
     int solicitudesSubidas = 0;
-    for(Solicitud e in solicitudes){
+    for(Solicitud solicitud in solicitudes){
     //solicitudesRenovacion.forEach((e)async{
       var firebaseSolicitud;
       Map objFirebaseSolicitud;
       
-      Solicitud solicitud = await DBProvider.db.getSolicitudById(e.idSolicitud);
-      firebaseSolicitud = await _buildFirebaseSolicitud(solicitud, grupoID, Renovacion());
+      //Solicitud solicitud = await DBProvider.db.getSolicitudById(e.idSolicitud);
+      firebaseSolicitud = await _buildFirebaseSolicitud(solicitud, grupoID, Renovacion(presidente: solicitud.presidente, tesorero: solicitud.tesorero));
 
       if(firebaseSolicitud != null){
         firebaseSolicitud.contratoId = contratoId;
@@ -186,7 +186,7 @@ class FirebaseProvider{
         var result = await _firestore.collection("Solicitudes").add(objFirebaseSolicitud).timeout(_timeOutDuration);
         print(result);
         solicitudesSubidas += 1;
-        await DBProvider.db.updateSolicitudStatus(e.idSolicitud, 1);
+        await DBProvider.db.updateSolicitudStatus(solicitud.idSolicitud, 1);
       }
     }
     if(solicitudesSubidas == solicitudes.length){

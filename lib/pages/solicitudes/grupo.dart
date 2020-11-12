@@ -125,7 +125,7 @@ class _GrupoPageState extends State<GrupoPage> {
       heroTag: 'logo',
       actions: [
         ShakeTransition(child: 
-          Container(
+          widget.params['status'] != 0 ? Container() :Container(
             padding: EdgeInsets.symmetric(horizontal: 20.0), 
             child: IconButton(
               icon: Icon(Icons.add_circle_outline, size: 40.0),
@@ -192,7 +192,8 @@ class _GrupoPageState extends State<GrupoPage> {
           ],
         ),
         subtitle: 'Importe capital: ${integrante.capital}'.toUpperCase(),
-        //trailing: Icon(Icons.arrow_forward_ios, color: Constants.primaryColor),
+        trailing: Icon(widget.params['status'] == 0 ? Icons.arrow_forward_ios : Icons.check_circle_outline, color: Constants.primaryColor),
+        leading: _checks(integrante),
       );
       listTiles.add(listTile);
     });
@@ -208,17 +209,81 @@ class _GrupoPageState extends State<GrupoPage> {
           //  return SizedBox(height: 50.0);
           return WidgetANimator(
             GestureDetector(
-              onTap: (){},
+              onTap: (){},//Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, {'nombreGrupo': widget.params['nombre'], 'contratoId': widget.params['contrato'], 'idGrupo': widget.params['idGrupo']}, getNewIntegrante: _getNewIntegrante));},
               child: CustomListTile(
                 title: listTiles[index].title,
                 subtitle: listTiles[index].subtitle,
                 trailing: listTiles[index].trailing,
+                leading: listTiles[index].leading,
               ),
             )
           );
         }
       ),
     );
+  }
+
+  Widget _checks(Solicitud integrante){
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            Text('P'),
+            SizedBox(
+              height: 24.0,
+              width: 24.0,
+              child: Checkbox(
+                activeColor: Constants.primaryColor,
+                value: integrante.presidente == 1,
+                onChanged: (bool val){
+                  presidenteChange(val, integrante);
+                }
+              ),
+            ),
+          ],
+        ),
+        SizedBox(width: 5.0,),
+        Row(
+          children: [
+            Text('T'),
+            SizedBox(
+              height: 24.0,
+              width: 24.0,
+              child: Checkbox(
+                activeColor: Constants.primaryColor,
+                value: integrante.tesorero == 1,
+                onChanged: (bool val){
+                  tesoreroChange(val, integrante);
+                }
+              ),
+            ),
+          ],
+        )
+      ],
+    );
+  }
+
+  presidenteChange(bool val, Solicitud integrante){
+    if(integrante.tesorero == 1 || widget.params['status'] != 0)
+      return false;
+    final presidente = _integrantes.where((e) => e.presidente == 1).toList();
+    if(presidente.length > 0){
+      _integrantes.firstWhere((e) => e.presidente == 1).presidente = 0 ;
+    }
+    integrante.presidente = val ? 1 : 0;
+    setState(() {});
+  }
+
+  tesoreroChange(bool val, Solicitud integrante){
+    if(integrante.presidente == 1 || widget.params['status'] != 0)
+      return false;
+    final tesorero = _integrantes.where((e) => e.tesorero == 1).toList();
+    if(tesorero.length > 0){
+      _integrantes.firstWhere((e) => e.tesorero == 1).tesorero = 0 ;
+    }
+    integrante.tesorero = val ? 1 : 0;
+    setState(() {});
   }
 
   Widget _buttonEnviar(){
@@ -240,31 +305,51 @@ class _GrupoPageState extends State<GrupoPage> {
               ),
             width: double.infinity,
             height: 50,
-            child: CustomRaisedButton(
+            child: _getButton()/*CustomRaisedButton(
               action: widget.params['status'] != 0 ? null : () async => _solicitarRenovacion(),
               borderColor: widget.params['status'] != 0 ? Constants.primaryColor : Colors.blue,
               primaryColor: widget.params['status'] != 0 ? Constants.primaryColor : Colors.blue,
               textColor: Colors.white,
               label: widget.params['status'] != 0 ? 'Grupo creado' : 'Enviar'
-            ),
+            ),*/
           ),
         ),
       ],
     );
   }
 
+  Widget _getButton(){
+    return CustomRaisedButton(
+        action: widget.params['status'] != 0 ? null : () async => _solicitarRenovacion(),
+        borderColor: widget.params['status'] != 0 ? Constants.primaryColor : Colors.blue,
+        primaryColor: widget.params['status'] != 0 ? Constants.primaryColor : Colors.blue,
+        textColor: Colors.white,
+        label: widget.params['status'] != 0 ? 'Grupo creado' : 'Enviar'
+      );
+  }
+
   _solicitarRenovacion() async{
     if(_integrantes.length >= _validaIntegrantesCant){
-      CustomDialog customDialog = CustomDialog();
-      customDialog.showCustomDialog(
-        context,
-        title: 'Guardar y enviar',
-        icon: Icons.error_outline,
-        textContent: 'Despues de guardar ya no podra modificar la información de este grupo y sus integrantes, dicha información se enviará a mesa de crédito \n\n¿Desea continuar?',
-        cancel: 'No, cancelar',
-        cntinue: 'Si, guardar y enviar',
-        action: _enviarGrupo
-      ); 
+      final presidente = _integrantes.where((e) => e.presidente == 1).toList();
+      final tesorero = _integrantes.where((e) => e.tesorero == 1).toList();
+      if(presidente.length > 0){
+        if(tesorero.length > 0){
+          CustomDialog customDialog = CustomDialog();
+          customDialog.showCustomDialog(
+            context,
+            title: 'Guardar y enviar',
+            icon: Icons.error_outline,
+            textContent: 'Despues de guardar ya no podra modificar la información de este grupo y sus integrantes, dicha información se enviará a mesa de crédito \n\n¿Desea continuar?',
+            cancel: 'No, cancelar',
+            cntinue: 'Si, guardar y enviar',
+            action: _enviarGrupo
+          );
+        }else{
+          _error('El grupo debe tener al menos un integrante como tesorero. (T)');
+        }
+      }else{
+        _error('El grupo debe tener al menos un integrante como presidente. (P)');
+      } 
     }else{
       _error('No pudo solicitarse la creacion y envio del grupo.\nDebe tener al menos $_validaIntegrantesCant integrantes.');
     }
@@ -273,13 +358,19 @@ class _GrupoPageState extends State<GrupoPage> {
   _enviarGrupo() async{
     Navigator.pop(context);
     userID = await _sharedActions.getUserId();
+    final presidente = _integrantes.where((e) => e.presidente == 1).toList()[0];
+    final tesorero = _integrantes.where((e) => e.tesorero== 1).toList()[0];
     try{
-      DBProvider.db.updateGrupoStatus(widget.params['idGrupo'], 1).then((value)async{
-        widget.params['status'] = 1;
-        _success('Grupo guardado.');
-        setState((){});
-        widget.getLastGrupos();
-        _sincronizar();
+      DBProvider.db.updateSolicitudPresidente(presidente.idSolicitud).then((value) => {
+        DBProvider.db.updateSolicitudTesorero(tesorero.idSolicitud).then((value) => {
+          DBProvider.db.updateGrupoStatus(widget.params['idGrupo'], 1).then((value)async{
+            widget.params['status'] = 1;
+            _success('Grupo guardado.');
+            setState((){});
+            widget.getLastGrupos();
+            _sincronizar();
+          })
+        })
       });
     }catch(e){
       _error('No pudo crearse el grupo.\n$e');

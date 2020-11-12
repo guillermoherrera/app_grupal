@@ -337,6 +337,18 @@ class DBProvider{
     return res;
   }
 
+  Future<int> updateSolicitudPresidente(int idSolicitud)async{
+    final db = await database;
+    final res = db.update(Constants.solicitudesTable, {'${Constants.presidente}': 1}, where:'${Constants.idSolicitud} = ?', whereArgs: [idSolicitud]);
+    return res;
+  }
+
+  Future<int> updateSolicitudTesorero(int idSolicitud)async{
+    final db = await database;
+    final res = db.update(Constants.solicitudesTable, {'${Constants.tesorero}': 1}, where:'${Constants.idSolicitud} = ?', whereArgs: [idSolicitud]);
+    return res;
+  }
+
   //Repositorio Docuementos Solicitudes
   Future<int> nuevoDocumento(Documento documento)async{
     final db = await database;

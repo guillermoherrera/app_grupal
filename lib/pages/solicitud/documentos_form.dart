@@ -31,6 +31,7 @@ class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAlive
   @override
   void initState() {
     _getCatDocumentos();
+    _openFirstPanel();
     super.initState();
   }
 
@@ -42,6 +43,13 @@ class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAlive
     });
     _books = generateItems();
     setState(() {});
+  }
+
+  _openFirstPanel() async{
+    await Future.delayed(Duration(milliseconds: 1000));
+    setState(() {
+      _books[0].isExpanded = true;
+    });
   }
 
   @override
