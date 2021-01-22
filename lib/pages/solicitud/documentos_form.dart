@@ -12,12 +12,14 @@ class DocumentosForm extends StatefulWidget {
   const DocumentosForm({Key key,
     this.pageController,
     this.backPage,
-    this.fillDocumentos
+    this.fillDocumentos,
+    this.documentos
   }) : super(key: key);
 
   final PageController pageController;
   final VoidCallback backPage;
   final void Function(List<Documento>) fillDocumentos;
+  final List<Documento> documentos;
 
   @override
   _DocumentosFormState createState() => _DocumentosFormState();
@@ -31,6 +33,7 @@ class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAlive
   @override
   void initState() {
     _getCatDocumentos();
+    _getDocumentosEdit();
     _openFirstPanel();
     super.initState();
   }
@@ -43,6 +46,14 @@ class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAlive
     });
     _books = generateItems();
     setState(() {});
+  }
+
+  _getDocumentosEdit()async{
+    await Future.delayed(Duration(milliseconds: 1000));
+    widget.documentos.forEach((e) {
+      var objetoArchivo = _documentos.firstWhere((archivo) => archivo.tipoDocumento == e.tipoDocumento);    
+      objetoArchivo.documento = e.documento;
+    });
   }
 
   _openFirstPanel() async{
@@ -86,6 +97,7 @@ class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAlive
 
 
   Widget _tableDocuments(){
+    int indexControl = -1;
     widget.fillDocumentos(_documentos);
     return ExpansionPanelList(
       expansionCallback: (int index, bool isExpanded) {
@@ -94,22 +106,29 @@ class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAlive
         });
       },
       children: _books.map<ExpansionPanel>((Item item) {
+          indexControl += 1;
+          final index = indexControl;
           final int tipo = int.parse(item.expandedValue);
           final String pathFile = _documentos.singleWhere((archivo) => archivo.tipoDocumento == tipo).documento;
           return ExpansionPanel(
             headerBuilder: (BuildContext context, bool isExpanded) {
-              return Ink(
-                color: Colors.grey[50],
-                child: ListTile(
-                  title: Text(item.headerValue, style: Constants.mensajeCentral),
-                  subtitle: Row(
-                    children: pathFile == null ?[
-                      Icon(Icons.error_outline, size: 20.0, color: Colors.yellow[600]),
-                      Text(' No seleccionado'.toUpperCase(), style: Constants.mensajeCentral2)
-                    ] : [
-                      Icon(Icons.check_circle_outline, size: 20.0, color: Constants.primaryColor),
-                      Text(' Listo'.toUpperCase(), style: Constants.mensajeCentral2)
-                    ]
+              return GestureDetector(
+                onTap: (){setState(() {
+                  _books[index].isExpanded = !isExpanded;
+                });},
+                child: Ink(
+                  color: Colors.grey[50],
+                  child: ListTile(
+                    title: Text(item.headerValue, style: Constants.mensajeCentral),
+                    subtitle: Row(
+                      children: pathFile == null ?[
+                        Icon(Icons.error_outline, size: 20.0, color: Colors.yellow[600]),
+                        Text(' No seleccionado'.toUpperCase(), style: Constants.mensajeCentral2)
+                      ] : [
+                        Icon(Icons.check_circle_outline, size: 20.0, color: Constants.primaryColor),
+                        Text(' Listo'.toUpperCase(), style: Constants.mensajeCentral2)
+                      ]
+                    ),
                   ),
                 ),
               );

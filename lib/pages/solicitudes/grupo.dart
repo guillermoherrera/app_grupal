@@ -209,7 +209,16 @@ class _GrupoPageState extends State<GrupoPage> {
           //  return SizedBox(height: 50.0);
           return WidgetANimator(
             GestureDetector(
-              onTap: (){},//Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, {'nombreGrupo': widget.params['nombre'], 'contratoId': widget.params['contrato'], 'idGrupo': widget.params['idGrupo']}, getNewIntegrante: _getNewIntegrante));},
+              onTap: (){
+                final json = {
+                  'nombreGrupo': widget.params['nombre'], 
+                  'contratoId': widget.params['contrato'], 
+                  'idGrupo': widget.params['idGrupo'],
+                  'edit': true,
+                  'idSolicitud': _integrantes[index].idSolicitud
+                };
+                if(widget.params['status'] == 0)Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, json, getNewIntegrante: _getNewIntegrante));
+              },
               child: CustomListTile(
                 title: listTiles[index].title,
                 subtitle: listTiles[index].subtitle,
@@ -320,7 +329,7 @@ class _GrupoPageState extends State<GrupoPage> {
 
   Widget _getButton(){
     return CustomRaisedButton(
-        action: widget.params['status'] != 0 ? null : () async => _solicitarRenovacion(),
+        action: widget.params['status'] != 0 ? (){} : () async => _solicitarRenovacion(),
         borderColor: widget.params['status'] != 0 ? Constants.primaryColor : Colors.blue,
         primaryColor: widget.params['status'] != 0 ? Constants.primaryColor : Colors.blue,
         textColor: Colors.white,

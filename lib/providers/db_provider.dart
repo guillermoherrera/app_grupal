@@ -349,6 +349,12 @@ class DBProvider{
     return res;
   }
 
+  Future<int> updateSolicitud(Solicitud solicitud)async{
+    final db = await database;
+    final res = await db.update(Constants.solicitudesTable, solicitud.toJson(), where:'${Constants.idSolicitud} = ?', whereArgs: [solicitud.idSolicitud]);
+    return res;
+  }
+
   //Repositorio Docuementos Solicitudes
   Future<int> nuevoDocumento(Documento documento)async{
     final db = await database;
@@ -362,6 +368,12 @@ class DBProvider{
     
     List<Documento> list = res.isNotEmpty ? res.map((e) => Documento.fromjson(e)).toList() : [];
     return list;
+  }
+
+  Future<int> updateDocumento(Documento documento)async{
+    final db = await database;
+    final res = await db.update(Constants.documentoSolicitudesTable, {'${Constants.documento}': documento.documento}, where:'${Constants.idSolicitud} = ? AND ${Constants.tipoDocumento} = ?', whereArgs: [documento.idSolicitud, documento.tipoDocumento]);
+    return res;
   }
 
   //Repositorio Renovaciones

@@ -42,6 +42,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
   int _currentPage = 0;
   int intentoCurp = 0; //auxiliar para la validación de las palabras altisonantes
   List<Documento> _documentos = List();
+  List<Documento> _documentosEditar = List();
   Solicitud _solicitud = new Solicitud();
   final _importeCapitalController = TextEditingController();
   final _curpController = TextEditingController();
@@ -66,7 +67,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
     _paisCodController.text = "MX";
     _pageController = PageController();
     _getUserID();
-    _getSolicitudFromShared();
+    _loadInfo();
     super.initState();
   }
 
@@ -80,8 +81,29 @@ class _SolicitudPageState extends State<SolicitudPage> {
     _userID = await _sharedActions.getUserId();
   }
 
+  _loadInfo()async{
+    await Future.delayed(Duration(milliseconds: 1000));
+    if(widget.params['edit'] == true){
+      _getSolicitudEdit();
+    }else{
+      _getSolicitudFromShared();
+    }
+  }
+
+  _getSolicitudEdit()async{
+    print('EDIT ###');
+    Solicitud solicitud = await DBProvider.db.getSolicitudById(widget.params['idSolicitud']);
+    _fillSolicitud(solicitud);
+    _documentosEditar = await DBProvider.db.getDocumentosbySolicitud(solicitud.idSolicitud);
+  }
+
   _getSolicitudFromShared() async{
+    print('SHARED ###');
     Solicitud solicitud = await _sharedActions.getSolicitud();
+    _fillSolicitud(solicitud);
+  }
+
+  _fillSolicitud(Solicitud solicitud){
     if(solicitud.capital > 0){
       String fechaFromMS = formatDate(DateTime.fromMillisecondsSinceEpoch(solicitud.fechaNacimiento).toUtc(), [dd, '/', mm, '/', yyyy]);
       _importeCapitalController.text = '${solicitud.capital.toStringAsFixed(0)}';
@@ -189,6 +211,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
                 DocumentosForm(
                   pageController: _pageController,
                   fillDocumentos: _fillDocumentos,
+                  documentos: _documentosEditar,
                   backPage: _backPage
                 )
               ],
@@ -224,11 +247,11 @@ class _SolicitudPageState extends State<SolicitudPage> {
               offset: 140.0,
               duration: Duration(milliseconds: 3000),
               child: CustomRaisedButton(
-                action: ()=>_saveBottomButton(),
+                action: ()=> widget.params['edit'] == true ? _updateBottomButton() : _saveBottomButton(),
                 borderColor: Colors.blue,
                 primaryColor: Colors.blue,
                 textColor: Colors.white,
-                label: 'Guardar'
+                label: widget.params['edit'] == true ? 'Actualizar' : 'Guardar'
               ),
             ) : 
             CustomRaisedButton(
@@ -256,7 +279,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
               duration: const Duration(milliseconds: 1000),
               curve: Curves.easeInOut,
             );
-            _saveSharedPreferences(_currentPage);
+            if(!(widget.params['edit'] == true)) _saveSharedPreferences(_currentPage);
             setState(() {_currentPage += 1;});
           }
         
@@ -295,6 +318,46 @@ class _SolicitudPageState extends State<SolicitudPage> {
       _solicitud.pais = _paisCodController.text;
     }
     _sharedActions.saveSolicitud(_solicitud, _currentPage);
+  }
+
+  _updateBottomButton(){
+    List<Documento> documentosFaltantes = _documentos.where((d) => d.documento == null).toList();
+    if(documentosFaltantes.length == 0){
+      CustomDialog customDialog = CustomDialog();
+      customDialog.showCustomDialog(
+        context,
+        title: 'Actualizar Solicitud',
+        icon: Icons.error_outline,
+        textContent: 'Antes de actualizar la solicitud confirme que ha revisado que los DATOS DEL CLIENTE se han capturado correctamente.\n\n¿La información capturada es correcta?',
+        cancel: 'Revisar',
+        cntinue: 'Si, actualizar solicitud',
+        action: _actualizarSolicitud
+      );
+    }else{
+      _error('Error ${documentosFaltantes.length} documento(s) faltante(s)');
+    }
+  }
+
+  _actualizarSolicitud() async{
+    _solicitud.contratoId = widget.params['contratoId'];
+    _solicitud.nombreGrupo = widget.params['nombreGrupo'];
+    _solicitud.idGrupo = widget.params['idGrupo'];
+    _solicitud.status = 0;
+    _solicitud.tipoContrato = 2;
+    _solicitud.userID = _userID;
+    _solicitud.idSolicitud = widget.params['idSolicitud'];
+    await DBProvider.db.updateSolicitud(_solicitud).then((id)async{
+      for(Documento e in _documentos){
+        e.idSolicitud = _solicitud.idSolicitud;
+        int id = await DBProvider.db.updateDocumento(e);
+        print(id);
+      }
+      Navigator.pop(context);//cierra el popUp
+      widget.getNewIntegrante(_solicitud.idSolicitud);
+      _success('Solicitud Actualizada con éxito');
+      await Future.delayed(Duration(milliseconds: 2000));
+      Navigator.pop(context);//cierra el formulairio
+    });
   }
 
   _saveBottomButton(){
@@ -337,7 +400,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
       _success('Solicitud creada con éxito');
       await Future.delayed(Duration(milliseconds: 2000));
       Navigator.pop(context);//cierra el formulairio
-      //_sharedActions.removeSolicitud();
+      _sharedActions.removeSolicitud();
     }else{
       _error('Error desconocido');
     }
