@@ -13,13 +13,15 @@ class DocumentosForm extends StatefulWidget {
     this.pageController,
     this.backPage,
     this.fillDocumentos,
-    this.documentos
+    this.documentos,
+    this.datosCapturados
   }) : super(key: key);
 
   final PageController pageController;
   final VoidCallback backPage;
   final void Function(List<Documento>) fillDocumentos;
   final List<Documento> documentos;
+  final List<String> Function() datosCapturados;
 
   @override
   _DocumentosFormState createState() => _DocumentosFormState();
@@ -82,7 +84,9 @@ class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAlive
         child: Text('Documentos'.toUpperCase(), style: Constants.mensajeCentral),
       ),
       _buttonBack(),
-      _tableDocuments()
+      _tableDocuments(),
+      SizedBox(height: 20.0),
+      _datosCapturados()
     ];
   }
 
@@ -119,7 +123,7 @@ class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAlive
                 child: Ink(
                   color: Colors.grey[50],
                   child: ListTile(
-                    title: Text(item.headerValue, style: Constants.mensajeCentral),
+                    title: Text(item.headerValue, style: Constants.mensajeCentral2),
                     subtitle: Row(
                       children: pathFile == null ?[
                         Icon(Icons.error_outline, size: 20.0, color: Colors.yellow[600]),
@@ -136,9 +140,9 @@ class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAlive
             body: ListTile(
               title: Row(
                 children: [
-                  _flatButton(icon: Icons.add_a_photo, text: 'Tomar Foto', action: ()=>_getImage(1, tipo)),
+                  _flatButton(icon: Icons.add_a_photo, text: 'Foto', action: ()=>_getImage(1, tipo)),
                   SizedBox(width: 5.0),
-                  _flatButton(icon: Icons.add_photo_alternate, text: 'Abrir Galería', action:()=>_getImage(2, tipo))
+                  _flatButton(icon: Icons.add_photo_alternate, text: 'Galería', action:()=>_getImage(2, tipo))
                 ],
               ),
               //subtitle: Text('To delete this panel, tap the trash can icon'),
@@ -162,7 +166,7 @@ class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAlive
         child: Column(
           children: [
             Icon(icon, color: Constants.primaryColor, size: 20.0),
-            Text(text.toUpperCase(), style: TextStyle(color: Constants.primaryColor, fontSize: 10.0))
+            Text(text.toUpperCase(), style: TextStyle(color: Constants.primaryColor, fontSize: 10.0), overflow: TextOverflow.ellipsis)
           ]
         )
       ),
@@ -224,6 +228,56 @@ class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAlive
       //  padding: EdgeInsets.all(1.0),
       //  child: Image.asset(Constants.notImage)
       //);
+  }
+
+  Widget _datosCapturados(){
+
+    List<String> datos = widget.datosCapturados();
+    
+    return Container(
+      padding: EdgeInsets.only(top: 5.0),
+      color: Colors.grey[100],
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.person, color: Constants.primaryColor),
+              Container(
+                child: Text('Datos capturados del cliente'.toUpperCase(), style: Constants.mensajeCentral),
+              ),
+            ],
+          ),
+          SizedBox(height: 5.0),
+          _rowDatos('imp. capital', '\$${datos[0]}'),
+          _rowDatos('nombre', '${datos[1]}'),
+          _rowDatos('Fecha de nac.', '${datos[2]}'),
+          _rowDatos('curp', '${datos[3]}'),
+          _rowDatos('rfc', '${datos[4]}'),
+          _rowDatos('telefono', '${datos[5]}'),
+          _rowDatos('dirección', '${datos[6]}'),
+        ],
+      ),
+    );
+  }
+
+  Widget _rowDatos(String title, String content){
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 3.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            width: 110,
+            child: Text(title.toUpperCase(), style: Constants.mensajeCentralNotMedium)
+          ),
+          Flexible(
+            child: Text(content.toUpperCase(), style: Constants.mensajeCentral2)
+          )
+        ],
+      ),
+    );
   }
 
   Widget _buttonBack(){

@@ -125,6 +125,19 @@ class _SolicitudPageState extends State<SolicitudPage> {
     }
   }
 
+  List<String> _datosCapturados(){
+    List<String> datos = [];
+    datos.add(_importeCapitalController.text);
+    datos.add('${_nombreController.text} ${_sengundoNombreController.text} ${_primerApellidoController.text} ${_segundoApellidoController.text}');
+    datos.add(_fechaNacimientoController.text);
+    datos.add(_curpController.text);
+    datos.add(_rfcController.text);
+    datos.add(_telefonoController.text);
+    datos.add('${_direccion1Controller.text} ${_coloniaController.text} ${_cpController.text} ${_municipioController.text} ${_ciudadController.text}, ${_estadoCodController.text}. ${_paisCodController.text}.');
+    
+    return datos;
+  }
+
   @override
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
@@ -212,7 +225,8 @@ class _SolicitudPageState extends State<SolicitudPage> {
                   pageController: _pageController,
                   fillDocumentos: _fillDocumentos,
                   documentos: _documentosEditar,
-                  backPage: _backPage
+                  backPage: _backPage,
+                  datosCapturados: _datosCapturados,
                 )
               ],
             ),
@@ -400,7 +414,7 @@ class _SolicitudPageState extends State<SolicitudPage> {
       _success('Solicitud creada con éxito');
       await Future.delayed(Duration(milliseconds: 2000));
       Navigator.pop(context);//cierra el formulairio
-      _sharedActions.removeSolicitud();
+      //_sharedActions.removeSolicitud();
     }else{
       _error('Error desconocido');
     }

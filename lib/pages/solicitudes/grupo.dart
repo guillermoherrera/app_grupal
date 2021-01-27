@@ -61,7 +61,7 @@ class _GrupoPageState extends State<GrupoPage> {
   getCapitalTotal(){
     _capitalTotal = 0;
     _integrantes.forEach((e){
-      _capitalTotal += e.capital;
+      if(e.capital != null)_capitalTotal += e.capital;
     });
   }
 

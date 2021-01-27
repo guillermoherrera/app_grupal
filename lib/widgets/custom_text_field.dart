@@ -86,6 +86,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   InputDecoration _decorationField(String label){
     return InputDecoration(
+      contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 5.0),
       prefixIcon: widget.icon != null ? Icon(widget.icon) : null,
       labelText: label.toUpperCase(),
       fillColor: Color(0xfff2f2f2),
