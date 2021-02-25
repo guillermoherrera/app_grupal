@@ -46,6 +46,7 @@ class Constants{
 
   static final TextStyle encabezadoStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, color: Colors.white);
   static final TextStyle subtituloStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.white70);
+  static final TextStyle subtituloStyle2 = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.white);
   static final TextStyle mensajeCentral = TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0, color: Colors.grey[600]);
   static final TextStyle mensajeCentral2 = TextStyle(fontSize: 11.0, color: Colors.grey);
   static final TextStyle mensajeCentral2bold = TextStyle(fontSize: 12.0, color: Colors.grey, fontWeight: FontWeight.bold);

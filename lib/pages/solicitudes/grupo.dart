@@ -181,6 +181,15 @@ class _GrupoPageState extends State<GrupoPage> {
   Widget _lista(){
     List<ListTileModel> listTiles = List();
     _integrantes.asMap().forEach((index, integrante) {
+      final jsonDatos = {
+        'nombreGrupo': widget.params['nombre'], 
+        'contratoId': widget.params['contrato'], 
+        'idGrupo': widget.params['idGrupo'],
+        'edit': true,
+        'idSolicitud': _integrantes[index].idSolicitud,
+        'Integrante': '${_integrantes[index].nombre} ${_integrantes[index].primerApellido}'
+      };
+
       final listTile = ListTileModel(
         title: Wrap(
           children: [
@@ -192,7 +201,7 @@ class _GrupoPageState extends State<GrupoPage> {
           ],
         ),
         subtitle: 'Importe capital: ${integrante.capital}'.toUpperCase(),
-        trailing: Icon(widget.params['status'] == 0 ? Icons.arrow_forward_ios : Icons.check_circle_outline, color: Constants.primaryColor),
+        trailing: widget.params['status'] == 0 ? _popMenu(jsonDatos) : Icon(Icons.check_circle_outline, color: Constants.primaryColor),
         leading: _checks(integrante),
       );
       listTiles.add(listTile);
@@ -208,28 +217,68 @@ class _GrupoPageState extends State<GrupoPage> {
           //if(index == _integrantes.length)
           //  return SizedBox(height: 50.0);
           return WidgetANimator(
-            GestureDetector(
-              onTap: (){
-                final json = {
-                  'nombreGrupo': widget.params['nombre'], 
-                  'contratoId': widget.params['contrato'], 
-                  'idGrupo': widget.params['idGrupo'],
-                  'edit': true,
-                  'idSolicitud': _integrantes[index].idSolicitud
-                };
-                if(widget.params['status'] == 0)Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, json, getNewIntegrante: _getNewIntegrante));
-              },
-              child: CustomListTile(
-                title: listTiles[index].title,
-                subtitle: listTiles[index].subtitle,
-                trailing: listTiles[index].trailing,
-                leading: listTiles[index].leading,
-              ),
-            )
+            CustomListTile(
+              title: listTiles[index].title,
+              subtitle: listTiles[index].subtitle,
+              trailing: listTiles[index].trailing,
+              leading: listTiles[index].leading,
+            ),
           );
         }
       ),
     );
+  }
+
+  Widget _popMenu(json){
+    return  PopupMenuButton(
+      icon: Icon(Icons.more_vert, color: Constants.primaryColor),
+      color: Constants.primaryColor,
+      elevation: 20.0,
+      itemBuilder: (_) => <PopupMenuItem<int>>[
+        new PopupMenuItem<int>(
+          child: Row(children: <Widget>[
+            Icon(Icons.edit, color: Colors.blue[900]),
+            Text(" Ver / Editar".toUpperCase(), style: Constants.subtituloStyle2)],
+          ),
+          value: 1
+        ),
+        new PopupMenuItem<int>(
+          child: Row(children: <Widget>[
+            Icon(Icons.delete_forever, color: Colors.red[900]),
+            Text(" Eliminar".toUpperCase(), style: Constants.subtituloStyle2)],
+          ),
+          value: 2
+        ),      
+      ],
+      onSelected: (value){
+        if(value == 1){
+          if(widget.params['status'] == 0)Navigator.push(context, _customRoute.crearRutaSlide(Constants.solicitudPage, json, getNewIntegrante: _getNewIntegrante));
+        }
+        else if(value == 2){
+          if(widget.params['status'] == 0){
+            CustomDialog customDialog = CustomDialog();
+            customDialog.showCustomDialog(
+              context,
+              title: 'Guardar y enviar',
+              icon: Icons.error_outline,
+              textContent: '¿Desea eliminar a ${json['Integrante']} del grupo \'${json['nombreGrupo']}\'?',
+              cancel: 'No, cancelar',
+              cntinue: 'Si, eliminar',
+              action: () => _eliminarIntegrante(json['idSolicitud'])
+            );
+          }
+        }
+      }
+    );
+  }
+
+  _eliminarIntegrante(int idSolicitud){
+    print('eliminar');
+    Navigator.pop(context);
+    DBProvider.db.deleteSolicitud(idSolicitud).then((value)async{
+      _success('Integrante Eliminado.');
+      _getNewIntegrante(0);  
+    });
   }
 
   Widget _checks(Solicitud integrante){

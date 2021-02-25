@@ -355,6 +355,12 @@ class DBProvider{
     return res;
   }
 
+  Future<int> deleteSolicitud(int idSolicitud)async{
+    final db = await database;
+    final res = await db.delete(Constants.solicitudesTable, where:'${Constants.idSolicitud} = ?', whereArgs: [idSolicitud]);
+    return res;
+  }
+
   //Repositorio Docuementos Solicitudes
   Future<int> nuevoDocumento(Documento documento)async{
     final db = await database;

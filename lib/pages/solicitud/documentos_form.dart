@@ -123,7 +123,7 @@ class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAlive
                 child: Ink(
                   color: Colors.grey[50],
                   child: ListTile(
-                    title: Text(item.headerValue, style: Constants.mensajeCentral2),
+                    title: Text(item.headerValue, style: Constants.mensajeCentral2bold),
                     subtitle: Row(
                       children: pathFile == null ?[
                         Icon(Icons.error_outline, size: 20.0, color: Colors.yellow[600]),
@@ -235,22 +235,23 @@ class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAlive
     List<String> datos = widget.datosCapturados();
     
     return Container(
-      padding: EdgeInsets.only(top: 5.0),
+      padding: EdgeInsets.only(top: 15.0),
       color: Colors.grey[100],
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.person, color: Constants.primaryColor),
               Container(
-                child: Text('Datos capturados del cliente'.toUpperCase(), style: Constants.mensajeCentral),
+                child: Text('Datos del cliente'.toUpperCase(), style: Constants.mensajeCentral2bold),
               ),
             ],
           ),
           SizedBox(height: 5.0),
-          _rowDatos('imp. capital', '\$${datos[0]}'),
+          _rowDatos('imp. capital', '\$ ${datos[0]}'),
           _rowDatos('nombre', '${datos[1]}'),
           _rowDatos('Fecha de nac.', '${datos[2]}'),
           _rowDatos('curp', '${datos[3]}'),
@@ -270,7 +271,7 @@ class _DocumentosFormState extends State<DocumentosForm> with AutomaticKeepAlive
         children: [
           Container(
             width: 110,
-            child: Text(title.toUpperCase(), style: Constants.mensajeCentralNotMedium)
+            child: Text(title.toUpperCase(), style: Constants.mensajeCentral2)
           ),
           Flexible(
             child: Text(content.toUpperCase(), style: Constants.mensajeCentral2)
