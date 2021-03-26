@@ -197,7 +197,26 @@ class _GrupoPageState extends State<GrupoPage> {
               '${integrante.nombre} ${integrante.segundoNombre} ${integrante.primerApellido} ${integrante.segundoApellido}', 
               style: Constants.mensajeCentral, 
               overflow: TextOverflow.ellipsis
-            ),   
+            ),
+            Container(
+              padding: EdgeInsets.only(bottom: 10.0),
+              child: GestureDetector(
+                onTap:(){
+                  print('object');
+                  Navigator.push(context, _customRoute.crearRutaSlide(Constants.confiashopPage, {'index': _integrantes[index].idSolicitud, 'cveCli': 'D865', 'categoria': 1}, setTicket: _actulizaTicket));
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.shopping_cart, size: 10.0, color: Colors.blue[900]),
+                    Container(
+                      child: Text('Compra Confiashop'.toUpperCase(), style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.blue[900])),
+                      padding: EdgeInsets.only(top: 2.0),      
+                    ),
+                    Icon(Icons.arrow_forward_ios, size: 10.0, color: Colors.blue[900]),
+                  ],
+                )
+              ),
+            ),
           ],
         ),
         subtitle: 'Importe capital: ${integrante.capital}'.toUpperCase(),
@@ -227,6 +246,13 @@ class _GrupoPageState extends State<GrupoPage> {
         }
       ),
     );
+  }
+
+  _actulizaTicket(int index, String ticket){
+    print(index);
+    print(ticket);
+    //widget.setTicket(index, ticket);
+    //setState(() {widget.params['ticket'] = ticket;});
   }
 
   Widget _popMenu(json){
@@ -259,7 +285,7 @@ class _GrupoPageState extends State<GrupoPage> {
             CustomDialog customDialog = CustomDialog();
             customDialog.showCustomDialog(
               context,
-              title: 'Guardar y enviar',
+              title: 'Eliminar Integrante',
               icon: Icons.error_outline,
               textContent: '¿Desea eliminar a ${json['Integrante']} del grupo \'${json['nombreGrupo']}\'?',
               cancel: 'No, cancelar',
