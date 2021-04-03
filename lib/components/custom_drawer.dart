@@ -228,7 +228,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
         Navigator.pushNamed(context, Constants.infoPage, arguments: true);
         break;
       case 3:
-        await _authFirebase.signOut();
+        //await _authFirebase.signOut();
         _sharedActions.clear();
         Navigator.pushReplacementNamed(context, Constants.loginPage, arguments: true);
         break;

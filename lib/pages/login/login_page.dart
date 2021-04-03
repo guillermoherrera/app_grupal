@@ -1,3 +1,4 @@
+import 'package:app_grupal/providers/asesores_provider.dart';
 import 'package:app_grupal/providers/firebase_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -23,10 +24,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final AuthFirebase _authFirebase = new AuthFirebase();
+  final AsesoresProvider _asesoresProvider = new AsesoresProvider();
+  //final AuthFirebase _authFirebase = new AuthFirebase();
   final SharedActions _sharedActions = new SharedActions();
   final CustomSnakBar _customSnakBar = new CustomSnakBar();
-  final _firebaseProvider = FirebaseProvider();
+  //final _firebaseProvider = FirebaseProvider();
   final _formKey = new GlobalKey<FormState>();
   final _userController = TextEditingController();
   final _passController = TextEditingController();
@@ -37,18 +39,32 @@ class _LoginPageState extends State<LoginPage> {
     if(_formKey.currentState.validate()){
       _submitStatus();
       FocusScope.of(context).requestFocus(FocusNode());
-      final authResult = await _authFirebase.signIn(_userController.text, _passController.text);
-      if(authResult.result){
-        await _sharedActions.setUserAuth(_userController.text, _passController.text, authResult.uid);
-        await _firebaseProvider.getUserInfo();
-        _firebaseProvider.getCatalogos();
-        //widget.onSignIn();
+      
+      final authResult = await _asesoresProvider.loginVCAPI(_userController.text, _passController.text);
+      if (authResult.resultCode == 0) {
+        await _sharedActions.setUserAuth(_userController.text, _passController.text, authResult.usuarioId);
+        await _sharedActions.setUserInfo(authResult);
+        print('****** Falta GetCatalogos');
         Navigator.pushReplacementNamed(context, Constants.homePage);
       }else{
-        _customSnakBar.showSnackBar(Constants.errorAuth(authResult.mensaje), Duration(milliseconds: 3000), Colors.pink, Icons.error_outline, _scaffoldKey);
+        _customSnakBar.showSnackBar(authResult.resultDesc, Duration(milliseconds: 3000), Colors.pink, Icons.error_outline, _scaffoldKey);
         await Future.delayed(Duration(seconds:3));
         _submitStatus();
       }
+
+      //LOGINFIREBASE
+      //final authResult = await _authFirebase.signIn(_userController.text, _passController.text);
+      //if(authResult.result){
+      //  await _sharedActions.setUserAuth(_userController.text, _passController.text, authResult.uid);
+      //  await _firebaseProvider.getUserInfo();
+      //  _firebaseProvider.getCatalogos();
+      //  //widget.onSignIn();
+      //  Navigator.pushReplacementNamed(context, Constants.homePage);
+      //}else{
+      //  _customSnakBar.showSnackBar(Constants.errorAuth(authResult.mensaje), Duration(milliseconds: 3000), Colors.pink, Icons.error_outline, _scaffoldKey);
+      //  await Future.delayed(Duration(seconds:3));
+      //  _submitStatus();
+      //}
     }
   }
 
@@ -89,14 +105,19 @@ class _LoginPageState extends State<LoginPage> {
       child: CustomFadeTransition(
         tweenBegin: isLogout ? 1.0 : 0.0,
         duration: Duration(milliseconds: 3000),
-        child: Hero(
-          tag: 'logo',
-          child: Image(
-            image: AssetImage(Constants.logo),
-            color: Colors.white,
-            height: height / 4.4,
-            fit: BoxFit.contain,
-          ),
+        child: Column(
+          children: [
+            Hero(
+              tag: 'logo',
+              child: Image(
+                image: AssetImage(Constants.logo),
+                color: Colors.white,
+                height: height / 4.4,
+                fit: BoxFit.contain,
+              ),
+            ),
+            Text('v ${Constants.versionApp}'.toUpperCase(),style: Constants.subtituloStyle),
+          ],
         ),
       ),
     );

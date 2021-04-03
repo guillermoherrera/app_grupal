@@ -1,4 +1,5 @@
 import 'package:app_grupal/classes/auth_firebase.dart';
+import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/pages/home/home_page.dart';
 import 'package:app_grupal/pages/login/login_page.dart';
@@ -16,12 +17,14 @@ enum AuthStatus{
 
 class _RootPageState extends State<RootPage> {
   final AuthFirebase _authFirebase = new AuthFirebase();
+  final SharedActions _sharedActions = new SharedActions();
   AuthStatus authStatus = AuthStatus.notSignedIn;
   bool cargando = true;
   
   @override
   void initState() {
-    _authFirebase.currentUser().then((userId)async{
+    _sharedActions.getUserId().then((userId)async{ 
+    //_authFirebase.currentUser().then((userId)async{
       //await Future.delayed(Duration(milliseconds: 1000));
       setState(() {
         authStatus = userId != null ? AuthStatus.signedIn : AuthStatus.notSignedIn;
@@ -50,7 +53,7 @@ class _RootPageState extends State<RootPage> {
     return Scaffold(
       body: Container(
         color: Constants.primaryColor,
-        child: Center(child: Text('Asesores App'.toUpperCase(), style: Constants.encabezadoStyle))
+        child: Center(child: Text('Cargando Asesores App ...'.toUpperCase(), style: Constants.encabezadoStyle))
       )
     );
   }

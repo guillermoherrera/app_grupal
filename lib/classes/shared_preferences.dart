@@ -1,3 +1,4 @@
+import 'package:app_grupal/models/authentication_model.dart';
 import 'package:app_grupal/models/solicitud_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
@@ -14,7 +15,7 @@ class SharedActions{
     await init();
     preferences.setString('user', user);
     preferences.setString('pass', pass);
-    preferences.setString('uid', uid);
+    preferences.setString('uid', uid.toString());
 
   }
 
@@ -23,18 +24,28 @@ class SharedActions{
     preferences.setBool("passGenerico", false);
   }
 
+  setUserInfo(AuthVCAPI authVCAPI) async{
+    preferences.setString('nombreCom', authVCAPI.nombreCom);
+    preferences.setInt('sistemaId', authVCAPI.sistemaId);
+    preferences.setString('token', authVCAPI.token);
+  }
+
   Future<Map<String, dynamic>> getUserInfo() async{
     await init();
     return {
-      'user'    : preferences.getString('user'),
-      'name'    : preferences.getString('name'),
-      'uid'     : preferences.getString('uid'),
-      'sistema' : preferences.getInt('sistema'),
-      'sistemaDesc' : preferences.getString('sistemaDesc'),
-      'pass'    : preferences.getString('pass'),
-      'tipoUsuario' : preferences.getInt('tipoUsuario'),
-      'documentID'    : preferences.getString('documentID'),
-      'passGenerico'    : preferences.getBool('passGenerico'),
+      'nombreCom' : preferences.getString('nombreCom'),
+      'sistemaId' : preferences.getInt('sistemaId'),
+      'token'     : preferences.getString('token'),
+      'uid'       : preferences.getInt('usuarioId'),
+      //'user'    : preferences.getString('user'),
+      //'name'    : preferences.getString('name'),
+      //'uid'     : preferences.getString('uid'),
+      //'sistema' : preferences.getInt('sistema'),
+      //'sistemaDesc' : preferences.getString('sistemaDesc'),
+      //'pass'    : preferences.getString('pass'),
+      //'tipoUsuario' : preferences.getInt('tipoUsuario'),
+      //'documentID'    : preferences.getString('documentID'),
+      //'passGenerico'    : preferences.getBool('passGenerico'),
     };
   }
 

@@ -29,12 +29,13 @@ class Constants{
   static final String confirmation = 'assets/confirmation.png';
   static final String notImage = 'assets/noImage.png';
 
-  static final String baseURL = 'test.api.asesores.fconfia.com';
+  static final String baseURL = '192.168.137.1';//'test.api.asesores.fconfia.com';
   static final String apiKey = 'doCLjcd9FIABAzXhF49AMDTPJqo608M5Wau';
   static final String consultaContratos = 'contratosAsesor';
   static final String consultaIntegrantes = 'contratoDetalle';
   static final String creditoDetalle = 'creditoDetalle';
 
+  static final String versionApp = "1.0";
   static final String homeText = 'Puedes comenzar a capturar nuevas solicitudes de crédito grupal o revisar la información de los grupos con los que ya estas trabajando, solo ve a la barra de navegación inferior y selecciona la opción que necesites.';
   static final String info1 = 'Aplicación desarrollada para operar como una herramienta de trabajo en apoyo a la operación de los asesores de créditos grupales. ';
   static final String info2 = '''La principal función de esta app es la de facilitar y validar la captura de solicitudes de crédito para agilizar el proceso de originación y mejorar la calidad del servicio. Algunas de las características principales que se encuentran en la app son:

@@ -39,7 +39,7 @@ class CustomAppBar extends StatelessWidget {
             actions: actions,
             leading: leading,
           ),
-          Text('v 1.0'.toUpperCase(), style: Constants.encabezadoStyle,),
+          Text('v ${Constants.versionApp}'.toUpperCase(), style: Constants.encabezadoStyle,),
         ],
       ),
     );
