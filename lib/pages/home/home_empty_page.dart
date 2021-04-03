@@ -1,5 +1,5 @@
 import 'package:app_grupal/widgets/custom_fade_transition.dart';
-import 'package:app_grupal/widgets/custom_snack_bar.dart';
+//import 'package:app_grupal/widgets/custom_snack_bar.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +19,7 @@ class HomeEmptyPage extends StatefulWidget {
 }
 
 class _HomeEmptyPageState extends State<HomeEmptyPage> with AutomaticKeepAliveClientMixin{
-  final _customSnakBar = new CustomSnakBar();
+  //final _customSnakBar = new CustomSnakBar();
   bool sincronizando = false;
 
   @override
@@ -30,6 +30,17 @@ class _HomeEmptyPageState extends State<HomeEmptyPage> with AutomaticKeepAliveCl
         children: [
           ListView(
             children: [
+              
+              /*Container(
+                padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                child:FittedBox(
+                  child: Text(
+                    'Bienvenido a asesores app'.toUpperCase(),
+                    textAlign: TextAlign.start,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)
+                  )
+                )
+              ),*/
               Image(
                 image: AssetImage(Constants.homeImage),
                 fit: BoxFit.contain,
@@ -37,15 +48,7 @@ class _HomeEmptyPageState extends State<HomeEmptyPage> with AutomaticKeepAliveCl
               Container(
                 padding: EdgeInsets.only(left: 20.0, right: 20.0),
                 child:Text(
-                  'Bienvenido a Asesores App'.toUpperCase(),
-                  textAlign: TextAlign.start,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)
-                )
-              ),
-              Container(
-                padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                child:Text(
-                  Constants.homeText,
+                  ''/*Constants.homeText*/,
                   textAlign: TextAlign.justify,
                   style: Constants.mensajeCentral,
                 )
@@ -66,15 +69,17 @@ class _HomeEmptyPageState extends State<HomeEmptyPage> with AutomaticKeepAliveCl
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(sincronizando ? Icons.watch_later : Icons.sync, color: sincronizando ? Colors.grey : Constants.primaryColor,),
-                            Text('Sincronizar'.toUpperCase(), style: TextStyle(fontSize: 6.0, fontWeight: FontWeight.bold, color: sincronizando ? Colors.grey : Constants.primaryColor))
+                            //Icon(sincronizando ? Icons.watch_later : Icons.sync, color: sincronizando ? Colors.grey : Constants.primaryColor,),
+                            //Text('Sincronizar'.toUpperCase(), style: TextStyle(fontSize: 6.0, fontWeight: FontWeight.bold, color: sincronizando ? Colors.grey : Constants.primaryColor))
+                            Text('Ultimo Incio de sesión:'.toUpperCase(), style: TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold, color: Colors.grey)),
+                            Text('01/01/2021 12:00'.toUpperCase(), style: TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold, color: Colors.grey)),
                           ],
                         ),
                         padding: EdgeInsets.all(10.0),
-                        color: Colors.white,
-                        elevation: 8.0,
+                        color: Colors.transparent,//Colors.white,
+                        elevation: 0.0,//8.0,
                         shape: CircleBorder(),
-                        onPressed: sincronizando ? (){} : ()=>_sincronizar()
+                        onPressed: (){}//sincronizando ? (){} : ()=>_sincronizar()
                       ),
                     ),
                   ],
@@ -87,7 +92,7 @@ class _HomeEmptyPageState extends State<HomeEmptyPage> with AutomaticKeepAliveCl
     );
   }
 
-  _sincronizar()async{
+  /*_sincronizar()async{
     setState((){sincronizando = !sincronizando;});
     try{
       if(!(await widget.sincroniza()))
@@ -96,9 +101,9 @@ class _HomeEmptyPageState extends State<HomeEmptyPage> with AutomaticKeepAliveCl
       _error('Error desconocido, revisa tu conexión o vuelve a iniciar sesión.');
     }
     setState((){sincronizando = !sincronizando;});
-  }
+  }*/
 
-  _error(String error){
+  /*_error(String error){
     _customSnakBar.showSnackBar(
       error,
       Duration(milliseconds: 5000),
@@ -106,7 +111,7 @@ class _HomeEmptyPageState extends State<HomeEmptyPage> with AutomaticKeepAliveCl
       Icons.error_outline,
       widget.scaffoldKey
     );
-  }
+  }*/
 
   @override
   bool get wantKeepAlive => true;

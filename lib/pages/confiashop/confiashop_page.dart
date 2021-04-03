@@ -25,7 +25,7 @@ class _ConfiashopPageState extends State<ConfiashopPage> {
 
   @override
   void initState() {
-    _selectedUrl = 'https://confia-dev.supernova-desarrollo.com/?meta=1&page=mobile&env=dist&tk1=${widget.params['cveCli']}&tk2=&benefit=${widget.params['categoria']}';
+    _selectedUrl = 'https://confia-qa.supernova-desarrollo.com/?meta=1&page=mobile&env=dist&tk1=${widget.params['cveCli']}&tk2=&benefit=${widget.params['categoria']}';
     
     _flutterWebviewPlugin.onStateChanged.listen((state) async {
       print('URL --> ${state.url}');
@@ -67,7 +67,7 @@ class _ConfiashopPageState extends State<ConfiashopPage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: (){},
+      onWillPop: ()async{return null;},
       child: Scaffold(
         body: SafeArea(
           child: WebviewScaffold(

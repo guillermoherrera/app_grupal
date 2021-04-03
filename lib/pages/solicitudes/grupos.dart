@@ -74,8 +74,8 @@ class _GruposPageState extends State<GruposPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Mis Grupos Creados'.toUpperCase(), style: Constants.mensajeCentral),
-                      Text('en este dispositivo'.toUpperCase(), style: Constants.mensajeCentral2),
+                      Text('Mis Grupos'.toUpperCase(), style: Constants.mensajeCentral),
+                      Text(''.toUpperCase(), style: Constants.mensajeCentral2),
                     ]
                   ),
                   Column(
@@ -132,7 +132,7 @@ class _GruposPageState extends State<GruposPage> {
     return Container(
       color: Colors.white,
       child: Stack(children: [
-        CustomFadeTransition(child: EmptyImage(text: 'No hay grupos creados'), duration: Duration(milliseconds: 2000),),
+        CustomFadeTransition(child: EmptyImage(text: 'No hay grupos para mostrar'), duration: Duration(milliseconds: 2000),),
         ListView()
       ]),
     );

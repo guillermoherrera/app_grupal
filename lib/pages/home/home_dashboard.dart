@@ -45,7 +45,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
   }
 
   _sincAutomatica()async{
-    final syncTime =  Duration(milliseconds: 600000);
+    /*final syncTime =  Duration(milliseconds: 600000);
     new Timer.periodic(syncTime, (Timer t)async{
       if(this.mounted){
         _sincronizar();
@@ -53,7 +53,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
       }else{
         t.cancel();
       }
-    });
+    });*/
   }
 
   _getGrupos()async{
@@ -126,10 +126,10 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with AutomaticKee
                       Row(
                         children: [
                           Icon(Icons.phone_iphone, size: 12.0, color: Colors.blue),
-                          Text('Últimas Solicitudes'.toUpperCase(), style: Constants.mensajeCentral),
+                          Text('Últimos Movimientos'.toUpperCase(), style: Constants.mensajeCentral),
                         ],
                       ),
-                      Text('capturadas en este dispositivo'.toUpperCase(), style: Constants.mensajeCentral2),  
+                      Text('capturados en este dispositivo'.toUpperCase(), style: Constants.mensajeCentral2),  
                     ]
                   ),
                   Column(

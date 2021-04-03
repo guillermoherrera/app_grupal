@@ -64,7 +64,11 @@ class _PasswordPageState extends State<PasswordPage> {
                   child: Hero(tag: 'contraseña', child: Icon(Icons.lock, color: Colors.white, size: 40.0,))
                 ),
               ),
-              Row(
+              Container(
+                child: Text('\nLa opción de actualizar contraseña estará próximamente disponible.', style: Constants.mensajeCentral, textAlign: TextAlign.center),
+                width: double.infinity,
+              )
+              /*Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
@@ -103,7 +107,7 @@ class _PasswordPageState extends State<PasswordPage> {
                 label: 'Confirmación Nueva Contraseña',
                 icon: Icons.lock,
                 isPassword: true,
-              ),
+              ),*/
             ],
           ),
         ),
@@ -135,11 +139,11 @@ class _PasswordPageState extends State<PasswordPage> {
               offset: 140.0,
               duration: Duration(milliseconds: 3000),
               child: CustomRaisedButton(
-                action: ()=> !_enviando ? _validaSubmit() : (){},
+                action: ()=>Navigator.pop(context),//()=> !_enviando ? _validaSubmit() : (){},
                 borderColor: !_enviando ? Colors.blue : Constants.primaryColor,
                 primaryColor: !_enviando ? Colors.blue : Constants.primaryColor,
                 textColor: Colors.white,
-                label: '${!_enviando ? 'Guardar' : 'Enviando ...'}'
+                label: 'Entendido'//'${!_enviando ? 'Guardar' : 'Enviando ...'}'
               ),
             )
           ),

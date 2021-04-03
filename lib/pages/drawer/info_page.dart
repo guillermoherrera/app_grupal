@@ -47,13 +47,21 @@ class InfoPage extends StatelessWidget {
 
   Widget _texto(){
     return Container(
+      child: Text('''\n\n
+Aplicación móvil para créditos grupales.
+versión 1.0
+2021
+      '''.toUpperCase(), style: Constants.subtituloStyle, textAlign: TextAlign.center),
+      width: double.infinity,
+    );
+    /*return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
       child: Column(
         children: [
           Container(
             width: double.infinity,
             child: Text(
-              Constants.info1.toUpperCase(),
+              ''/*Constants.info1.toUpperCase()*/,
               style: Constants.subtituloStyle,
               textAlign: TextAlign.justify,
             ),
@@ -62,14 +70,14 @@ class InfoPage extends StatelessWidget {
           Container(
             width: double.infinity,
             child: Text(
-              Constants.info2.toUpperCase(),
+              ''/*Constants.info2.toUpperCase()*/,
               style: Constants.subtituloStyle,
               textAlign: TextAlign.justify,
             ),
           )
         ],
       ),
-    );
+    );*/
   }
 
 }
