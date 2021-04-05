@@ -153,7 +153,7 @@ class _GruposPageState extends State<GruposPage> {
             ),   
           ],
         ),
-        subtitle: 'Importe: \$${widget.params['opcion'] == 'captura'? grupo.importeGrupo : grupo.importe}   Integrantes: ${widget.params['opcion'] == 'captura'? grupo.cantidadSolicitudes : grupo.cantidadIntegrantes}'.toUpperCase(),
+        subtitle: 'Importe total: \$${widget.params['opcion'] == 'captura'? grupo.importeGrupo : grupo.importe}\nIntegrantes: ${widget.params['opcion'] == 'captura'? grupo.cantidadSolicitudes : grupo.cantidadIntegrantes}'.toUpperCase(),
         trailing: Icon(Icons.arrow_forward_ios, color: Constants.primaryColor),
       );
       listTiles.add(listTile);
@@ -170,7 +170,21 @@ class _GruposPageState extends State<GruposPage> {
           //  return SizedBox(height: 50.0);
           return WidgetANimator(
             GestureDetector(
-              onTap: (){Navigator.push(context, _customRoute.crearRutaSlide(Constants.grupoPage, {'nombre': _grupos[index].nombreGrupo, 'idGrupo': _grupos[index].idGrupo, 'status': _grupos[index].status}, getLastGrupos: _recargarGrupos, sincroniza: widget.sincroniza));},
+              onTap: (){
+                Navigator.push(context, _customRoute.crearRutaSlide(
+                  Constants.grupoPage,
+                  {
+                    'nombre'    : _grupos[index].nombreGrupo, 
+                    'status'    : _grupos[index].status,
+                    'idGrupo'   : widget.params['opcion'] == 'captura' ? _grupos[index].idGrupo : _grupos[index].contratoId,
+                    'atrazos'   : widget.params['opcion'] == 'captura' ? 0 : _grupos[index].atrazos,
+                    'diasAtrazo': widget.params['opcion'] == 'captura' ? 0 :_grupos[index].diasAtrazo,
+                    'opcion'    : widget.params['opcion'],
+                  }, 
+                  getLastGrupos: _recargarGrupos, 
+                  sincroniza: widget.sincroniza
+                ));
+              },
               child: CustomListTile(
                 title: listTiles[index].title,
                 subtitle: listTiles[index].subtitle,

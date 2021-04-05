@@ -2,6 +2,7 @@ import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/authentication_model.dart';
 import 'package:app_grupal/models/contrato_model.dart';
 import 'package:app_grupal/classes/shared_preferences.dart';
+import 'package:app_grupal/models/integrantes_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -62,6 +63,19 @@ class VCAPIProvider {
     List<dynamic> listaProcesada = await procesaRespuestaLista(url, headers, contratos);
     
     return listaProcesada.cast<ContratoVCAPI>();
+  }
+
+  Future<List<IntegranteVCAPI>> consultaIntegrantes(int contratoId)async{
+    Map<String, dynamic> info = await _sharedActions.getUserInfo();
+    final url = Uri.http(Constants.baseURL, '/v1.0/secure/grupal/Consulta/Integrantes/${info['user']}/$contratoId');
+    Map<String, String> headers= {
+      'Authorization'  : 'Bearer ${info['token']}',
+    };
+    
+    IntegrantesVCAPI contratos = new IntegrantesVCAPI();
+    List<dynamic> listaProcesada = await procesaRespuestaLista(url, headers, contratos);
+    
+    return listaProcesada.cast<IntegranteVCAPI>();
   }
 
 }

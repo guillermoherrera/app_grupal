@@ -5,6 +5,7 @@ import 'package:app_grupal/pages/drawer/info_page.dart';
 import 'package:app_grupal/pages/solicitud/solicitud_page.dart';
 import 'package:app_grupal/pages/solicitudes/grupo.dart';
 import 'package:app_grupal/pages/solicitudes/grupos.dart';
+import 'package:app_grupal/pages/solicitudes/integrante.dart';
 import 'package:app_grupal/pages/solicitudes/notificaciones.dart';
 import 'package:app_grupal/pages/solicitudes/nuevo_grupo.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +69,8 @@ class CustomRouteTransition{
       return NotificacionPage();
     }else if(ruta == Constants.grupoPage){
       return GrupoPage(params: params, getLastGrupos: getLastGrupos, sincroniza: sincroniza);
+    }else if(ruta == Constants.integrantePage){
+      return IntegrantePage(params: params);
     }
     return RootPage();
   }

@@ -92,3 +92,67 @@ class Integrante{
     interes         = json['interes'] / 1;
   }
 }
+
+class IntegrantesVCAPI{
+  List<IntegranteVCAPI> items = List();
+
+  IntegrantesVCAPI();
+
+  List<IntegranteVCAPI> fromJsonList(dynamic jsonList){
+    if(jsonList == null) return List();
+    for(var item in jsonList){
+      final integrante = IntegranteVCAPI.jsonMap(item);
+      items.add(integrante);
+    }
+
+    return items;
+  }
+}
+
+class IntegranteVCAPI{
+  String cveCli;
+  String nombreCom;
+  String curp;
+  String fechaNacimiento;
+  String direccion;
+  String telefonoCel;
+  double importeT;
+  int diaAtr;
+  double capital;
+  int noCda;
+  bool tesorero;
+  bool presidente;
+  int grupo; 
+
+  IntegranteVCAPI({
+    this.cveCli,
+    this.nombreCom,
+    this.telefonoCel,
+    this.importeT,
+    this.diaAtr,
+    this.capital,
+    this.noCda,
+    this.tesorero,
+    this.presidente,
+    this.curp,
+    this.direccion,
+    this.fechaNacimiento,
+    this.grupo
+  });
+
+  IntegranteVCAPI.jsonMap(Map<String, dynamic> json){
+    cveCli          = json['cveCli'];
+    nombreCom       = json['nombreCom'];
+    telefonoCel     = json['telefonoCel'];
+    importeT        = json['importeT'] / 1;
+    diaAtr          = json['diaAtr'];
+    capital         = json['capital'] / 1;
+    noCda           = json['noCda'];
+    tesorero        = json['tesorero'];
+    presidente      = json['presidente'];
+    curp            = json['curp'];
+    direccion       = json['direccion'];
+    fechaNacimiento = json['fechaNacimiento'];
+    grupo           = json['grupo'];  
+  }
+}

@@ -5,6 +5,7 @@ import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/list_tile_model.dart';
 import 'package:app_grupal/models/solicitud_model.dart';
 import 'package:app_grupal/providers/db_provider.dart';
+import 'package:app_grupal/providers/vcapi_provider.dart';
 import 'package:app_grupal/widgets/animator.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/custom_center_loading.dart';
@@ -36,10 +37,12 @@ class _GrupoPageState extends State<GrupoPage> {
   final _customSnakBar = new CustomSnakBar();
   final _sharedActions = SharedActions();
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
-  List<Solicitud> _integrantes = [];
+  final VCAPIProvider _vcapiProvider = new VCAPIProvider();
+  List<dynamic> _integrantes = [];
   bool _cargando = true;
   bool _showIcon = true;
   double _capitalTotal = 0;
+  double _importeTotal = 0;
   int _validaIntegrantesCant = 100;
   String userID;
 
@@ -52,8 +55,9 @@ class _GrupoPageState extends State<GrupoPage> {
   _buscarIntegrantes()async{
     await Future.delayed(Duration(milliseconds: 1000));
     _validaIntegrantesCant = await DBProvider.db.getCatIntegrantesCant();
-    _integrantes = await DBProvider.db.getSolicitudesByGrupo(widget.params['idGrupo']);
+    _integrantes = widget.params['opcion'] == 'captura' ? await DBProvider.db.getSolicitudesByGrupo(widget.params['idGrupo']) : await _vcapiProvider.consultaIntegrantes(widget.params['idGrupo']);
     getCapitalTotal();
+    getImporteTotal();
     _cargando = false;
     setState((){});
   }
@@ -62,6 +66,13 @@ class _GrupoPageState extends State<GrupoPage> {
     _capitalTotal = 0;
     _integrantes.forEach((e){
       if(e.capital != null)_capitalTotal += e.capital;
+    });
+  }
+
+  getImporteTotal(){
+    _importeTotal = 0;
+    _integrantes.forEach((e){
+      if(e.importeT != null)_importeTotal += e.importeT;
     });
   }
 
@@ -95,26 +106,59 @@ class _GrupoPageState extends State<GrupoPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('${widget.params['nombre']}'.toUpperCase(), style: Constants.mensajeCentral),
-                      Text('Integrantes: ${_integrantes.length}'.toUpperCase(), style: _integrantes.length >= _validaIntegrantesCant ? Constants.mensajeCentral2 : Constants.mensajeCentral2error),
-                      Text('Total: $_capitalTotal'.toUpperCase(), style: Constants.mensajeCentral3),
+                      //Text('Integrantes: ${_integrantes.length}'.toUpperCase(), style: _integrantes.length >= _validaIntegrantesCant ? Constants.mensajeCentral2 : Constants.mensajeCentral2error),
+                      widget.params['opcion'] == 'captura' ? Text('Capital: \$$_capitalTotal'.toUpperCase(), style: Constants.mensajeCentral3) : 
+                      Table(
+                        columnWidths: {
+                          0: IntrinsicColumnWidth(),
+                          1: IntrinsicColumnWidth(),
+                        },
+                        children: [
+                          TableRow(children:[
+                            Text('Contrato'.toUpperCase(), style: Constants.mensajeCentral3), 
+                            Text(' ${widget.params['idGrupo']}'.toUpperCase(), style: Constants.mensajeCentral3)
+                          ]),
+                          TableRow(children:[
+                            Text('Status'.toUpperCase(), style: Constants.mensajeCentral3), 
+                            Text(' ${widget.params['status']}'.toUpperCase(), style: Constants.mensajeCentral3)
+                          ]),
+                          TableRow(children:[
+                            Text('Atrazos'.toUpperCase(), style: Constants.mensajeCentral3), 
+                            Text(' ${widget.params['atrazos']}'.toUpperCase(), style: Constants.mensajeCentral3)
+                          ]),
+                          TableRow(children:[
+                            Text('Días Atrazo'.toUpperCase(), style: Constants.mensajeCentral3), 
+                            Text(' ${widget.params['diasAtrazo']}'.toUpperCase(), style: Constants.mensajeCentral3)
+                          ]),
+                          TableRow(children:[
+                            Text('Capital total'.toUpperCase(), style: Constants.mensajeCentral3), 
+                            Text(' \$$_capitalTotal'.toUpperCase(), style: Constants.mensajeCentral3)
+                          ]),
+                          TableRow(children:[
+                            Text('Importe total'.toUpperCase(), style: Constants.mensajeCentral3), 
+                            Text(' \$$_importeTotal'.toUpperCase(), style: Constants.mensajeCentral3)
+                          ]),
+                        ],
+                      )
                     ]
                   ),
                   Column(
                     children: [
                       Icon(Icons.person, color: Constants.primaryColor),
+                      Text('Integrantes'.toUpperCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor)),
                       Text('${_integrantes.length}'.toUpperCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor)),
                     ],
                   ),
                 ],
               )
             ),
-            Divider(),
+            Divider(color: Colors.black,),
             Expanded(
               child: _bodyContent()
             )
           ] 
         ),
-        bottom: _cargando ? Container() : _buttonEnviar(),
+        bottom: _cargando ? Container() : widget.params['opcion'] == 'captura' ? _buttonEnviar() : Container(),
       ),
     );
   }
@@ -186,15 +230,15 @@ class _GrupoPageState extends State<GrupoPage> {
         'contratoId': widget.params['contrato'], 
         'idGrupo': widget.params['idGrupo'],
         'edit': true,
-        'idSolicitud': _integrantes[index].idSolicitud,
-        'Integrante': '${_integrantes[index].nombre} ${_integrantes[index].primerApellido}'
+        'idSolicitud': widget.params['opcion'] == 'captura' ? _integrantes[index].idSolicitud : _integrantes[index].cveCli,
+        'Integrante': widget.params['opcion'] == 'captura' ? '${_integrantes[index].nombre} ${_integrantes[index].primerApellido}' : _integrantes[index].nombreCom
       };
 
       final listTile = ListTileModel(
         title: Wrap(
           children: [
             Text(
-              '${integrante.nombre} ${integrante.segundoNombre} ${integrante.primerApellido} ${integrante.segundoApellido}', 
+              widget.params['opcion'] == 'captura' ? '${integrante.nombre} ${integrante.segundoNombre} ${integrante.primerApellido} ${integrante.segundoApellido}' : integrante.nombreCom, 
               style: Constants.mensajeCentral, 
               overflow: TextOverflow.ellipsis
             ),
@@ -209,7 +253,7 @@ class _GrupoPageState extends State<GrupoPage> {
                   children: [
                     Icon(Icons.shopping_cart, size: 10.0, color: Colors.blue[900]),
                     Container(
-                      child: Text('Compra Confiashop'.toUpperCase(), style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.blue[900])),
+                      child: Text(' Ir a Confiashop'.toUpperCase(), style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.blue[900])),
                       padding: EdgeInsets.only(top: 2.0),      
                     ),
                     Icon(Icons.arrow_forward_ios, size: 10.0, color: Colors.blue[900]),
@@ -219,9 +263,9 @@ class _GrupoPageState extends State<GrupoPage> {
             ),
           ],
         ),
-        subtitle: 'Importe capital: ${integrante.capital}'.toUpperCase(),
-        trailing: widget.params['status'] == 0 ? _popMenu(jsonDatos) : Icon(Icons.check_circle_outline, color: Constants.primaryColor),
-        leading: _checks(integrante),
+        subtitle: widget.params['opcion'] == 'captura' ? 'Capital: ${integrante.capital}'.toUpperCase() : 'Importe Total: ${integrante.importeT}\nDías Atrazo: ${integrante.diaAtr}'.toUpperCase(),
+        trailing: widget.params['status'] == 0 ? _popMenu(jsonDatos) : _verIntegrante(integrante),
+        leading: widget.params['opcion'] == 'captura' ? _checks(integrante) : _checksStatic(integrante),
       );
       listTiles.add(listTile);
     });
@@ -253,6 +297,27 @@ class _GrupoPageState extends State<GrupoPage> {
     print(ticket);
     //widget.setTicket(index, ticket);
     //setState(() {widget.params['ticket'] = ticket;});
+  }
+
+  Widget _verIntegrante(integrante){
+    return IconButton(
+      icon: Icon(Icons.arrow_forward_ios, color: Constants.primaryColor), 
+      onPressed: () => Navigator.push(context, _customRoute.crearRutaSlide(Constants.integrantePage, {
+        'cveCli'         : integrante.cveCli,
+        'nombreCom'      : integrante.nombreCom,
+        'telefonoCel'    : integrante.telefonoCel,
+        'importeT'       : integrante.importeT,
+        'diaAtr'         : integrante.diaAtr,
+        'capital'        : integrante.capital,
+        'noCda'          : integrante.noCda,
+        'tesorero'       : integrante.tesorero,
+        'presidente'     : integrante.presidente,
+        'curp'           : integrante.curp,
+        'direccion'      : integrante.direccion,
+        'fechaNacimiento': integrante.fechaNacimiento,
+        'grupo'          : integrante.grupo
+      }))
+    );
   }
 
   Widget _popMenu(json){
@@ -346,6 +411,14 @@ class _GrupoPageState extends State<GrupoPage> {
         )
       ],
     );
+  }
+
+  Widget _checksStatic(dynamic integrante){
+    String rol = '${integrante.tesorero ? 'TESORERO' : integrante.presidente ? 'PRESIDENTE' : 'iNTEGRANTE'}';
+    TextStyle estilo = integrante.tesorero ? TextStyle(fontSize: 8.0, fontWeight: FontWeight.bold, color: Constants.primaryColor) 
+      : integrante.presidente ? TextStyle(fontSize: 8.0, fontWeight: FontWeight.bold, color: Constants.primaryColor) 
+      : TextStyle(fontSize: 8.0);
+    return Text(rol, style: estilo,);
   }
 
   presidenteChange(bool val, Solicitud integrante){
