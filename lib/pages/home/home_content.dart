@@ -8,7 +8,7 @@ import 'package:app_grupal/pages/home/home_empty_page.dart';
 //import 'package:app_grupal/pages/renovaciones/renovaciones.dart';
 import 'package:app_grupal/pages/solicitudes/solicitudes_page.dart';
 import 'package:app_grupal/providers/db_provider.dart';
-import 'package:app_grupal/providers/firebase_provider.dart';
+//import 'package:app_grupal/providers/firebase_provider.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/custom_center_loading.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +28,7 @@ class HomeContent extends StatefulWidget {
 
 class _HomeContentState extends State<HomeContent> with SingleTickerProviderStateMixin {
   SharedActions _sharedActions = SharedActions();
-  final _firebaseProvider = FirebaseProvider();
+  //final _firebaseProvider = FirebaseProvider();
   GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
   TabController _tabController;
   List<Grupo> _ultimosq15Grupos = List();
@@ -61,7 +61,9 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
   }
 
   Future<bool> _sincroniza()async{
-    return await _firebaseProvider.sincronizar(_getLastGrupos);
+    print('Sincronizaion a Firebase deshabilitada');
+    return true;
+    //return await _firebaseProvider.sincronizar(_getLastGrupos);
   }
 
   @override

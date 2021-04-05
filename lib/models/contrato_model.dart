@@ -109,3 +109,55 @@ class ContratoDetalle{
     return items;
   }
 }
+
+class ContratosVCAPI{
+  List<ContratoVCAPI> items = List();
+  
+  ContratosVCAPI();
+  
+  List<ContratoVCAPI> fromJsonList(List<dynamic> jsonList){
+    if(jsonList == null) return List();
+
+    for(var item in jsonList){
+      final contrato = new ContratoVCAPI.jsonMap(item);
+      items.add(contrato);
+    }
+    return items;
+  }
+}
+
+class ContratoVCAPI{
+  String asesorId; 
+  String nombreAsesor; 
+  int contratoId; 
+  String nombreGrupo; 
+  String status; 
+  double importe; 
+  int cantidadIntegrantes; 
+  int atrazos; 
+  int diasAtrazo; 
+
+  ContratoVCAPI({
+    this.contratoId,
+    this.asesorId,
+    this.atrazos,
+    this.cantidadIntegrantes,
+    this.diasAtrazo,
+    this.importe,
+    this.nombreAsesor,
+    this.nombreGrupo,
+    this.status
+  });
+
+  ContratoVCAPI.jsonMap(Map<String, dynamic> json){
+    contratoId = json['contratoId']; 
+    asesorId = json['asesorId'];
+    atrazos = json['atrazos'];
+    cantidadIntegrantes = json['cantidadIntegrantes'];
+    diasAtrazo = json['diasAtrazo'];
+    importe = json['importe'] / 1;
+    nombreAsesor = json['nombreAsesor'];
+    nombreGrupo = json['nombreGrupo'];
+    status = json['status'];
+  }
+}

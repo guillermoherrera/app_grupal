@@ -2,9 +2,10 @@ import 'package:app_grupal/components/body_content.dart';
 import 'package:app_grupal/components/empty_image.dart';
 import 'package:app_grupal/components/page_route_builder.dart';
 import 'package:app_grupal/helpers/constants.dart';
-import 'package:app_grupal/models/grupos_model.dart';
+//import 'package:app_grupal/models/grupos_model.dart';
 import 'package:app_grupal/models/list_tile_model.dart';
 import 'package:app_grupal/providers/db_provider.dart';
+import 'package:app_grupal/providers/vcapi_provider.dart';
 import 'package:app_grupal/widgets/animator.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/custom_center_loading.dart';
@@ -32,7 +33,8 @@ class GruposPage extends StatefulWidget {
 class _GruposPageState extends State<GruposPage> {
   GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
   final _customRoute = CustomRouteTransition();
-  List<Grupo> _grupos = List();
+  final VCAPIProvider _vcapiProvider = new VCAPIProvider();
+  List<dynamic> _grupos = List();
   bool _cargando = true;
   bool _showIcon = true;
 
@@ -44,7 +46,7 @@ class _GruposPageState extends State<GruposPage> {
 
   _buscarGrupos()async{
     await Future.delayed(Duration(milliseconds: 1000));
-    _grupos = await DBProvider.db.getGruposCreados();
+    _grupos = widget.params['opcion'] == 'captura'? await DBProvider.db.getGruposCreados() : await _vcapiProvider.consultaGrupos();
     _cargando = false;
     setState((){});
   }
@@ -74,7 +76,7 @@ class _GruposPageState extends State<GruposPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Mis Grupos'.toUpperCase(), style: Constants.mensajeCentral),
+                      Text('${widget.params['opcion'] == 'captura'? 'Grupos en captura' : 'Mis grupos'}'.toUpperCase(), style: Constants.mensajeCentral2bold),
                       Text(''.toUpperCase(), style: Constants.mensajeCentral2),
                     ]
                   ),
@@ -151,7 +153,7 @@ class _GruposPageState extends State<GruposPage> {
             ),   
           ],
         ),
-        subtitle: 'Importe: ${grupo.importeGrupo} | Integrantes: ${grupo.cantidadSolicitudes}'.toUpperCase(),
+        subtitle: 'Importe: \$${widget.params['opcion'] == 'captura'? grupo.importeGrupo : grupo.importe}   Integrantes: ${widget.params['opcion'] == 'captura'? grupo.cantidadSolicitudes : grupo.cantidadIntegrantes}'.toUpperCase(),
         trailing: Icon(Icons.arrow_forward_ios, color: Constants.primaryColor),
       );
       listTiles.add(listTile);

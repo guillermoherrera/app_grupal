@@ -38,7 +38,7 @@ class SharedActions{
       'sistemaId' : preferences.getInt('sistemaId'),
       'ultimoInicioSesion' : preferences.getString('ultimoInicioSesion'),
       'token'     : preferences.getString('token'),
-      'uid'       : preferences.getInt('usuarioId'),
+      'uid'       : preferences.getString('uid'),
       'user'    : preferences.getString('user'),
       //'name'    : preferences.getString('name'),
       //'uid'     : preferences.getString('uid'),
@@ -54,6 +54,11 @@ class SharedActions{
   Future<String> getUserId() async{
     await init();
     return preferences.getString('uid');
+  }
+
+  Future<String> getToken() async{
+    await init();
+    return preferences.getString('token');
   }
 
   Future<void> saveUserInfo(DocumentSnapshot documentSnapshot) async{
