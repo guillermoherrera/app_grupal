@@ -1,8 +1,8 @@
-import 'package:app_grupal/providers/asesores_provider.dart';
-import 'package:app_grupal/providers/firebase_provider.dart';
+import 'package:app_grupal/providers/vcapi_provider.dart';
+//import 'package:app_grupal/providers/firebase_provider.dart';
 import 'package:flutter/material.dart';
 
-import 'package:app_grupal/classes/auth_firebase.dart';
+//import 'package:app_grupal/classes/auth_firebase.dart';
 import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/widgets/custom_fade_transition.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
@@ -24,7 +24,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final AsesoresProvider _asesoresProvider = new AsesoresProvider();
+  final VCAPIProvider _vcapiProvider = new VCAPIProvider();
   //final AuthFirebase _authFirebase = new AuthFirebase();
   final SharedActions _sharedActions = new SharedActions();
   final CustomSnakBar _customSnakBar = new CustomSnakBar();
@@ -40,14 +40,14 @@ class _LoginPageState extends State<LoginPage> {
       _submitStatus();
       FocusScope.of(context).requestFocus(FocusNode());
       
-      final authResult = await _asesoresProvider.loginVCAPI(_userController.text, _passController.text);
+      final authResult = await _vcapiProvider.loginVCAPI(_userController.text, _passController.text);
       if (authResult.resultCode == 0) {
         await _sharedActions.setUserAuth(_userController.text, _passController.text, authResult.usuarioId);
         await _sharedActions.setUserInfo(authResult);
         print('****** Falta GetCatalogos');
         Navigator.pushReplacementNamed(context, Constants.homePage);
       }else{
-        _customSnakBar.showSnackBar(authResult.resultDesc, Duration(milliseconds: 3000), Colors.pink, Icons.error_outline, _scaffoldKey);
+        _customSnakBar.showSnackBar(Constants.errorAuth(authResult.resultDesc), Duration(milliseconds: 3000), Colors.pink, Icons.error_outline, _scaffoldKey);
         await Future.delayed(Duration(seconds:3));
         _submitStatus();
       }

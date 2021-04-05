@@ -34,6 +34,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
   List<Grupo> _ultimosq15Grupos = List();
   List<Grupo> _gruposSinEnviar = List();
   String uid;
+  Map<String, dynamic> info;
   bool cargando = true;
 
   @override
@@ -52,6 +53,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
   _getLastGrupos()async{
     await Future.delayed(Duration(milliseconds: 1000));
     uid = await _sharedActions.getUserId();
+    info = await _sharedActions.getUserInfo();
     _ultimosq15Grupos = await DBProvider.db.getLastGrupos(uid);
     _gruposSinEnviar = _ultimosq15Grupos.where((e) => e.status == 1).toList();
     if(this.mounted) setState((){cargando = false;});
@@ -143,7 +145,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
     return RefreshIndicator(
       key: _refreshKey,
       onRefresh: () =>_getLastGrupos(),
-      child: HomeEmptyPage(sincroniza: _sincroniza, scaffoldKey: widget.scaffoldKey,)
+      child: HomeEmptyPage(sincroniza: _sincroniza, scaffoldKey: widget.scaffoldKey, info: info)
     );
   }
 

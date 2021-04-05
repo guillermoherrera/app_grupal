@@ -4,7 +4,7 @@ import 'dart:ui';
 
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
-import 'package:app_grupal/classes/auth_firebase.dart';
+//import 'package:app_grupal/classes/auth_firebase.dart';
 import 'package:app_grupal/classes/shared_preferences.dart';
 
 class CustomDrawer extends StatefulWidget {
@@ -73,18 +73,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
         ),
       ),
       SizedBox(height: height / 40),
-      userInfo['name'] == null ? Container() : CustomFadeTransition(
+      userInfo['nombreCom'] == null ? Container() : CustomFadeTransition(
         child: Center(
           child: Text(
-            '${userInfo['name']}'.toUpperCase(),
+            '${userInfo['nombreCom']}'.toUpperCase(),
             style: Constants.encabezadoStyle,
           )
         ),
       ),
-      userInfo['name'] == null ? Container() : CustomFadeTransition(
+      userInfo['user'] == null ? Container() : CustomFadeTransition(
         child: Center(
           child: Text(
-            '${userInfo['user']} | ${userInfo['sistemaDesc']}'.toUpperCase(),
+            '${userInfo['user']}'.toUpperCase(),
             style: Constants.subtituloStyle,
           )
         ),
@@ -217,7 +217,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   }
 
   _actions(BuildContext context, action) async{
-    final AuthFirebase _authFirebase = new AuthFirebase();
+    //final AuthFirebase _authFirebase = new AuthFirebase();
     final SharedActions _sharedActions = new SharedActions();
     
     switch (action) {

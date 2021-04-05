@@ -38,6 +38,17 @@ class AuthVCAPI{
     this.usuarioId
   });
 
+  AuthVCAPI.jsonMap(Map<String, dynamic> json){
+    nombreCom          = json['nombreCom'];
+    resultCode         = json['resultCode'];
+    resultDesc         = json['resultDesc'];
+    sistemaId          = json['sistemaId'];
+    token              = json['token'];
+    ultimoInicioSesion = json['ultimoInicioSesion'];
+    usuarioId          = json['usuarioId'];
+
+  }
+
   @override
   String toString() {
     return '{nombre: $nombreCom, mensaje: $resultDesc, result: $resultCode, uid: $usuarioId}';

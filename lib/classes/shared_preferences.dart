@@ -28,6 +28,7 @@ class SharedActions{
     preferences.setString('nombreCom', authVCAPI.nombreCom);
     preferences.setInt('sistemaId', authVCAPI.sistemaId);
     preferences.setString('token', authVCAPI.token);
+    preferences.setString('ultimoInicioSesion', authVCAPI.ultimoInicioSesion);
   }
 
   Future<Map<String, dynamic>> getUserInfo() async{
@@ -35,9 +36,10 @@ class SharedActions{
     return {
       'nombreCom' : preferences.getString('nombreCom'),
       'sistemaId' : preferences.getInt('sistemaId'),
+      'ultimoInicioSesion' : preferences.getString('ultimoInicioSesion'),
       'token'     : preferences.getString('token'),
       'uid'       : preferences.getInt('usuarioId'),
-      //'user'    : preferences.getString('user'),
+      'user'    : preferences.getString('user'),
       //'name'    : preferences.getString('name'),
       //'uid'     : preferences.getString('uid'),
       //'sistema' : preferences.getInt('sistema'),

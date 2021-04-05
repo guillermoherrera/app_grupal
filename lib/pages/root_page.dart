@@ -1,4 +1,4 @@
-import 'package:app_grupal/classes/auth_firebase.dart';
+//import 'package:app_grupal/classes/auth_firebase.dart';
 import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/pages/home/home_page.dart';
@@ -16,7 +16,7 @@ enum AuthStatus{
 }
 
 class _RootPageState extends State<RootPage> {
-  final AuthFirebase _authFirebase = new AuthFirebase();
+  //final AuthFirebase _authFirebase = new AuthFirebase();
   final SharedActions _sharedActions = new SharedActions();
   AuthStatus authStatus = AuthStatus.notSignedIn;
   bool cargando = true;

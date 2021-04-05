@@ -9,11 +9,13 @@ class HomeEmptyPage extends StatefulWidget {
   const HomeEmptyPage({
     Key key, 
     this.scaffoldKey,
-    this.sincroniza
+    this.sincroniza,
+    this.info
   }) : super(key: key);
 
   final Future<bool> Function() sincroniza;
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final Map<String, dynamic> info;
   @override
   _HomeEmptyPageState createState() => _HomeEmptyPageState();
 }
@@ -71,8 +73,8 @@ class _HomeEmptyPageState extends State<HomeEmptyPage> with AutomaticKeepAliveCl
                           children: [
                             //Icon(sincronizando ? Icons.watch_later : Icons.sync, color: sincronizando ? Colors.grey : Constants.primaryColor,),
                             //Text('Sincronizar'.toUpperCase(), style: TextStyle(fontSize: 6.0, fontWeight: FontWeight.bold, color: sincronizando ? Colors.grey : Constants.primaryColor))
-                            Text('Ultimo Incio de sesión:'.toUpperCase(), style: TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold, color: Colors.grey)),
-                            Text('01/01/2021 12:00'.toUpperCase(), style: TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold, color: Colors.grey)),
+                            Text('Ultimo Inicio de sesión:'.toUpperCase(), style: TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold, color: Colors.grey)),
+                            Text('${widget.info['ultimoInicioSesion']}'.toUpperCase(), style: TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold, color: Colors.grey)),
                           ],
                         ),
                         padding: EdgeInsets.all(10.0),

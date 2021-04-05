@@ -29,7 +29,7 @@ class Constants{
   static final String confirmation = 'assets/confirmation.png';
   static final String notImage = 'assets/noImage.png';
 
-  static final String baseURL = '192.168.137.1';//'test.api.asesores.fconfia.com';
+  static final String baseURL = '192.168.63.60';//'test.api.asesores.fconfia.com';
   static final String apiKey = 'doCLjcd9FIABAzXhF49AMDTPJqo608M5Wau';
   static final String consultaContratos = 'contratosAsesor';
   static final String consultaIntegrantes = 'contratoDetalle';
@@ -70,11 +70,21 @@ class Constants{
     }else if(error.contains("An internal error has occurred. [ 7: ]")){
       return "Error desconocido, revisa tu conexión a internet.";
     }else if(error.contains("TimeoutException")){
-      return "Error desconocido, revisa tu conexión a internet.";
+      return "Tiempo de espera agotado para el servidor, revisa tu conexión a internet.";
     }else if(error.contains("ERROR_NETWORK") || error.contains("network")){
       return "Error desconocido, revisa tu conexión a internet.";
+    }else if(error.contains("Error al iniciar") || error.contains("network")){
+      return error;
+    }else if(error.contains("Connection failed") || error.contains("network")){
+      return "Error de conexión, revisa tu conexión a internet.";
+    }else if(error.contains("Future not completed") || error.contains("network")){
+      return "Tiempo de espera agotado para el servidor, revisa tu conexión a internet.";
+    }else if(error.contains("startIndex ") || error.contains("network")){
+      return "Los datos capturados no son correctos.";
+    }else if(error.contains("CODIGO") || error.contains("network")){
+      return error;
     }else{
-      return "Correo y/o contraseña incorrectos.";
+      return "Ha ocurrido un Error no esperado: $error.";
     }
   }
 
