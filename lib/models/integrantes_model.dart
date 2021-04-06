@@ -124,6 +124,8 @@ class IntegranteVCAPI{
   bool presidente;
   int grupo; 
 
+  String ticket;
+
   IntegranteVCAPI({
     this.cveCli,
     this.nombreCom,
@@ -137,7 +139,9 @@ class IntegranteVCAPI{
     this.curp,
     this.direccion,
     this.fechaNacimiento,
-    this.grupo
+    this.grupo,
+
+    this.ticket,
   });
 
   IntegranteVCAPI.jsonMap(Map<String, dynamic> json){

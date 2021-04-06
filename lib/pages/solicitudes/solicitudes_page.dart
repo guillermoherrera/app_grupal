@@ -43,11 +43,11 @@ class _SolicitudesPageState extends State<SolicitudesPage> {
             _creaBoton(Constants.primaryColor, Icons.group_add, 'Agregar Grupo Nuevo', (){Navigator.push(context, _customRoute.crearRutaSlide(Constants.nuevoGrupoPage, {}, getLastGrupos: widget.getLastGrupos, sincroniza: widget.sincroniza));} ),
           ]
         ),*/
-        TableRow(
+        /*TableRow(
           children: [
             _creaBoton(Constants.primaryColor, Icons.group_add, 'Grupos En Captura', (){Navigator.push(context, _customRoute.crearRutaSlide(Constants.gruposPage, {'opcion': 'captura'}, getLastGrupos: widget.getLastGrupos, sincroniza: widget.sincroniza));} )
           ]
-        ),
+        ),*/
         TableRow(
           children: [
             _creaBoton(Constants.primaryColor, Icons.group, 'Mis Grupos', (){Navigator.push(context, _customRoute.crearRutaSlide(Constants.gruposPage, {'opcion': 'mis_grupos'}, getLastGrupos: widget.getLastGrupos, sincroniza: widget.sincroniza));} )

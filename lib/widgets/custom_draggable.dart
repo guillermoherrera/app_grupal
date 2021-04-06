@@ -44,7 +44,7 @@ class CustomDraggable extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Text(title.toUpperCase(), style: Constants.encabezadoStyle),
+                  Text(title.toUpperCase(), style: Constants.encabezadoStyle, textAlign: TextAlign.center),
                   SizedBox(height: 20.0),
                   child == null ? CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.white)) : child
                 ],

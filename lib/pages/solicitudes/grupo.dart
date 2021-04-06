@@ -4,12 +4,15 @@ import 'package:app_grupal/components/page_route_builder.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/list_tile_model.dart';
 import 'package:app_grupal/models/solicitud_model.dart';
+import 'package:app_grupal/models/ticket_confiashop_model.dart';
+import 'package:app_grupal/providers/confiashop_provider.dart';
 import 'package:app_grupal/providers/db_provider.dart';
 import 'package:app_grupal/providers/vcapi_provider.dart';
 import 'package:app_grupal/widgets/animator.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/custom_center_loading.dart';
 import 'package:app_grupal/widgets/custom_dialog.dart';
+import 'package:app_grupal/widgets/custom_draggable.dart';
 import 'package:app_grupal/widgets/custom_list_tile.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
 import 'package:app_grupal/widgets/custom_snack_bar.dart';
@@ -38,6 +41,7 @@ class _GrupoPageState extends State<GrupoPage> {
   final _sharedActions = SharedActions();
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final VCAPIProvider _vcapiProvider = new VCAPIProvider();
+  final _confiashopProvider = ConfiashopProvider();
   List<dynamic> _integrantes = [];
   bool _cargando = true;
   bool _showIcon = true;
@@ -45,6 +49,11 @@ class _GrupoPageState extends State<GrupoPage> {
   double _importeTotal = 0;
   int _validaIntegrantesCant = 100;
   String userID;
+  bool _verVenta = false;
+  Widget _articulos;
+  String _carritoPropietario;
+  TicketConfiaShop _ticketConfiaShop;
+  bool _esVenta = false;
 
   @override
   void initState() {
@@ -55,7 +64,7 @@ class _GrupoPageState extends State<GrupoPage> {
   _buscarIntegrantes()async{
     await Future.delayed(Duration(milliseconds: 1000));
     _validaIntegrantesCant = await DBProvider.db.getCatIntegrantesCant();
-    _integrantes = widget.params['opcion'] == 'captura' ? await DBProvider.db.getSolicitudesByGrupo(widget.params['idGrupo']) : await _vcapiProvider.consultaIntegrantes(widget.params['idGrupo']);
+    _integrantes = widget.params['opcion'] == 'captura' ? await DBProvider.db.getSolicitudesByGrupo(widget.params['idGrupo']) : await _vcapiProvider.consultaIntegrantes(widget.params['idGrupo'], snackBar: _scaffoldKey);
     getCapitalTotal();
     getImporteTotal();
     _cargando = false;
@@ -88,77 +97,85 @@ class _GrupoPageState extends State<GrupoPage> {
   @override
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      key: _scaffoldKey,
-      body: BodyContent(
-        appBar: _appBar(_height),
-        contenido: Column(
+    return WillPopScope(
+      onWillPop: ()=>_confirmBack(),
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: Stack(
           children: [
-            Container(
-              padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
-              //height: 70,
-              width: double.infinity,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            BodyContent(
+              appBar: _appBar(_height),
+              contenido: Column(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('${widget.params['nombre']}'.toUpperCase(), style: Constants.mensajeCentral),
-                      //Text('Integrantes: ${_integrantes.length}'.toUpperCase(), style: _integrantes.length >= _validaIntegrantesCant ? Constants.mensajeCentral2 : Constants.mensajeCentral2error),
-                      widget.params['opcion'] == 'captura' ? Text('Capital: \$$_capitalTotal'.toUpperCase(), style: Constants.mensajeCentral3) : 
-                      Table(
-                        columnWidths: {
-                          0: IntrinsicColumnWidth(),
-                          1: IntrinsicColumnWidth(),
-                        },
-                        children: [
-                          TableRow(children:[
-                            Text('Contrato'.toUpperCase(), style: Constants.mensajeCentral3), 
-                            Text(' ${widget.params['idGrupo']}'.toUpperCase(), style: Constants.mensajeCentral3)
-                          ]),
-                          TableRow(children:[
-                            Text('Status'.toUpperCase(), style: Constants.mensajeCentral3), 
-                            Text(' ${widget.params['status']}'.toUpperCase(), style: Constants.mensajeCentral3)
-                          ]),
-                          TableRow(children:[
-                            Text('Atrazos'.toUpperCase(), style: Constants.mensajeCentral3), 
-                            Text(' ${widget.params['atrazos']}'.toUpperCase(), style: Constants.mensajeCentral3)
-                          ]),
-                          TableRow(children:[
-                            Text('Días Atrazo'.toUpperCase(), style: Constants.mensajeCentral3), 
-                            Text(' ${widget.params['diasAtrazo']}'.toUpperCase(), style: Constants.mensajeCentral3)
-                          ]),
-                          TableRow(children:[
-                            Text('Capital total'.toUpperCase(), style: Constants.mensajeCentral3), 
-                            Text(' \$$_capitalTotal'.toUpperCase(), style: Constants.mensajeCentral3)
-                          ]),
-                          TableRow(children:[
-                            Text('Importe total'.toUpperCase(), style: Constants.mensajeCentral3), 
-                            Text(' \$$_importeTotal'.toUpperCase(), style: Constants.mensajeCentral3)
-                          ]),
-                        ],
-                      )
-                    ]
+                  Container(
+                    padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
+                    //height: 70,
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('${widget.params['nombre']}'.toUpperCase(), style: Constants.mensajeCentral),
+                            //Text('Integrantes: ${_integrantes.length}'.toUpperCase(), style: _integrantes.length >= _validaIntegrantesCant ? Constants.mensajeCentral2 : Constants.mensajeCentral2error),
+                            widget.params['opcion'] == 'captura' ? Text('Capital: \$$_capitalTotal'.toUpperCase(), style: Constants.mensajeCentral3) : 
+                            Table(
+                              columnWidths: {
+                                0: IntrinsicColumnWidth(),
+                                1: IntrinsicColumnWidth(),
+                              },
+                              children: [
+                                TableRow(children:[
+                                  Text('Contrato'.toUpperCase(), style: Constants.mensajeCentral3), 
+                                  Text(' ${widget.params['idGrupo']}'.toUpperCase(), style: Constants.mensajeCentral3)
+                                ]),
+                                TableRow(children:[
+                                  Text('Status'.toUpperCase(), style: Constants.mensajeCentral3), 
+                                  Text(' ${widget.params['status']}'.toUpperCase(), style: Constants.mensajeCentral3)
+                                ]),
+                                TableRow(children:[
+                                  Text('Atrazos'.toUpperCase(), style: Constants.mensajeCentral3), 
+                                  Text(' ${widget.params['atrazos']}'.toUpperCase(), style: Constants.mensajeCentral3)
+                                ]),
+                                TableRow(children:[
+                                  Text('Días Atrazo'.toUpperCase(), style: Constants.mensajeCentral3), 
+                                  Text(' ${widget.params['diasAtrazo']}'.toUpperCase(), style: Constants.mensajeCentral3)
+                                ]),
+                                TableRow(children:[
+                                  Text('Capital total'.toUpperCase(), style: Constants.mensajeCentral3), 
+                                  Text(' \$$_capitalTotal'.toUpperCase(), style: Constants.mensajeCentral3)
+                                ]),
+                                TableRow(children:[
+                                  Text('Importe total'.toUpperCase(), style: Constants.mensajeCentral3), 
+                                  Text(' \$$_importeTotal'.toUpperCase(), style: Constants.mensajeCentral3)
+                                ]),
+                              ],
+                            )
+                          ]
+                        ),
+                        Column(
+                          children: [
+                            Icon(Icons.person, color: Constants.primaryColor),
+                            Text('Integrantes'.toUpperCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor)),
+                            Text('${_integrantes.length}'.toUpperCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor)),
+                          ],
+                        ),
+                      ],
+                    )
                   ),
-                  Column(
-                    children: [
-                      Icon(Icons.person, color: Constants.primaryColor),
-                      Text('Integrantes'.toUpperCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor)),
-                      Text('${_integrantes.length}'.toUpperCase(), style: TextStyle(fontSize: 11.0, color: Constants.primaryColor)),
-                    ],
-                  ),
-                ],
-              )
+                  Divider(color: Colors.black,),
+                  Expanded(
+                    child: _bodyContent()
+                  )
+                ] 
+              ),
+              bottom: _cargando ? Container() : widget.params['opcion'] == 'captura' ? _buttonEnviar() : _buttonComprar(),
             ),
-            Divider(color: Colors.black,),
-            Expanded(
-              child: _bodyContent()
-            )
-          ] 
+            _articulosVenta()
+          ],
         ),
-        bottom: _cargando ? Container() : widget.params['opcion'] == 'captura' ? _buttonEnviar() : Container(),
       ),
     );
   }
@@ -183,12 +200,110 @@ class _GrupoPageState extends State<GrupoPage> {
           child: IconButton(
             icon: Icon(Icons.arrow_back_ios, size: 40,), 
             onPressed: ()async{
-              setState(() {_showIcon = false;});
-              Navigator.pop(context);
+              _confirmBack();
+              //setState(() {_showIcon = false;});
+              //Navigator.pop(context);
             }
           )
         ),
     );
+  }
+
+  Widget _articulosVenta(){
+    return !_verVenta ? SizedBox() :
+    CustomDraggable(
+      closeAction: (){setState((){_verVenta = false;});}, 
+      title: 'Carrito de\n$_carritoPropietario',
+      child: _articulos,
+    );
+  }
+
+  _getArticulos(String ticket)async{
+    _ticketConfiaShop = await _confiashopProvider.getArticulosByTicket(ticket, 'C40000100');
+    if(_ticketConfiaShop != null){
+      _tableArticulos(_ticketConfiaShop.tIcketDetalle);
+      setState(() {});
+    }else{
+      setState((){_verVenta = false;});
+      _error('Error al consultar carrito');
+    }
+  }
+
+  _tableArticulos(List<TicketDetalle> articulos){
+    List<TableRow> tableRows = [];
+
+    tableRows.add(
+      TableRow(
+        children: [
+          Center(child: Text('Artículo\n'.toUpperCase(), style: Constants.subtituloStyle)),
+          Center(child: Text('Descripción\n'.toUpperCase(), style: Constants.subtituloStyle)),
+          Center(child: Text('Precio total\n'.toUpperCase(), style: Constants.subtituloStyle))
+        ]
+      )
+    );
+
+    articulos.forEach((e){
+      tableRows.add(TableRow(children: [Divider(color: Colors.white),Divider(color: Colors.white),Divider(color: Colors.white)]));
+      tableRows.add(
+        TableRow(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 2.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('${e.jerarquia01}, ${e.jerarquia02},'.toUpperCase(), style: Constants.subtituloStyle),
+                  Text('${e.jerarquia03}, ${e.jerarquia04}'.toUpperCase(), style: Constants.subtituloStyle),
+                ],
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('cantidad: ${e.cantidad}'.toUpperCase(), style: Constants.subtituloStyle),
+                Text('talla: ${e.talla}'.toUpperCase(), style: Constants.subtituloStyle),
+                Text('color: ${e.color}'.toUpperCase(), style: Constants.subtituloStyle),
+                Text('estilo: ${e.estilo}'.toUpperCase(), style: Constants.subtituloStyle),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('\$ ${e.totalPrecioNeto}', style: Constants.subtituloStyle),
+              ],
+            ),
+          ]
+        )
+      );
+    });
+
+    Widget table = Table(
+      children: tableRows
+    );
+
+    _articulos = table;
+  }
+
+  _confirmBack(){
+    if(!_esVenta){
+      setState(() {_showIcon = false;});
+      Navigator.pop(context);
+    }else{
+      CustomDialog customDialog = CustomDialog();
+      customDialog.showCustomDialog(
+        context,
+        title: 'Adevertencia',
+        icon: Icons.error_outline,
+        textContent: 'Si sale ahora del grupo la compra se cancelará y los carritos de compra se perderan',
+        cancel: 'Continuar en el grupo',
+        cntinue: 'Salir y cancelar compra',
+        action: ()async{
+          setState(() {_showIcon = false;});
+          Navigator.pop(context);
+          Navigator.pop(context);
+        }
+      );
+    } 
   }
 
   _bodyContent(){
@@ -197,7 +312,7 @@ class _GrupoPageState extends State<GrupoPage> {
   }
 
   Widget _showResult(){
-    return _integrantes.length > 0 ? _lista() : _noData();
+    return _integrantes.length > 0 ? _lista() : widget.params['opcion'] == 'captura' ?  _noData() : Container();
   }
 
   Widget _noData(){
@@ -246,17 +361,25 @@ class _GrupoPageState extends State<GrupoPage> {
               padding: EdgeInsets.only(bottom: 10.0),
               child: GestureDetector(
                 onTap:(){
-                  print('object');
-                  Navigator.push(context, _customRoute.crearRutaSlide(Constants.confiashopPage, {'index': _integrantes[index].idSolicitud, 'cveCli': 'D865', 'categoria': 1}, setTicket: _actulizaTicket));
+                  if(integrante.ticket == null){
+                    Navigator.push(context, _customRoute.crearRutaSlide(Constants.confiashopPage, {'index': widget.params['opcion'] == 'captura' ? _integrantes[index].idSolicitud : index, 'user': 'C40000100', 'categoria': 1}, setTicket: _actulizaTicket));
+                  }else{
+                    _articulos = null;
+                    setState((){
+                      _carritoPropietario = integrante.nombreCom;
+                      _verVenta = true;
+                    });
+                    _getArticulos(integrante.ticket);
+                  }
                 },
                 child: Row(
                   children: [
                     Icon(Icons.shopping_cart, size: 10.0, color: Colors.blue[900]),
                     Container(
-                      child: Text(' Ir a Confiashop'.toUpperCase(), style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.blue[900])),
+                      child: Text('${integrante.ticket == null ? 'Ir a' : 'Ver carrito'} Confiashop'.toUpperCase(), style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: integrante.ticket == null ? Colors.blue[900] : Constants.primaryColor)),
                       padding: EdgeInsets.only(top: 2.0),      
                     ),
-                    Icon(Icons.arrow_forward_ios, size: 10.0, color: Colors.blue[900]),
+                    Icon(integrante.ticket == null ? Icons.arrow_forward_ios : Icons.remove_red_eye, size: 10.0, color: Colors.blue[900]),
                   ],
                 )
               ),
@@ -293,8 +416,10 @@ class _GrupoPageState extends State<GrupoPage> {
   }
 
   _actulizaTicket(int index, String ticket){
-    print(index);
-    print(ticket);
+    setState(() {
+      _integrantes[index].ticket = ticket;
+      _esVenta = true;
+    });
     //widget.setTicket(index, ticket);
     //setState(() {widget.params['ticket'] = ticket;});
   }
@@ -473,6 +598,40 @@ class _GrupoPageState extends State<GrupoPage> {
         ),
       ],
     );
+  }
+
+  Widget _buttonComprar(){
+    int carritos = 0;
+    _integrantes.reduce((value, element) {if((value != null && value.ticket != null) || element.ticket != null) carritos += 1;});
+    return _esVenta ? Stack(
+      children: [
+        Container(
+          color: Colors.white,
+          width: double.infinity,
+          height: 50,
+        ),
+        ShakeTransition(
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                  topRight: Radius.circular(30.0),
+                )
+              ),
+            width: double.infinity,
+            height: 50,
+            child: CustomRaisedButton(
+              action: null,
+              borderColor: Colors.blue,
+              primaryColor: Colors.blue,
+              textColor: Colors.white,
+              label: 'Confirmar Compra ($carritos)'
+            ),
+          ),
+        ),
+      ],
+    ) : Container();
   }
 
   Widget _getButton(){

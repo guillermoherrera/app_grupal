@@ -25,7 +25,7 @@ class _ConfiashopPageState extends State<ConfiashopPage> {
 
   @override
   void initState() {
-    _selectedUrl = 'https://confia-qa.supernova-desarrollo.com/?meta=1&page=mobile&env=dist&tk1=${widget.params['cveCli']}&tk2=&benefit=${widget.params['categoria']}';
+    _selectedUrl = 'https://confia-qa.supernova-desarrollo.com/?meta=1&page=mobile&env=dist&tk1=${widget.params['user']}&tk2=&benefit=${widget.params['categoria']}';
     
     _flutterWebviewPlugin.onStateChanged.listen((state) async {
       print('URL --> ${state.url}');
@@ -137,11 +137,12 @@ class _ConfiashopPageState extends State<ConfiashopPage> {
       title: 'ConfiaShop',
       icon: Icons.error_outline,
       textContent: '¿Desea salir de la pagina de confiashop?',
-      cancel: 'No, cancelar',
+      cancel: 'No',
       cntinue: 'Si, salir',
       action: ()async{
         Navigator.pop(context);
         await Future.delayed(Duration(milliseconds: 300));
+        _flutterWebviewPlugin.close();
         Navigator.pop(context);
       },
       cancelAction: ()async{

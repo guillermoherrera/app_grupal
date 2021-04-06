@@ -34,6 +34,7 @@ class _GruposPageState extends State<GruposPage> {
   GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
   final _customRoute = CustomRouteTransition();
   final VCAPIProvider _vcapiProvider = new VCAPIProvider();
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<dynamic> _grupos = List();
   bool _cargando = true;
   bool _showIcon = true;
@@ -46,7 +47,7 @@ class _GruposPageState extends State<GruposPage> {
 
   _buscarGrupos()async{
     await Future.delayed(Duration(milliseconds: 1000));
-    _grupos = widget.params['opcion'] == 'captura'? await DBProvider.db.getGruposCreados() : await _vcapiProvider.consultaGrupos();
+    _grupos = widget.params['opcion'] == 'captura'? await DBProvider.db.getGruposCreados() : await _vcapiProvider.consultaGrupos(snackBar: _scaffoldKey);
     _cargando = false;
     setState((){});
   }
@@ -61,6 +62,7 @@ class _GruposPageState extends State<GruposPage> {
     final _height = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      key: _scaffoldKey,
       body: BodyContent(
         appBar: _appBar(_height),
         contenido: Column(

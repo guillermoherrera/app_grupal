@@ -4,11 +4,11 @@ import 'dart:convert';
 
 class ConfiashopProvider{
 
-  String urlBase = 'https://servicios-dev.confiashop.com/api';
+  String urlBase = 'https://servicios.confiashop.com/api';
 
   Future<TicketConfiaShop> getArticulosByTicket(String ticket, String usuario)async{
     TicketConfiaShop ticketConfiaShop;
-    String breakPoint = '/ConfiaShop_Ticket_Info?id_empresa=1&tipo_usuario=1&id_usuario=${'D865'}&estatus=${'CAPTURA'}&id_ticket=$ticket';
+    String breakPoint = '/ConfiaShop_Ticket_Info?id_empresa=1&tipo_usuario=1&id_usuario=$usuario&estatus=${'CAPTURA'}&id_ticket=$ticket';
     try{
       final resp = await http.get(urlBase+breakPoint).timeout(Duration(seconds: 10));
       final decodeData = json.decode(resp.body);
