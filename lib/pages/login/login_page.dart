@@ -44,7 +44,6 @@ class _LoginPageState extends State<LoginPage> {
       if (authResult.resultCode == 0) {
         await _sharedActions.setUserAuth(_userController.text, _passController.text, authResult.usuarioId);
         await _sharedActions.setUserInfo(authResult);
-        print('****** Falta GetCatalogos');
         Navigator.pushReplacementNamed(context, Constants.homePage);
       }else{
         _customSnakBar.showSnackBar(Constants.errorAuth(authResult.resultDesc), Duration(milliseconds: 3000), Colors.pink, Icons.error_outline, _scaffoldKey);

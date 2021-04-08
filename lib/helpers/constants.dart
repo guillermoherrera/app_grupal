@@ -30,7 +30,7 @@ class Constants{
   static final String confirmation = 'assets/confirmation.png';
   static final String notImage = 'assets/noImage.png';
 
-  static final String baseURL = '192.168.63.60';//'test.api.asesores.fconfia.com';
+  static final String baseURL = /*'vcapi.finconfia.com.mx';*/'192.168.63.60';//'test.api.asesores.fconfia.com';
   static final String apiKey = 'doCLjcd9FIABAzXhF49AMDTPJqo608M5Wau';
   static final String consultaContratos = 'contratosAsesor';
   static final String consultaIntegrantes = 'contratoDetalle';

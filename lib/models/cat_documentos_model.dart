@@ -16,4 +16,14 @@ class CatDocumento{
     this.tipo = json['tipo'];
     this.descDocumento = json['descDocumento'];
   }
+
+  List<CatDocumento> fromJsonList(dynamic jsonList){
+    List<CatDocumento> items = List();
+    if(jsonList == null) return List();
+    for(var item in jsonList){
+      final documento = CatDocumento.fromjson(item);
+      items.add(documento);
+    }
+    return items;
+  }
 }

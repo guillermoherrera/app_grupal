@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/components/encabezado.dart';
 import 'package:app_grupal/helpers/constants.dart';
@@ -8,6 +10,7 @@ import 'package:app_grupal/pages/home/home_empty_page.dart';
 //import 'package:app_grupal/pages/renovaciones/renovaciones.dart';
 import 'package:app_grupal/pages/solicitudes/solicitudes_page.dart';
 import 'package:app_grupal/providers/db_provider.dart';
+import 'package:app_grupal/providers/vcapi_provider.dart';
 //import 'package:app_grupal/providers/firebase_provider.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/custom_center_loading.dart';
@@ -29,6 +32,7 @@ class HomeContent extends StatefulWidget {
 class _HomeContentState extends State<HomeContent> with SingleTickerProviderStateMixin {
   SharedActions _sharedActions = SharedActions();
   //final _firebaseProvider = FirebaseProvider();
+  final VCAPIProvider _vcapiProvider = new VCAPIProvider();
   GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
   TabController _tabController;
   List<Grupo> _ultimosq15Grupos = List();
@@ -40,6 +44,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
+    _getParamsFromAPi();
     _getLastGrupos();
     super.initState();
   }
@@ -48,6 +53,23 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  _getParamsFromAPi()async{
+    print(' ^^^ consultaParams inicio ^^^ ');
+    _vcapiProvider.consultaParamsApp();
+    final syncTime =  Duration(milliseconds: 300000);
+    await Future.delayed(syncTime);
+    new Timer.periodic(syncTime, (t) async{
+      if(this.mounted){
+        setState((){cargando = true;});
+        print(' ^^^ consultaParams programado ${DateTime.now()} ^^^ ');
+        await _vcapiProvider.consultaParamsApp();
+        setState((){cargando = false;});
+      }else{
+        t.cancel();
+      }
+    });
   }
 
   _getLastGrupos()async{

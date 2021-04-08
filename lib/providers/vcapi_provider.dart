@@ -1,8 +1,11 @@
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/authentication_model.dart';
+import 'package:app_grupal/models/cat_documentos_model.dart';
 import 'package:app_grupal/models/contrato_model.dart';
 import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/models/integrantes_model.dart';
+import 'package:app_grupal/models/params_app_model.dart';
+import 'package:app_grupal/providers/db_provider.dart';
 import 'package:app_grupal/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -40,12 +43,30 @@ class VCAPIProvider {
   }
 
   //GET
+  Future <dynamic> procesaRespuesta(url, headers, clase, {snackBar}) async{
+    dynamic respuesta;
+    try{
+      print('url: $url');
+      print('headers: $headers');
+      final resp = await http.get(url, headers: headers).timeout(Duration(seconds: 15));
+      if(resp.statusCode != 200) throw(resp.reasonPhrase);
+      final decodeData = json.decode(resp.body);
+      respuesta = clase.fromJson(decodeData['data']);
+    }catch(e){
+      print(e);
+      if(snackBar != null)
+        _customSnakBar.showSnackBar(Constants.errorAuth('$e'), Duration(milliseconds: 3000), Colors.pink, Icons.error_outline, snackBar);
+      respuesta = {};
+    }
+    return respuesta;
+  }
+
   Future<List<dynamic>> procesaRespuestaLista(url, headers, clase, {snackBar}) async{
     List<dynamic> listaRespuesta;
     try{
       print('url: $url');
       print('headers: $headers');
-      final resp = await http.get(url, headers: headers).timeout(Duration(seconds: 10));
+      final resp = await http.get(url, headers: headers).timeout(Duration(seconds: 15));
       if(resp.statusCode != 200) throw(resp.reasonPhrase);
       final decodeData = json.decode(resp.body);
       listaRespuesta = clase.fromJsonList(decodeData['data']);
@@ -82,6 +103,39 @@ class VCAPIProvider {
     List<dynamic> listaProcesada = await procesaRespuestaLista(url, headers, contratos, snackBar: snackBar);
     
     return listaProcesada.cast<IntegranteVCAPI>();
+  }
+
+  Future<ParamsApp> consultaParamsApp()async{
+    Map<String, dynamic> info = await _sharedActions.getUserInfo();
+    final url = Uri.http(Constants.baseURL, '/v1.0/secure/grupal/Params/${info['user']}');
+    Map<String, String> headers= {
+      'Authorization'  : 'Bearer ${info['token']}',
+    };
+    
+    ParamsApp params = new ParamsApp();
+    dynamic  respuestaProcesada = await procesaRespuesta(url, headers, params);
+    
+    //save Parametros y Catalogos
+    try{
+
+      //Documentos
+      List<CatDocumento> catDocumentos = List();
+      await DBProvider.db.deleteCatDocumentos();
+      for (CatDocumento value in respuestaProcesada.documentos) {
+        catDocumentos.add(value);
+      }
+      DBProvider.db.insertaCatDocumentos(catDocumentos);
+      
+      //Integrantes
+      DBProvider.db.insertaCatIntegrantes(respuestaProcesada.cantidadIntegrantesMin);
+
+      //AccesoConfiashop
+      _sharedActions.setAccesoConfiashop(respuestaProcesada.accesoConfiashop);
+      print('### Parametros y Catalogos actualizados');
+    }catch(e){
+      print('### Error al guardar Parametros y Catalogos ->>> $e');
+    }
+    return respuestaProcesada;
   }
 
 }

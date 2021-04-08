@@ -24,11 +24,20 @@ class SharedActions{
     preferences.setBool("passGenerico", false);
   }
 
+  setAccesoConfiashop(bool accesoConfiashop) async{
+    preferences.setBool("accesoConfiashop", accesoConfiashop);
+  }
+
   setUserInfo(AuthVCAPI authVCAPI) async{
     preferences.setString('nombreCom', authVCAPI.nombreCom);
     preferences.setInt('sistemaId', authVCAPI.sistemaId);
     preferences.setString('token', authVCAPI.token);
     preferences.setString('ultimoInicioSesion', authVCAPI.ultimoInicioSesion);
+  }
+
+  Future<bool> getAccesoConfiashop() async{
+    await init();
+    return preferences.getBool('accesoConfiashop');
   }
 
   Future<Map<String, dynamic>> getUserInfo() async{

@@ -54,6 +54,7 @@ class _GrupoPageState extends State<GrupoPage> {
   String _carritoPropietario;
   TicketConfiaShop _ticketConfiaShop;
   bool _esVenta = false;
+  bool _accesoConfiashop = false;
 
   @override
   void initState() {
@@ -360,9 +361,12 @@ class _GrupoPageState extends State<GrupoPage> {
             Container(
               padding: EdgeInsets.only(bottom: 10.0),
               child: GestureDetector(
-                onTap:(){
+                onTap:()async{
+                  _accesoConfiashop =  await _sharedActions.getAccesoConfiashop();
                   if(integrante.ticket == null){
-                    Navigator.push(context, _customRoute.crearRutaSlide(Constants.confiashopPage, {'index': widget.params['opcion'] == 'captura' ? _integrantes[index].idSolicitud : index, 'user': 'C40000100', 'categoria': 1}, setTicket: _actulizaTicket));
+                    _accesoConfiashop ?
+                    Navigator.push(context, _customRoute.crearRutaSlide(Constants.confiashopPage, {'index': widget.params['opcion'] == 'captura' ? _integrantes[index].idSolicitud : index, 'user': 'C40000100', 'categoria': 1}, setTicket: _actulizaTicket))
+                    : _info('Confiashop NO esta DISPONIBLE por el momento');
                   }else{
                     _articulos = null;
                     setState((){
@@ -602,7 +606,8 @@ class _GrupoPageState extends State<GrupoPage> {
 
   Widget _buttonComprar(){
     int carritos = 0;
-    _integrantes.reduce((value, element) {if((value != null && value.ticket != null) || element.ticket != null) carritos += 1;});
+    if(_esVenta)
+      _integrantes.reduce((value, element) {if((value != null && value.ticket != null) || element.ticket != null) carritos += 1;});
     return _esVenta ? Stack(
       children: [
         Container(
