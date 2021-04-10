@@ -1,16 +1,20 @@
 import 'package:app_grupal/components/body_content.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
+import 'package:app_grupal/widgets/custom_dialog.dart';
+import 'package:app_grupal/widgets/custom_raised_button.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
 import 'package:flutter/material.dart';
 
 class IntegrantePage extends StatefulWidget {
   const IntegrantePage({
     Key key, 
-    this.params
+    this.params,
+    this.removeTicket
   }) : super(key: key);
   
   final Map<String, dynamic> params;
+  final void Function(int) removeTicket;
 
   @override
   _IntegrantePageState createState() => _IntegrantePageState();
@@ -100,8 +104,41 @@ class _IntegrantePageState extends State<IntegrantePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _tablaInformacion(),
+        Center(child: _eliminarTicket()),
       ],
     );
+  }
+
+  Widget _eliminarTicket(){
+    if(widget.params['detallePedido'] == null || widget.params['detallePedido'].contains('correctamente'))
+      return Container();
+
+    return ShakeTransition(
+      child: CustomRaisedButton(
+        label: 'Eliminar Carrito',
+        action: ()=>_confirm()
+      ),
+    );
+  }
+
+  _confirm(){
+    
+    CustomDialog customDialog = CustomDialog();
+    customDialog.showCustomDialog(
+      context,
+      title: 'Atención',
+      icon: Icons.error_outline,
+      textContent: '¿Desea eliminar el carrito de este cliente?',//'Si sale ahora del grupo el pedido se cancelará y los carritos de compra hechos se perderan',
+      cancel: 'No',
+      cntinue: 'Si, elimiar',
+      action: (){
+        setState(() {
+          widget.params['detallePedido'] = null;
+        });
+        widget.removeTicket(widget.params['index']);
+        Navigator.pop(context);
+      }
+    ); 
   }
 
   Widget _tablaInformacion(){

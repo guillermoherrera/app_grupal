@@ -125,6 +125,8 @@ class IntegranteVCAPI{
   int grupo; 
 
   String ticket;
+  bool pedido;
+  String detallePedido;
 
   IntegranteVCAPI({
     this.cveCli,
@@ -142,6 +144,8 @@ class IntegranteVCAPI{
     this.grupo,
 
     this.ticket,
+    this.pedido,
+    this.detallePedido
   });
 
   IntegranteVCAPI.jsonMap(Map<String, dynamic> json){

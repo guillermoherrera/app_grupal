@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/components/body_content.dart';
 import 'package:app_grupal/components/page_route_builder.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/list_tile_model.dart';
+import 'package:app_grupal/models/result_model.dart';
 import 'package:app_grupal/models/solicitud_model.dart';
 import 'package:app_grupal/models/ticket_confiashop_model.dart';
 import 'package:app_grupal/providers/confiashop_provider.dart';
@@ -42,6 +45,7 @@ class _GrupoPageState extends State<GrupoPage> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final VCAPIProvider _vcapiProvider = new VCAPIProvider();
   final _confiashopProvider = ConfiashopProvider();
+  Map<String, dynamic> userInfo;
   List<dynamic> _integrantes = [];
   bool _cargando = true;
   bool _showIcon = true;
@@ -51,6 +55,7 @@ class _GrupoPageState extends State<GrupoPage> {
   String userID;
   bool _verVenta = false;
   Widget _articulos;
+  String _mensajePedido = '';
   String _carritoPropietario;
   TicketConfiaShop _ticketConfiaShop;
   bool _esVenta = false;
@@ -63,6 +68,7 @@ class _GrupoPageState extends State<GrupoPage> {
   }
 
   _buscarIntegrantes()async{
+    userInfo = await _sharedActions.getUserInfo();
     await Future.delayed(Duration(milliseconds: 1000));
     _validaIntegrantesCant = await DBProvider.db.getCatIntegrantesCant();
     _integrantes = widget.params['opcion'] == 'captura' ? await DBProvider.db.getSolicitudesByGrupo(widget.params['idGrupo']) : await _vcapiProvider.consultaIntegrantes(widget.params['idGrupo'], snackBar: _scaffoldKey);
@@ -213,14 +219,26 @@ class _GrupoPageState extends State<GrupoPage> {
   Widget _articulosVenta(){
     return !_verVenta ? SizedBox() :
     CustomDraggable(
+      maxChildSize: 0.62,
       closeAction: (){setState((){_verVenta = false;});}, 
       title: 'Carrito de\n$_carritoPropietario',
-      child: _articulos,
+      child: _articulos == null ? _articulos : Column(
+        children: [
+          _articulos,
+          Container(
+            width: double.infinity,
+            margin: EdgeInsets.all(5.0),
+            padding: EdgeInsets.all(10.0),
+            color: Colors.green[900],
+            child: Text('STATUS:\n$_mensajePedido', textAlign: TextAlign.center, style: Constants.subtituloStyle ,)
+          )
+        ],
+      ),
     );
   }
 
   _getArticulos(String ticket)async{
-    _ticketConfiaShop = await _confiashopProvider.getArticulosByTicket(ticket, 'C40000100');
+    _ticketConfiaShop = await _confiashopProvider.getArticulosByTicket(ticket, userInfo['user']);
     if(_ticketConfiaShop != null){
       _tableArticulos(_ticketConfiaShop.tIcketDetalle);
       setState(() {});
@@ -295,9 +313,9 @@ class _GrupoPageState extends State<GrupoPage> {
         context,
         title: 'Adevertencia',
         icon: Icons.error_outline,
-        textContent: 'Si sale ahora del grupo la compra se cancelará y los carritos de compra se perderan',
+        textContent: '¿Desea Salir de Grupo?.\n\nSi ha terminado con los pedidos de click en salir de lo contrario de en continuar.',//'Si sale ahora del grupo el pedido se cancelará y los carritos de compra hechos se perderan',
         cancel: 'Continuar en el grupo',
-        cntinue: 'Salir y cancelar compra',
+        cntinue: 'Salir',
         action: ()async{
           setState(() {_showIcon = false;});
           Navigator.pop(context);
@@ -365,7 +383,7 @@ class _GrupoPageState extends State<GrupoPage> {
                   _accesoConfiashop =  await _sharedActions.getAccesoConfiashop();
                   if(integrante.ticket == null){
                     _accesoConfiashop ?
-                    Navigator.push(context, _customRoute.crearRutaSlide(Constants.confiashopPage, {'index': widget.params['opcion'] == 'captura' ? _integrantes[index].idSolicitud : index, 'user': 'C40000100', 'categoria': 1}, setTicket: _actulizaTicket))
+                    Navigator.push(context, _customRoute.crearRutaSlide(Constants.confiashopPage, {'index': widget.params['opcion'] == 'captura' ? _integrantes[index].idSolicitud : index, 'user': userInfo['user'], 'categoria': 1}, setTicket: _actulizaTicket))
                     : _info('Confiashop NO esta DISPONIBLE por el momento');
                   }else{
                     _articulos = null;
@@ -373,6 +391,7 @@ class _GrupoPageState extends State<GrupoPage> {
                       _carritoPropietario = integrante.nombreCom;
                       _verVenta = true;
                     });
+                    _mensajePedido = integrante.detallePedido;
                     _getArticulos(integrante.ticket);
                   }
                 },
@@ -391,7 +410,7 @@ class _GrupoPageState extends State<GrupoPage> {
           ],
         ),
         subtitle: widget.params['opcion'] == 'captura' ? 'Capital: ${integrante.capital}'.toUpperCase() : 'Importe Total: ${integrante.importeT}\nDías Atrazo: ${integrante.diaAtr}'.toUpperCase(),
-        trailing: widget.params['status'] == 0 ? _popMenu(jsonDatos) : _verIntegrante(integrante),
+        trailing: widget.params['status'] == 0 ? _popMenu(jsonDatos) : _verIntegrante(integrante, index),
         leading: widget.params['opcion'] == 'captura' ? _checks(integrante) : _checksStatic(integrante),
       );
       listTiles.add(listTile);
@@ -419,16 +438,29 @@ class _GrupoPageState extends State<GrupoPage> {
     );
   }
 
-  _actulizaTicket(int index, String ticket){
+  _actulizaTicket(int index, String ticket)async{
     setState(() {
       _integrantes[index].ticket = ticket;
+      _integrantes[index].pedido = false;
       _esVenta = true;
     });
+    _cargandoHacerPedido();
+    await Future.delayed(Duration(milliseconds: 2000));
+    await _hacerPedido(index);
+    Navigator.pop(context);
     //widget.setTicket(index, ticket);
     //setState(() {widget.params['ticket'] = ticket;});
   }
 
-  Widget _verIntegrante(integrante){
+  _removeTicket(int index){
+    setState(() {
+      _integrantes[index].ticket = null;
+      _integrantes[index].pedido = false;
+      _integrantes[index].detallePedido = null;
+    });
+  }
+
+  Widget _verIntegrante(integrante, int index){
     return IconButton(
       icon: Icon(Icons.arrow_forward_ios, color: Constants.primaryColor), 
       onPressed: () => Navigator.push(context, _customRoute.crearRutaSlide(Constants.integrantePage, {
@@ -444,8 +476,11 @@ class _GrupoPageState extends State<GrupoPage> {
         'curp'           : integrante.curp,
         'direccion'      : integrante.direccion,
         'fechaNacimiento': integrante.fechaNacimiento,
-        'grupo'          : integrante.grupo
-      }))
+        'grupo'          : integrante.grupo,
+        'ticket'         : integrante.ticket,
+        'detallePedido'  : integrante.detallePedido,
+        'index'          : index,
+      }, getNewIntegrante: _removeTicket))
     );
   }
 
@@ -605,38 +640,112 @@ class _GrupoPageState extends State<GrupoPage> {
   }
 
   Widget _buttonComprar(){
-    int carritos = 0;
-    if(_esVenta)
-      _integrantes.reduce((value, element) {if((value != null && value.ticket != null) || element.ticket != null) carritos += 1;});
-    return _esVenta ? Stack(
-      children: [
-        Container(
-          color: Colors.white,
-          width: double.infinity,
-          height: 50,
-        ),
-        ShakeTransition(
-          child: Container(
-            decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30.0),
-                  topRight: Radius.circular(30.0),
-                )
-              ),
-            width: double.infinity,
-            height: 50,
-            child: CustomRaisedButton(
-              action: null,
-              borderColor: Colors.blue,
-              primaryColor: Colors.blue,
-              textColor: Colors.white,
-              label: 'Confirmar Compra ($carritos)'
-            ),
-          ),
-        ),
-      ],
-    ) : Container();
+    return Container();
+    //int carritos = 0;
+    //if(_esVenta)
+    //  _integrantes.reduce((value, element) {if((value != null && value.ticket != null) || element.ticket != null) carritos += 1;});
+    //return _esVenta ? Stack(
+    //  children: [
+    //    Container(
+    //      color: Colors.white,
+    //      width: double.infinity,
+    //      height: 50,
+    //    ),
+    //    ShakeTransition(
+    //      child: Container(
+    //        decoration: BoxDecoration(
+    //            color: Colors.blue,
+    //            borderRadius: BorderRadius.only(
+    //              topLeft: Radius.circular(30.0),
+    //              topRight: Radius.circular(30.0),
+    //            )
+    //          ),
+    //        width: double.infinity,
+    //        height: 50,
+    //        child: CustomRaisedButton(
+    //          action: () async => _confirmHacerPedido(),
+    //          borderColor: Colors.blue,
+    //          primaryColor: Colors.blue,
+    //          textColor: Colors.white,
+    //          label: 'Hacer Pedido ($carritos)'
+    //        ),
+    //      ),
+    //    ),
+    //  ],
+    //) : Container();
+  }
+
+  //_confirmHacerPedido(){
+  //  CustomDialog customDialog = CustomDialog();
+  //  customDialog.showCustomDialog(
+  //    context,
+  //    title: 'Confirmar',
+  //    icon: Icons.shopping_cart,
+  //    textContent: 'Se enviarán los carritos generados para hacer el pedido.\n\n ¿Desea Continuar?.',
+  //    cancel: 'Cerrar',
+  //    cntinue: 'Hacer pedido',
+  //    action: ()async{
+  //      Navigator.pop(context);
+  //      _cargandoHacerPedido();
+  //      await Future.delayed(Duration(milliseconds: 2000));
+  //      await _hacerPedido();
+  //      Navigator.pop(context);
+  //    }
+  //  );
+  //}
+
+  _cargandoHacerPedido(){
+    CustomDialog customDialog = CustomDialog();
+    customDialog.showCustomDialog(
+      context,
+      title: 'Haciendo Pedido',
+      icon: Icons.watch_later,
+      textContent: 'Por favor espere un momento...',
+      cancel: '',
+      cntinue: '',
+      action: (){},
+    );
+  }
+
+  _hacerPedido(int index)async{
+    Result result = await _vcapiProvider.hacerPedido(_integrantes, widget.params['idGrupo'], userInfo['uid']);
+    if(result.resultCode == 0){
+      
+      final decodeData = json.decode(result.resultDesc);
+      print(decodeData);
+      SnackBarAction action = SnackBarAction(
+        textColor: Colors.white,
+        label: 'VER DETALLE', 
+        onPressed: (){
+          _articulos = null;
+          setState((){
+            _carritoPropietario = _integrantes[index].nombreCom;
+            _verVenta = true;
+          });
+          _mensajePedido = _integrantes[index].detallePedido;
+          _getArticulos(_integrantes[index].ticket);
+        }//()=>Navigator.push(context, _customRoute.crearRutaSlide(Constants.pedidoPage, {'detalle': result.resultDesc}, listaDinamica: _integrantes)),
+      );
+      if(decodeData['error'] == 0){
+        //setState(() {_esVenta = false;});
+        setState((){
+          _integrantes[index].pedido = true;
+          _integrantes[index].detallePedido = 'Pedido Realizado correctamente';
+        });
+        _success('EL pedido se realizó con éxito.');
+        _info('Vea el detalle de la solicitud.', action: action);
+      }else if(decodeData['exito'] == 0){
+        _error('No pudo realizarce el pedido del grupo.', action: action);
+        setState((){
+          _integrantes[index].pedido = true;
+          _integrantes[index].detallePedido = decodeData['detalleError'][0];
+        });
+      }else if(decodeData['exito'] > 0 && decodeData['error'] > 0){
+        _info('Atención, solo algunos pedidos pudieron completarse. Vea el detalle.', action: action);
+      }
+    }else{
+      _error(result.resultDesc);
+    }
   }
 
   Widget _getButton(){
@@ -708,33 +817,35 @@ class _GrupoPageState extends State<GrupoPage> {
     }
   }
 
-  _success(String error){
+  _success(String error, {int milliseconds = 2000}){
     _customSnakBar.showSnackBarSuccess(
       error, 
-      Duration(milliseconds: 2000), 
+      Duration(milliseconds: milliseconds), 
       Constants.primaryColor, 
       Icons.check_circle_outline, 
       _scaffoldKey
     );
   }
 
-  _error(String error){
+  _error(String error, {int milliseconds = 5000, SnackBarAction action}){
     _customSnakBar.showSnackBar(
       error,
-      Duration(milliseconds: 5000),
+      Duration(milliseconds: milliseconds),
       Colors.pink,
       Icons.error_outline,
-      _scaffoldKey
+      _scaffoldKey,
+      action: action
     );
   }
 
-  _info(String error){
+  _info(String error, {int milliseconds = 5000, SnackBarAction action}){
     _customSnakBar.showSnackBar(
       error,
-      Duration(milliseconds: 5000),
+      Duration(milliseconds: milliseconds),
       Colors.blueAccent,
       Icons.error_outline,
-      _scaffoldKey
+      _scaffoldKey,
+      action: action
     );
   }
 }

@@ -57,10 +57,10 @@ class _ConfiashopPageState extends State<ConfiashopPage> {
   _setTicket(String ticket)async{
     if(!_getTicket){
       setState(() {_getTicket = true;});
-      widget.setTicket(widget.params['index'], ticket);
-      Future.delayed(Duration(milliseconds: 1000));
       _flutterWebviewPlugin.close();
+      Future.delayed(Duration(milliseconds: 1000));
       Navigator.pop(context);
+      widget.setTicket(widget.params['index'], ticket);
     }
   }
 

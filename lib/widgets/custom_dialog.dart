@@ -11,6 +11,8 @@ class CustomDialog{
     Widget form,
     String cancel = 'Cancelar',
     String cntinue = 'Continuar',
+    double offset = 500,
+    bool willPop = true,
     @required VoidCallback action,
     VoidCallback cancelAction
   }){
@@ -21,39 +23,42 @@ class CustomDialog{
         return ShakeTransition(
           axis: Axis.vertical,
           duration: Duration(milliseconds: 3000),
-          offset: 500,
-          child: AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              side: BorderSide(
-                color: Constants.primaryColor, 
-                width: 3.0
-              )
-            ),
-            title: Center(
-              child: Text(title.toUpperCase())
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon, color: Constants.primaryColor, size: 100.0,),
-                SizedBox(height: 20.0),
-                Text(textContent.toUpperCase(), textAlign: TextAlign.center, style: Constants.mensajeCentral,),
-                form == null ? Container() : form
+          offset: offset,
+          child: WillPopScope(
+            onWillPop: () async => willPop,
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                side: BorderSide(
+                  color: Constants.primaryColor, 
+                  width: 3.0
+                )
+              ),
+              title: Center(
+                child: Text(title.toUpperCase())
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, color: Constants.primaryColor, size: 100.0,),
+                  SizedBox(height: 20.0),
+                  Text(textContent.toUpperCase(), textAlign: TextAlign.center, style: Constants.mensajeCentral,),
+                  form == null ? Container() : form
+                ],
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(cancel.toUpperCase()),
+                  onPressed: ()async{cancelAction == null ? Navigator.pop(context) : cancelAction();}
+                ),
+                FlatButton(
+                  child: Text(cntinue.toUpperCase()),
+                  onPressed: ()async{
+                    action();
+                  }
+                )
               ],
             ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text(cancel.toUpperCase()),
-                onPressed: ()async{cancelAction == null ? Navigator.pop(context) : cancelAction();}
-              ),
-              FlatButton(
-                child: Text(cntinue.toUpperCase()),
-                onPressed: ()async{
-                  action();
-                }
-              )
-            ],
           ),
         );
       }

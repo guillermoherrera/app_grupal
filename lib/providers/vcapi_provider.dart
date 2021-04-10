@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/authentication_model.dart';
 import 'package:app_grupal/models/cat_documentos_model.dart';
@@ -5,6 +7,8 @@ import 'package:app_grupal/models/contrato_model.dart';
 import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/models/integrantes_model.dart';
 import 'package:app_grupal/models/params_app_model.dart';
+import 'package:app_grupal/models/pedido_model.dart';
+import 'package:app_grupal/models/result_model.dart';
 import 'package:app_grupal/providers/db_provider.dart';
 import 'package:app_grupal/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +33,7 @@ class VCAPIProvider {
 
     try {
       print('url: $url');
-      print('headers: $body');
+      print('body: $body');
       final resp = await http.post(url, headers: headers, body: body).timeout(Duration(seconds: 10));
       final decodeData = json.decode(resp.body);
       if(decodeData['resultCode'] == 1)  throw(decodeData['resultDesc']);
@@ -42,6 +46,48 @@ class VCAPIProvider {
     return result;
   }
 
+  Future<Result> hacerPedido(List<IntegranteVCAPI> integrantes, int contratoId, String usuario )async{
+    Map<String, dynamic> info = await _sharedActions.getUserInfo();
+    final url = Uri.http(Constants.baseURL, '/v1.0/secure/grupal/exec/pedido/${info['user']}');
+    
+    List<Pedido> pedido = List();
+     
+    integrantes.forEach((item){ 
+      if(item.ticket != null && !item.pedido) 
+        pedido.add(Pedido(cveCli: item.cveCli, noCda: item.noCda, ticket: item.ticket));
+    });
+
+    Map<String, String> body = {
+      'usuario'    : usuario,
+      'referencia' : '$contratoId',
+      'pedido'     : json.encode(pedido),
+      'pedidoTipo' : '1'
+    };
+
+    Map<String, String> headers= {
+      'Authorization'  : 'Bearer ${info['token']}',
+    };
+
+    Result result = new Result(resultCode: 1);
+
+    try {
+      print('url: $url');
+      print('body: $body');
+      if(pedido.isEmpty) throw('Error al obtener el carrito.');
+      final resp = await http.post(url, headers: headers, body: body).timeout(Duration(seconds: 30));
+      if(resp.statusCode != 200) throw(resp.body != null ? json.decode(resp.body)['resultDesc'] : resp.reasonPhrase);
+      final decodeData = json.decode(resp.body);
+      if(decodeData['resultCode'] == 1)  throw(decodeData['resultDesc']);
+      result = Result.jsonMap(decodeData);
+      print(result);
+    } catch (e) {
+      result.resultDesc = Constants.errorAuth(e.toString());
+      print(e);
+    }
+    
+    return result;
+  }
+
   //GET
   Future <dynamic> procesaRespuesta(url, headers, clase, {snackBar}) async{
     dynamic respuesta;
@@ -49,14 +95,15 @@ class VCAPIProvider {
       print('url: $url');
       print('headers: $headers');
       final resp = await http.get(url, headers: headers).timeout(Duration(seconds: 15));
-      if(resp.statusCode != 200) throw(resp.reasonPhrase);
+      if(resp.statusCode != 200) throw(resp.body != null ? json.decode(resp.body)['resultDesc'] : resp.reasonPhrase);
       final decodeData = json.decode(resp.body);
+      if(decodeData['resultCode'] == 1)  throw(decodeData['resultDesc']);
       respuesta = clase.fromJson(decodeData['data']);
     }catch(e){
       print(e);
       if(snackBar != null)
         _customSnakBar.showSnackBar(Constants.errorAuth('$e'), Duration(milliseconds: 3000), Colors.pink, Icons.error_outline, snackBar);
-      respuesta = {};
+      respuesta = clase;
     }
     return respuesta;
   }
@@ -67,8 +114,9 @@ class VCAPIProvider {
       print('url: $url');
       print('headers: $headers');
       final resp = await http.get(url, headers: headers).timeout(Duration(seconds: 15));
-      if(resp.statusCode != 200) throw(resp.reasonPhrase);
+      if(resp.statusCode != 200) throw(resp.body != null ? json.decode(resp.body)['resultDesc'] : resp.reasonPhrase);
       final decodeData = json.decode(resp.body);
+      if(decodeData['resultCode'] == 1)  throw(decodeData['resultDesc']);
       listaRespuesta = clase.fromJsonList(decodeData['data']);
     }catch(e){
       print(e);

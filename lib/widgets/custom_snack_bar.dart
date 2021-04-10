@@ -2,21 +2,28 @@ import 'package:app_grupal/helpers/constants.dart';
 import 'package:flutter/material.dart';
 
 class CustomSnakBar{
-  showSnackBar(String mensaje, Duration duration, Color color, IconData icon, GlobalKey<ScaffoldState> scaffoldKey){
+  showSnackBar(String mensaje, Duration duration, Color color, IconData icon, GlobalKey<ScaffoldState> scaffoldKey, {SnackBarAction action}){
     
     final snackBar = SnackBar(
+      action: action,
       content: Row(
         //direction: Axis.horizontal,
         children: [
           Icon(icon),
           SizedBox(width: 20.0,),
-          Container(
-            width: 250,
-            child: Text(
-              mensaje.toUpperCase(),
-              //overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontWeight: FontWeight.bold
+          Expanded(
+            child: Container(
+              //width: action == null ? 250 : 200,
+              child: Wrap(
+                children: [
+                  Text(
+                    mensaje.toUpperCase(),
+                    //overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

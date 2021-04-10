@@ -1,6 +1,7 @@
 import 'package:app_grupal/pages/cartera/cartera_grupo.dart';
 import 'package:app_grupal/pages/cartera/cartera_integrante.dart';
 import 'package:app_grupal/pages/confiashop/confiashop_page.dart';
+import 'package:app_grupal/pages/confiashop/detalle_pedido_page.dart';
 import 'package:app_grupal/pages/drawer/info_page.dart';
 import 'package:app_grupal/pages/solicitud/solicitud_page.dart';
 import 'package:app_grupal/pages/solicitudes/grupo.dart';
@@ -17,9 +18,9 @@ import 'package:app_grupal/pages/root_page.dart';
 
 class CustomRouteTransition{
   
-  Route crearRutaSlide(String route, Map<String, dynamic> params, {void Function(int, double) setMonto, void Function(int, String) setTicket, void Function(int, int) setRolGrupo, void Function(int) getNewIntegrante, VoidCallback getLastGrupos, Future<bool> Function() sincroniza}){
+  Route crearRutaSlide(String route, Map<String, dynamic> params, {void Function(int, double) setMonto, void Function(int, String) setTicket, void Function(int, int) setRolGrupo, void Function(int) getNewIntegrante, VoidCallback getLastGrupos, Future<bool> Function() sincroniza, List<dynamic> listaDinamica}){
 
-    Widget ruta = _getPage(route, params, setMonto, setTicket, setRolGrupo, getNewIntegrante, getLastGrupos, sincroniza);
+    Widget ruta = _getPage(route, params, setMonto, setTicket, setRolGrupo, getNewIntegrante, getLastGrupos, sincroniza, listaDinamica);
 
     return PageRouteBuilder(
       pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) => ruta,
@@ -46,7 +47,7 @@ class CustomRouteTransition{
     );
   }
 
-  Widget _getPage(String ruta, Map<String, dynamic> params, void Function(int, double) setMonto, void Function(int, String) setTicket, void Function(int, int) setRolGrupo, void Function(int) getNewIntegrante, VoidCallback getLastGrupos, Future<bool> Function() sincroniza){
+  Widget _getPage(String ruta, Map<String, dynamic> params, void Function(int, double) setMonto, void Function(int, String) setTicket, void Function(int, int) setRolGrupo, void Function(int) getNewIntegrante, VoidCallback getLastGrupos, Future<bool> Function() sincroniza, List<dynamic> listaDinamica){
     if(ruta == Constants.renovacionGrupoPage){
       return RenovacionesGrupoPage(params: params, getLastGrupos: getLastGrupos, sincroniza: sincroniza);
     }else if(ruta == Constants.renovacionIntegrantePage){
@@ -70,7 +71,9 @@ class CustomRouteTransition{
     }else if(ruta == Constants.grupoPage){
       return GrupoPage(params: params, getLastGrupos: getLastGrupos, sincroniza: sincroniza);
     }else if(ruta == Constants.integrantePage){
-      return IntegrantePage(params: params);
+      return IntegrantePage(params: params, removeTicket: getNewIntegrante);
+    }else if(ruta == Constants.pedidoPage){
+      return DetallePedidoPage(params: params, integrantes: listaDinamica);
     }
     return RootPage();
   }
