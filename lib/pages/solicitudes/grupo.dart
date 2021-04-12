@@ -221,7 +221,7 @@ class _GrupoPageState extends State<GrupoPage> {
     CustomDraggable(
       maxChildSize: 0.62,
       closeAction: (){setState((){_verVenta = false;});}, 
-      title: 'Carrito de\n$_carritoPropietario',
+      title: 'Detalle del Pedido\n\nCarrito de\n$_carritoPropietario',
       child: _articulos == null ? _articulos : Column(
         children: [
           _articulos,
@@ -229,8 +229,8 @@ class _GrupoPageState extends State<GrupoPage> {
             width: double.infinity,
             margin: EdgeInsets.all(5.0),
             padding: EdgeInsets.all(10.0),
-            color: Colors.green[900],
-            child: Text('STATUS:\n$_mensajePedido', textAlign: TextAlign.center, style: Constants.subtituloStyle ,)
+            color: Constants.primaryColor,
+            child: Text('\nSTATUS DEL PEDIDO:\n\n$_mensajePedido', textAlign: TextAlign.center, style: Constants.subtituloStyle ,)
           )
         ],
       ),
@@ -240,7 +240,7 @@ class _GrupoPageState extends State<GrupoPage> {
   _getArticulos(String ticket)async{
     _ticketConfiaShop = await _confiashopProvider.getArticulosByTicket(ticket, userInfo['user']);
     if(_ticketConfiaShop != null){
-      _tableArticulos(_ticketConfiaShop.tIcketDetalle);
+      _tableArticulos(_ticketConfiaShop);
       setState(() {});
     }else{
       setState((){_verVenta = false;});
@@ -248,21 +248,21 @@ class _GrupoPageState extends State<GrupoPage> {
     }
   }
 
-  _tableArticulos(List<TicketDetalle> articulos){
+  _tableArticulos(TicketConfiaShop ticket){
     List<TableRow> tableRows = [];
 
     tableRows.add(
       TableRow(
         children: [
-          Center(child: Text('Artículo\n'.toUpperCase(), style: Constants.subtituloStyle)),
-          Center(child: Text('Descripción\n'.toUpperCase(), style: Constants.subtituloStyle)),
-          Center(child: Text('Precio total\n'.toUpperCase(), style: Constants.subtituloStyle))
+          Container(padding: EdgeInsets.all(2.0), child: Center(child: Text('Artículo\n'.toUpperCase(), style: Constants.subtituloStyle))),
+          Container(padding: EdgeInsets.all(2.0), child: Center(child: Text('Descripción\n'.toUpperCase(), style: Constants.subtituloStyle))),
+          Container(padding: EdgeInsets.all(2.0), child: Center(child: Text('Precio total\n'.toUpperCase(), style: Constants.subtituloStyle)))
         ]
       )
     );
+    //tableRows.add(TableRow(children: [Divider(color: Colors.white),Divider(color: Colors.white),Divider(color: Colors.white)]));
 
-    articulos.forEach((e){
-      tableRows.add(TableRow(children: [Divider(color: Colors.white),Divider(color: Colors.white),Divider(color: Colors.white)]));
+    ticket.tIcketDetalle.forEach((e){
       tableRows.add(
         TableRow(
           children: [
@@ -271,19 +271,23 @@ class _GrupoPageState extends State<GrupoPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text('${e.marca}'.toUpperCase(), style: Constants.subtituloStyle),
                   Text('${e.jerarquia01}, ${e.jerarquia02},'.toUpperCase(), style: Constants.subtituloStyle),
                   Text('${e.jerarquia03}, ${e.jerarquia04}'.toUpperCase(), style: Constants.subtituloStyle),
                 ],
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('cantidad: ${e.cantidad}'.toUpperCase(), style: Constants.subtituloStyle),
-                Text('talla: ${e.talla}'.toUpperCase(), style: Constants.subtituloStyle),
-                Text('color: ${e.color}'.toUpperCase(), style: Constants.subtituloStyle),
-                Text('estilo: ${e.estilo}'.toUpperCase(), style: Constants.subtituloStyle),
-              ],
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 2.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('cantidad: ${e.cantidad}'.toUpperCase(), style: Constants.subtituloStyle),
+                  Text('talla: ${e.talla}'.toUpperCase(), style: Constants.subtituloStyle),
+                  Text('color: ${e.color}'.toUpperCase(), style: Constants.subtituloStyle),
+                  Text('estilo: ${e.estilo}'.toUpperCase(), style: Constants.subtituloStyle),
+                ],
+              ),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -294,9 +298,21 @@ class _GrupoPageState extends State<GrupoPage> {
           ]
         )
       );
+      //tableRows.add(TableRow(children: [Divider(color: Colors.white),Divider(color: Colors.white),Divider(color: Colors.white)]));
     });
 
+    tableRows.add(
+      TableRow(
+        children: [
+          Container(),
+          Container(padding: EdgeInsets.all(2.0), child: Center(child: Text('\nTotal\n'.toUpperCase(), style: Constants.subtituloStyle))),
+          Container(padding: EdgeInsets.all(2.0), child: Center(child: Text('\n\$ ${ticket.totalPrecioNeto}', style: Constants.subtituloStyle)))
+        ]
+      )
+    );
+
     Widget table = Table(
+      border: TableBorder.all(color: Colors.white70),
       children: tableRows
     );
 
@@ -378,7 +394,7 @@ class _GrupoPageState extends State<GrupoPage> {
             ),
             Container(
               padding: EdgeInsets.only(bottom: 10.0),
-              child: GestureDetector(
+              child: InkWell(
                 onTap:()async{
                   _accesoConfiashop =  await _sharedActions.getAccesoConfiashop();
                   if(integrante.ticket == null){
@@ -397,12 +413,12 @@ class _GrupoPageState extends State<GrupoPage> {
                 },
                 child: Row(
                   children: [
-                    Icon(Icons.shopping_cart, size: 10.0, color: Colors.blue[900]),
+                    Icon(integrante.ticket == null ? Icons.shopping_cart : Icons.local_mall, size: 10.0, color: Colors.blue[900]),
                     Container(
-                      child: Text('${integrante.ticket == null ? 'Ir a' : 'Ver carrito'} Confiashop'.toUpperCase(), style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: integrante.ticket == null ? Colors.blue[900] : Constants.primaryColor)),
+                      child: Text('${integrante.ticket == null ? 'Ir a' : 'Ver pedido'} Confiashop'.toUpperCase(), style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: integrante.ticket == null ? Colors.blue[900] : Constants.primaryColor)),
                       padding: EdgeInsets.only(top: 2.0),      
                     ),
-                    Icon(integrante.ticket == null ? Icons.arrow_forward_ios : Icons.remove_red_eye, size: 10.0, color: Colors.blue[900]),
+                    Icon(Icons.arrow_forward_ios, size: 10.0, color: Colors.blue[900]),
                   ],
                 )
               ),
@@ -462,6 +478,7 @@ class _GrupoPageState extends State<GrupoPage> {
 
   Widget _verIntegrante(integrante, int index){
     return IconButton(
+      splashColor: Constants.primaryColor,
       icon: Icon(Icons.arrow_forward_ios, color: Constants.primaryColor), 
       onPressed: () => Navigator.push(context, _customRoute.crearRutaSlide(Constants.integrantePage, {
         'cveCli'         : integrante.cveCli,
@@ -732,16 +749,16 @@ class _GrupoPageState extends State<GrupoPage> {
           _integrantes[index].pedido = true;
           _integrantes[index].detallePedido = 'Pedido Realizado correctamente';
         });
-        _success('EL pedido se realizó con éxito.');
+        _success('Pedido realizado con éxito.');
         _info('Vea el detalle de la solicitud.', action: action);
       }else if(decodeData['exito'] == 0){
-        _error('No pudo realizarce el pedido del grupo.', action: action);
+        _error('No pudo realizarce el pedido.', action: action);
         setState((){
           _integrantes[index].pedido = true;
           _integrantes[index].detallePedido = decodeData['detalleError'][0];
         });
       }else if(decodeData['exito'] > 0 && decodeData['error'] > 0){
-        _info('Atención, solo algunos pedidos pudieron completarse. Vea el detalle.', action: action);
+        _info('Atención. Vea el detalle.', action: action);
       }
     }else{
       _error(result.resultDesc);

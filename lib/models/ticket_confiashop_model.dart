@@ -1,14 +1,17 @@
 class TicketConfiaShop{
   String idTicket;
+  double totalPrecioNeto;
   List<TicketDetalle> tIcketDetalle;
 
   TicketConfiaShop({
     this.idTicket,
+    this.totalPrecioNeto,
     this.tIcketDetalle
   });
 
   TicketConfiaShop.fromJson(Map<String, dynamic> json){
     this.idTicket = json['id_ticket'];
+    this.totalPrecioNeto = json['total_precio_neto'];
 
     List<TicketDetalle> listItems = List();
     for(var item in json['ticket_detalle']){

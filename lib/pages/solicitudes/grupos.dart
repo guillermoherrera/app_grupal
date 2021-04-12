@@ -49,7 +49,7 @@ class _GruposPageState extends State<GruposPage> {
     await Future.delayed(Duration(milliseconds: 1000));
     _grupos = widget.params['opcion'] == 'captura'? await DBProvider.db.getGruposCreados() : await _vcapiProvider.consultaGrupos(snackBar: _scaffoldKey);
     _cargando = false;
-    setState((){});
+    if(this.mounted) setState((){});
   }
 
   _recargarGrupos()async{

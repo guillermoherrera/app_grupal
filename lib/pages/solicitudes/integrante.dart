@@ -115,7 +115,7 @@ class _IntegrantePageState extends State<IntegrantePage> {
 
     return ShakeTransition(
       child: CustomRaisedButton(
-        label: 'Eliminar Carrito',
+        label: 'Eliminar Pedido',
         action: ()=>_confirm()
       ),
     );
@@ -128,7 +128,7 @@ class _IntegrantePageState extends State<IntegrantePage> {
       context,
       title: 'Atención',
       icon: Icons.error_outline,
-      textContent: '¿Desea eliminar el carrito de este cliente?',//'Si sale ahora del grupo el pedido se cancelará y los carritos de compra hechos se perderan',
+      textContent: '¿Desea eliminar el pedido de este cliente?',//'Si sale ahora del grupo el pedido se cancelará y los carritos de compra hechos se perderan',
       cancel: 'No',
       cntinue: 'Si, elimiar',
       action: (){

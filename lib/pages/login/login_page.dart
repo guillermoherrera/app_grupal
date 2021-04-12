@@ -156,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
         duration: Duration(milliseconds: 3000),
         offset: 420,
         child: CustomRaisedButton(
-          label: _buttonEnabled ? 'Iniciar Sesión' : 'Verificando porfavor espere ...',
+          label: _buttonEnabled ? 'Iniciar Sesión' : 'Verificando por favor espere ...',
           action: _buttonEnabled ? _loginSubmit : (){}
         ),
       ),

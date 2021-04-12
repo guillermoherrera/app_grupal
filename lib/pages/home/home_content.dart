@@ -44,7 +44,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
-    _getParamsFromAPi();
+    _getParamsFromAPi(context);
     _getLastGrupos();
     super.initState();
   }
@@ -55,16 +55,16 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
     super.dispose();
   }
 
-  _getParamsFromAPi()async{
+  _getParamsFromAPi(BuildContext context)async{
     print(' ^^^ consultaParams inicio ^^^ ');
-    _vcapiProvider.consultaParamsApp();
+    _vcapiProvider.consultaParamsApp(context);
     final syncTime =  Duration(milliseconds: 300000);
     await Future.delayed(syncTime);
     new Timer.periodic(syncTime, (t) async{
       if(this.mounted){
         setState((){cargando = true;});
         print(' ^^^ consultaParams programado ${DateTime.now()} ^^^ ');
-        await _vcapiProvider.consultaParamsApp();
+        await _vcapiProvider.consultaParamsApp(context);
         setState((){cargando = false;});
       }else{
         t.cancel();
@@ -76,7 +76,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
     await Future.delayed(Duration(milliseconds: 1000));
     uid = await _sharedActions.getUserId();
     info = await _sharedActions.getUserInfo();
-    _ultimosq15Grupos = await DBProvider.db.getLastGrupos(uid);
+    _ultimosq15Grupos = await DBProvider.db.getLastGrupos(uid != null ? uid : '');
     _gruposSinEnviar = _ultimosq15Grupos.where((e) => e.status == 1).toList();
     if(this.mounted) setState((){cargando = false;});
     //if(_ultimosq15Grupos.length > 0) setState((){});

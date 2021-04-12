@@ -12,6 +12,7 @@ import 'package:app_grupal/models/result_model.dart';
 import 'package:app_grupal/providers/db_provider.dart';
 import 'package:app_grupal/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -20,7 +21,7 @@ class VCAPIProvider {
   final CustomSnakBar _customSnakBar = new CustomSnakBar();
 
   Future<AuthVCAPI> loginVCAPI(String usuario, String password)async{
-    final url = Uri.http(Constants.baseURL, '/v1.0/loginGrupal');
+    final url = Uri.https(Constants.baseURL, '/v1.0/loginGrupal');
     Map<String, String> body = {
       'distribuidor': usuario,
       'password' : password,
@@ -35,7 +36,8 @@ class VCAPIProvider {
       print('url: $url');
       print('body: $body');
       final resp = await http.post(url, headers: headers, body: body).timeout(Duration(seconds: 10));
-      final decodeData = json.decode(resp.body);
+      String source = Utf8Decoder().convert(resp.bodyBytes);
+      final decodeData = json.decode(source);
       if(decodeData['resultCode'] == 1)  throw(decodeData['resultDesc']);
       result = AuthVCAPI.jsonMap(decodeData);
     } catch (e) {
@@ -48,7 +50,7 @@ class VCAPIProvider {
 
   Future<Result> hacerPedido(List<IntegranteVCAPI> integrantes, int contratoId, String usuario )async{
     Map<String, dynamic> info = await _sharedActions.getUserInfo();
-    final url = Uri.http(Constants.baseURL, '/v1.0/secure/grupal/exec/pedido/${info['user']}');
+    final url = Uri.https(Constants.baseURL, '/v1.0/secure/grupal/exec/pedido/${info['user']}');
     
     List<Pedido> pedido = List();
      
@@ -75,8 +77,9 @@ class VCAPIProvider {
       print('body: $body');
       if(pedido.isEmpty) throw('Error al obtener el carrito.');
       final resp = await http.post(url, headers: headers, body: body).timeout(Duration(seconds: 30));
-      if(resp.statusCode != 200) throw(resp.body != null ? json.decode(resp.body)['resultDesc'] : resp.reasonPhrase);
-      final decodeData = json.decode(resp.body);
+      if(resp.statusCode != 200) throw(resp.body != '' ? json.decode(resp.body)['resultDesc'] : resp.reasonPhrase);
+      String source = Utf8Decoder().convert(resp.bodyBytes);
+      final decodeData = json.decode(source);
       if(decodeData['resultCode'] == 1)  throw(decodeData['resultDesc']);
       result = Result.jsonMap(decodeData);
       print(result);
@@ -95,14 +98,25 @@ class VCAPIProvider {
       print('url: $url');
       print('headers: $headers');
       final resp = await http.get(url, headers: headers).timeout(Duration(seconds: 15));
-      if(resp.statusCode != 200) throw(resp.body != null ? json.decode(resp.body)['resultDesc'] : resp.reasonPhrase);
-      final decodeData = json.decode(resp.body);
+      if(resp.statusCode != 200) throw(resp.body != "" ? json.decode(resp.body)['resultDesc'] : resp.reasonPhrase);
+      String source = Utf8Decoder().convert(resp.bodyBytes);
+      final decodeData = json.decode(source);
       if(decodeData['resultCode'] == 1)  throw(decodeData['resultDesc']);
       respuesta = clase.fromJson(decodeData['data']);
     }catch(e){
       print(e);
       if(snackBar != null)
         _customSnakBar.showSnackBar(Constants.errorAuth('$e'), Duration(milliseconds: 3000), Colors.pink, Icons.error_outline, snackBar);
+      else
+        Fluttertoast.showToast(
+          msg: Constants.errorAuth('$e $clase').toUpperCase(),
+          backgroundColor: Colors.red.withOpacity(0.8),
+          textColor: Colors.white,
+          fontSize: 10,
+          gravity: ToastGravity.BOTTOM,
+          toastLength: Toast.LENGTH_LONG,
+          timeInSecForIosWeb: 15
+        );
       respuesta = clase;
     }
     return respuesta;
@@ -113,9 +127,10 @@ class VCAPIProvider {
     try{
       print('url: $url');
       print('headers: $headers');
-      final resp = await http.get(url, headers: headers).timeout(Duration(seconds: 15));
-      if(resp.statusCode != 200) throw(resp.body != null ? json.decode(resp.body)['resultDesc'] : resp.reasonPhrase);
-      final decodeData = json.decode(resp.body);
+      final resp = await http.get(url, headers: headers).timeout(Duration(seconds: 30));
+      if(resp.statusCode != 200) throw(resp.body != '' ? json.decode(resp.body)['resultDesc'] : resp.reasonPhrase);
+      String source = Utf8Decoder().convert(resp.bodyBytes);
+      final decodeData = json.decode(source);
       if(decodeData['resultCode'] == 1)  throw(decodeData['resultDesc']);
       listaRespuesta = clase.fromJsonList(decodeData['data']);
     }catch(e){
@@ -129,7 +144,7 @@ class VCAPIProvider {
 
   Future<List<ContratoVCAPI>> consultaGrupos({snackBar})async{
     Map<String, dynamic> info = await _sharedActions.getUserInfo();
-    final url = Uri.http(Constants.baseURL, '/v1.0/secure/grupal/Consulta/grupos/${info['user']}');
+    final url = Uri.https(Constants.baseURL, '/v1.0/secure/grupal/Consulta/grupos/${info['user']}');
     Map<String, String> headers= {
       'Authorization'  : 'Bearer ${info['token']}',
     };
@@ -142,7 +157,7 @@ class VCAPIProvider {
 
   Future<List<IntegranteVCAPI>> consultaIntegrantes(int contratoId, {snackBar})async{
     Map<String, dynamic> info = await _sharedActions.getUserInfo();
-    final url = Uri.http(Constants.baseURL, '/v1.0/secure/grupal/Consulta/Integrantes/${info['user']}/$contratoId');
+    final url = Uri.https(Constants.baseURL, '/v1.0/secure/grupal/Consulta/Integrantes/${info['user']}/$contratoId');
     Map<String, String> headers= {
       'Authorization'  : 'Bearer ${info['token']}',
     };
@@ -153,9 +168,9 @@ class VCAPIProvider {
     return listaProcesada.cast<IntegranteVCAPI>();
   }
 
-  Future<ParamsApp> consultaParamsApp()async{
+  Future<ParamsApp> consultaParamsApp(BuildContext context)async{
     Map<String, dynamic> info = await _sharedActions.getUserInfo();
-    final url = Uri.http(Constants.baseURL, '/v1.0/secure/grupal/Params/${info['user']}');
+    final url = Uri.https(Constants.baseURL, '/v1.0/secure/grupal/Params/${info['user']}');
     Map<String, String> headers= {
       'Authorization'  : 'Bearer ${info['token']}',
     };
@@ -181,6 +196,10 @@ class VCAPIProvider {
       _sharedActions.setAccesoConfiashop(respuestaProcesada.accesoConfiashop);
       print('### Parametros y Catalogos actualizados');
     }catch(e){
+      await _sharedActions.clear();
+      Navigator.of(context)
+        .pushNamedAndRemoveUntil(Constants.rootPage, (Route<dynamic> route) => false);
+      //Navigator.pushReplacementNamed(context, Constants.rootPage, arguments: true);
       print('### Error al guardar Parametros y Catalogos ->>> $e');
     }
     return respuestaProcesada;

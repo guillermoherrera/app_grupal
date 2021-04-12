@@ -229,8 +229,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
         break;
       case 3:
         //await _authFirebase.signOut();
-        _sharedActions.clear();
-        Navigator.pushReplacementNamed(context, Constants.loginPage, arguments: true);
+        await _sharedActions.clear();
+        Navigator.of(context)
+          .pushNamedAndRemoveUntil(Constants.rootPage, (Route<dynamic> route) => false);
+        //Navigator.pushReplacementNamed(context, Constants.loginPage, arguments: true);
         break;
       default:
         Navigator.pop(context);
