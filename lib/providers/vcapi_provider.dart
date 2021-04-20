@@ -106,7 +106,7 @@ class VCAPIProvider {
     }catch(e){
       print(e);
       if(snackBar != null)
-        _customSnakBar.showSnackBar(Constants.errorAuth('$e'), Duration(milliseconds: 3000), Colors.pink, Icons.error_outline, snackBar);
+        _customSnakBar.showSnackBar(Constants.errorAuth('$e'), Duration(milliseconds: 5000), Colors.pink, Icons.error_outline, snackBar);
       else
         Fluttertoast.showToast(
           msg: Constants.errorAuth('$e $clase').toUpperCase(),
@@ -136,7 +136,7 @@ class VCAPIProvider {
     }catch(e){
       print(e);
       if(snackBar != null)
-        _customSnakBar.showSnackBar(Constants.errorAuth('$e'), Duration(milliseconds: 3000), Colors.pink, Icons.error_outline, snackBar);
+        _customSnakBar.showSnackBar(Constants.errorAuth('$e'), Duration(milliseconds: 5000), Colors.pink, Icons.error_outline, snackBar);
       listaRespuesta = List();
     }
     return listaRespuesta;
@@ -196,9 +196,9 @@ class VCAPIProvider {
       _sharedActions.setAccesoConfiashop(respuestaProcesada.accesoConfiashop);
       print('### Parametros y Catalogos actualizados');
     }catch(e){
-      await _sharedActions.clear();
-      Navigator.of(context)
-        .pushNamedAndRemoveUntil(Constants.rootPage, (Route<dynamic> route) => false);
+      //await _sharedActions.clear();
+      //Navigator.of(context)
+      //  .pushNamedAndRemoveUntil(Constants.rootPage, (Route<dynamic> route) => false);
       //Navigator.pushReplacementNamed(context, Constants.rootPage, arguments: true);
       print('### Error al guardar Parametros y Catalogos ->>> $e');
     }

@@ -14,16 +14,19 @@ class EmptyImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.all(5.0),
       child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image(
-              image: AssetImage(image),
-              fit: BoxFit.contain,
-            ),
-            Text(text.toUpperCase(), style: Constants.mensajeCentral)
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image(
+                image: AssetImage(image),
+                fit: BoxFit.contain,
+              ),
+              Text(text.toUpperCase(), style: Constants.mensajeCentral, textAlign: TextAlign.center,)
+            ],
+          ),
         ),
       ),
     );

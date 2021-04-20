@@ -37,14 +37,16 @@ class CustomDialog{
               title: Center(
                 child: Text(title.toUpperCase())
               ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(icon, color: Constants.primaryColor, size: 100.0,),
-                  SizedBox(height: 20.0),
-                  Text(textContent.toUpperCase(), textAlign: TextAlign.center, style: Constants.mensajeCentral,),
-                  form == null ? Container() : form
-                ],
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(icon, color: Constants.primaryColor, size: 100.0,),
+                    SizedBox(height: 20.0),
+                    Text(textContent.toUpperCase(), textAlign: TextAlign.center, style: Constants.mensajeCentral,),
+                    form == null ? Container() : form
+                  ],
+                ),
               ),
               actions: <Widget>[
                 FlatButton(

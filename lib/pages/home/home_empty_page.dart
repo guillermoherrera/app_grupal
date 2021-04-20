@@ -30,63 +30,48 @@ class _HomeEmptyPageState extends State<HomeEmptyPage> with AutomaticKeepAliveCl
     return CustomFadeTransition(
       child: Stack(
         children: [
-          ListView(
-            children: [
-              
-              /*Container(
-                padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                child:FittedBox(
-                  child: Text(
-                    'Bienvenido a asesores app'.toUpperCase(),
-                    textAlign: TextAlign.start,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)
-                  )
-                )
-              ),*/
-              Image(
+          //ListView(),
+          Center(
+            child: Container(
+              width: double.infinity,
+              child: Image(
                 image: AssetImage(Constants.homeImage),
                 fit: BoxFit.contain,
               ),
-              Container(
-                padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                child:Text(
-                  ''/*Constants.homeText*/,
-                  textAlign: TextAlign.justify,
-                  style: Constants.mensajeCentral,
-                )
-              )
-            ],
+            ),
           ),
           Container(
             padding: EdgeInsets.only(top: 20.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ShakeTransition(
-                      axis: Axis.vertical,
-                      duration: Duration(milliseconds: 2000),
-                      child: RaisedButton(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            //Icon(sincronizando ? Icons.watch_later : Icons.sync, color: sincronizando ? Colors.grey : Constants.primaryColor,),
-                            //Text('Sincronizar'.toUpperCase(), style: TextStyle(fontSize: 6.0, fontWeight: FontWeight.bold, color: sincronizando ? Colors.grey : Constants.primaryColor))
-                            Text('Ultimo Inicio de sesión:'.toUpperCase(), style: TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold, color: Colors.grey)),
-                            Text('${widget.info['ultimoInicioSesion']}'.toUpperCase(), style: TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold, color: Colors.grey)),
-                          ],
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ShakeTransition(
+                        axis: Axis.vertical,
+                        duration: Duration(milliseconds: 2000),
+                        child: RaisedButton(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              //Icon(sincronizando ? Icons.watch_later : Icons.sync, color: sincronizando ? Colors.grey : Constants.primaryColor,),
+                              //Text('Sincronizar'.toUpperCase(), style: TextStyle(fontSize: 6.0, fontWeight: FontWeight.bold, color: sincronizando ? Colors.grey : Constants.primaryColor))
+                              Text('Ultimo Inicio de sesión:'.toUpperCase(), style: TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold, color: Colors.grey)),
+                              Text('${widget.info['ultimoInicioSesion']}'.toUpperCase(), style: TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold, color: Colors.grey)),
+                            ],
+                          ),
+                          padding: EdgeInsets.all(10.0),
+                          color: Colors.transparent,//Colors.white,
+                          elevation: 0.0,//8.0,
+                          shape: CircleBorder(),
+                          onPressed: (){}//sincronizando ? (){} : ()=>_sincronizar()
                         ),
-                        padding: EdgeInsets.all(10.0),
-                        color: Colors.transparent,//Colors.white,
-                        elevation: 0.0,//8.0,
-                        shape: CircleBorder(),
-                        onPressed: (){}//sincronizando ? (){} : ()=>_sincronizar()
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app_grupal/classes/shared_preferences.dart';
 import 'package:app_grupal/components/body_content.dart';
+import 'package:app_grupal/components/empty_image.dart';
 import 'package:app_grupal/components/page_route_builder.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/models/list_tile_model.dart';
@@ -16,6 +17,7 @@ import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/custom_center_loading.dart';
 import 'package:app_grupal/widgets/custom_dialog.dart';
 import 'package:app_grupal/widgets/custom_draggable.dart';
+import 'package:app_grupal/widgets/custom_fade_transition.dart';
 import 'package:app_grupal/widgets/custom_list_tile.dart';
 import 'package:app_grupal/widgets/custom_raised_button.dart';
 import 'package:app_grupal/widgets/custom_snack_bar.dart';
@@ -243,8 +245,10 @@ class _GrupoPageState extends State<GrupoPage> {
       _tableArticulos(_ticketConfiaShop);
       setState(() {});
     }else{
-      setState((){_verVenta = false;});
-      _error('Error al consultar carrito');
+      //setState((){_verVenta = false;});
+      _tableArticulos(new TicketConfiaShop(idTicket: '',totalPrecioNeto: 0.0, tIcketDetalle: []));
+      setState(() {});
+      //_error('Error al consultar carrito');
     }
   }
 
@@ -347,7 +351,7 @@ class _GrupoPageState extends State<GrupoPage> {
   }
 
   Widget _showResult(){
-    return _integrantes.length > 0 ? _lista() : widget.params['opcion'] == 'captura' ?  _noData() : Container();
+    return _integrantes.length > 0 ? _lista() : widget.params['opcion'] == 'captura' ?  _noData() : CustomFadeTransition(child: EmptyImage(text: 'No hay integrantes para mostrar.'), duration: Duration(milliseconds: 2000));
   }
 
   Widget _noData(){
@@ -413,9 +417,9 @@ class _GrupoPageState extends State<GrupoPage> {
                 },
                 child: Row(
                   children: [
-                    Icon(integrante.ticket == null ? Icons.shopping_cart : Icons.local_mall, size: 10.0, color: Colors.blue[900]),
+                    Icon(integrante.ticket == null ? Icons.shopping_cart : (integrante.detallePedido != null && integrante.detallePedido.contains('Error')) ? Icons.error : Icons.local_mall, size: 10.0, color: (integrante.detallePedido != null && integrante.detallePedido.contains('Error')) ? Colors.pink : Colors.blue[900]),
                     Container(
-                      child: Text('${integrante.ticket == null ? 'Ir a' : 'Ver pedido'} Confiashop'.toUpperCase(), style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: integrante.ticket == null ? Colors.blue[900] : Constants.primaryColor)),
+                      child: Text('${integrante.ticket == null ? 'Ir a' : 'Ver pedido'} Confiashop'.toUpperCase(), style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: integrante.ticket == null ? Colors.blue[900] : (integrante.detallePedido != null && integrante.detallePedido.contains('Error')) ? Colors.pink : Constants.primaryColor)),
                       padding: EdgeInsets.only(top: 2.0),      
                     ),
                     Icon(Icons.arrow_forward_ios, size: 10.0, color: Colors.blue[900]),
@@ -726,23 +730,26 @@ class _GrupoPageState extends State<GrupoPage> {
 
   _hacerPedido(int index)async{
     Result result = await _vcapiProvider.hacerPedido(_integrantes, widget.params['idGrupo'], userInfo['uid']);
+    
+    SnackBarAction action = SnackBarAction(
+      textColor: Colors.white,
+      label: 'VER DETALLE', 
+      onPressed: (){
+        _articulos = null;
+        setState((){
+          _carritoPropietario = _integrantes[index].nombreCom;
+          _verVenta = true;
+        });
+        _mensajePedido = _integrantes[index].detallePedido;
+        _getArticulos(_integrantes[index].ticket);
+      }//()=>Navigator.push(context, _customRoute.crearRutaSlide(Constants.pedidoPage, {'detalle': result.resultDesc}, listaDinamica: _integrantes)),
+    );
+    
     if(result.resultCode == 0){
       
       final decodeData = json.decode(result.resultDesc);
       print(decodeData);
-      SnackBarAction action = SnackBarAction(
-        textColor: Colors.white,
-        label: 'VER DETALLE', 
-        onPressed: (){
-          _articulos = null;
-          setState((){
-            _carritoPropietario = _integrantes[index].nombreCom;
-            _verVenta = true;
-          });
-          _mensajePedido = _integrantes[index].detallePedido;
-          _getArticulos(_integrantes[index].ticket);
-        }//()=>Navigator.push(context, _customRoute.crearRutaSlide(Constants.pedidoPage, {'detalle': result.resultDesc}, listaDinamica: _integrantes)),
-      );
+      
       if(decodeData['error'] == 0){
         //setState(() {_esVenta = false;});
         setState((){
@@ -750,18 +757,22 @@ class _GrupoPageState extends State<GrupoPage> {
           _integrantes[index].detallePedido = 'Pedido Realizado correctamente';
         });
         _success('Pedido realizado con éxito.');
-        _info('Vea el detalle de la solicitud.', action: action);
+        _info('Vea el detalle del pedido.', action: action);
       }else if(decodeData['exito'] == 0){
         _error('No pudo realizarce el pedido.', action: action);
         setState((){
           _integrantes[index].pedido = true;
-          _integrantes[index].detallePedido = decodeData['detalleError'][0];
+          _integrantes[index].detallePedido = 'Pedido No realizado.\nError al momento de hacer el pedido: ${decodeData['detalleError'][0]}.\n\nPuede entrar a la información del cliente eliminar el pedido y volverlo a intentar.';
         });
       }else if(decodeData['exito'] > 0 && decodeData['error'] > 0){
         _info('Atención. Vea el detalle.', action: action);
       }
     }else{
-      _error(result.resultDesc);
+      setState((){
+        _integrantes[index].pedido = true;
+        _integrantes[index].detallePedido = 'Pedido No realizado.\nError al momento de hacer el pedido: ${result.resultDesc}.\n\nPuede entrar a la información del cliente eliminar el pedido y volverlo a intentar.';
+      });
+      _error('No pudo realizarce el pedido.', action: action);
     }
   }
 

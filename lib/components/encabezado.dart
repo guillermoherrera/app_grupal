@@ -28,20 +28,22 @@ class Encabezado extends StatelessWidget {
           Container(
             width: _width * 0.7,
 
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  encabezado.toUpperCase(),
-                  overflow: TextOverflow.ellipsis, 
-                  style: Constants.encabezadoStyle
-                ),
-                Text(
-                  subtitulo.toUpperCase(),
-                  //overflow: TextOverflow.ellipsis,
-                  style: Constants.subtituloStyle
-                ),
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    encabezado.toUpperCase(),
+                    overflow: TextOverflow.ellipsis, 
+                    style: Constants.encabezadoStyle
+                  ),
+                  Text(
+                    subtitulo.toUpperCase(),
+                    //overflow: TextOverflow.ellipsis,
+                    style: Constants.subtituloStyle
+                  ),
+                ],
+              ),
             ),
           )
         ],

@@ -72,18 +72,18 @@ class Constants{
     }else if(error.contains("An internal error has occurred. [ 7: ]")){
       return "Error desconocido, revisa tu conexión a internet.";
     }else if(error.contains("TimeoutException")){
-      return "Timeout: Tiempo de espera agotado para la solicitud, revisa tu conexión a internet o vulve a intentarlo mas tarde.";
+      return "Timeout: Tiempo de espera agotado para la solicitud, revisa tu conexión a internet o vuelve a intentarlo mas tarde.";
     }else if(error.contains("ERROR_NETWORK") || error.contains("network")){
       return "Error desconocido, revisa tu conexión a internet.";
-    }else if(error.contains("Error al iniciar") || error.contains("network")){
+    }else if(error.contains("Error al iniciar")){
       return error;
-    }else if(error.contains("Connection failed") || error.contains("network")){
+    }else if(error.contains("Connection failed") || error.contains('SocketException')){
       return "Error de conexión, revisa tu conexión a internet.";
-    }else if(error.contains("Future not completed") || error.contains("network")){
+    }else if(error.contains("Future not completed")){
       return "Tiempo de espera agotado para el servidor, revisa tu conexión a internet.";
-    }else if(error.contains("startIndex ") || error.contains("network")){
+    }else if(error.contains("startIndex ")){
       return "Los datos capturados no son correctos.";
-    }else if(error.contains("CODIGO") || error.contains("network")){
+    }else if(error.contains("CODIGO")){
       return error;
     }else if(error.contains("Unauthorized")){
       return '$error: Por favor vuelva a iniciar sesión para continuar';
