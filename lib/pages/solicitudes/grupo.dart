@@ -402,6 +402,8 @@ class _GrupoPageState extends State<GrupoPage> {
                 onTap:()async{
                   _accesoConfiashop =  await _sharedActions.getAccesoConfiashop();
                   if(integrante.ticket == null){
+                    if(_integrantes[index].pedidoActivo == true)
+                      return _info('Este integrante ya tiene un pedido.');
                     _accesoConfiashop ?
                     Navigator.push(context, _customRoute.crearRutaSlide(Constants.confiashopPage, {'index': widget.params['opcion'] == 'captura' ? _integrantes[index].idSolicitud : index, 'user': userInfo['user'], 'categoria': 1}, setTicket: _actulizaTicket))
                     : _info('Confiashop NO esta DISPONIBLE por el momento');
@@ -871,7 +873,7 @@ class _GrupoPageState extends State<GrupoPage> {
       error,
       Duration(milliseconds: milliseconds),
       Colors.blueAccent,
-      Icons.error_outline,
+      Icons.info,
       _scaffoldKey,
       action: action
     );

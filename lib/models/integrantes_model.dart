@@ -123,6 +123,7 @@ class IntegranteVCAPI{
   bool tesorero;
   bool presidente;
   int grupo; 
+  bool pedidoActivo;
 
   String ticket;
   bool pedido;
@@ -142,6 +143,7 @@ class IntegranteVCAPI{
     this.direccion,
     this.fechaNacimiento,
     this.grupo,
+    this.pedidoActivo,
 
     this.ticket,
     this.pedido,
@@ -161,6 +163,7 @@ class IntegranteVCAPI{
     curp            = json['curp'];
     direccion       = json['direccion'];
     fechaNacimiento = json['fechaNacimiento'];
-    grupo           = json['grupo'];  
+    grupo           = json['grupo']; 
+    pedidoActivo    = json['pedidoActivo']; 
   }
 }
