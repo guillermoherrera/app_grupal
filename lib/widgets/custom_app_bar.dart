@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:app_grupal/helpers/constants.dart';
+import 'package:package_info/package_info.dart';
 
-class CustomAppBar extends StatelessWidget {
+class CustomAppBar extends StatefulWidget {
   const CustomAppBar({
     Key key, 
     @required this.height,
@@ -17,6 +18,26 @@ class CustomAppBar extends StatelessWidget {
   final String heroTag;
 
   @override
+  _CustomAppBarState createState() => _CustomAppBarState();
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
+  String versionApp = '';
+  
+  @override
+  void initState() {
+    super.initState();
+    getVersionInfo();
+  }
+
+  getVersionInfo() async{
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      versionApp = packageInfo.version;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 50.0, bottom: 25.0),
@@ -28,18 +49,18 @@ class CustomAppBar extends StatelessWidget {
             backgroundColor: Colors.transparent,
             iconTheme: IconThemeData(color: Colors.white),
             title: Hero(
-              tag: heroTag,
+              tag: widget.heroTag,
               child: Image(
                 image: AssetImage(Constants.logo),
                 color: Colors.white,
-                height: height / 13,
+                height: widget.height / 13,
                 fit: BoxFit.contain,
               ),
             ),
-            actions: actions,
-            leading: leading,
+            actions: widget.actions,
+            leading: widget.leading,
           ),
-          Text('v ${Constants.versionApp}'.toUpperCase(), style: Constants.encabezadoStyle,),
+          Text('v $versionApp'.toUpperCase(), style: Constants.encabezadoStyle,),
         ],
       ),
     );

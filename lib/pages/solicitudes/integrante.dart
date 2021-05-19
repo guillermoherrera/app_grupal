@@ -21,7 +21,18 @@ class IntegrantePage extends StatefulWidget {
 }
 
 class _IntegrantePageState extends State<IntegrantePage> {
-  bool _showIcon = true;
+  bool _showIcon = false;
+
+  @override
+  void initState() {
+    _initPage();
+    super.initState();
+  }
+
+  _initPage()async{
+     await Future.delayed(Duration(milliseconds: 1000));
+    setState(() {_showIcon = true;});
+  }
 
   @override
   Widget build(BuildContext context) {

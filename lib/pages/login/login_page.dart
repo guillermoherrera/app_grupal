@@ -11,6 +11,7 @@ import 'package:app_grupal/widgets/header.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
 import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/widgets/custom_text_field.dart';
+import 'package:package_info/package_info.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
@@ -34,6 +35,20 @@ class _LoginPageState extends State<LoginPage> {
   final _passController = TextEditingController();
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool _buttonEnabled = true;
+  String versionApp = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getVersionInfo();
+  }
+
+  getVersionInfo() async{
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      versionApp = packageInfo.version;
+    });
+  }
 
   _loginSubmit() async{
     if(_formKey.currentState.validate()){
@@ -115,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                 fit: BoxFit.contain,
               ),
             ),
-            Text('v ${Constants.versionApp}'.toUpperCase(),style: Constants.subtituloStyle),
+            Text('v $versionApp'.toUpperCase(),style: Constants.subtituloStyle),
           ],
         ),
       ),

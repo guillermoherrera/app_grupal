@@ -3,11 +3,31 @@ import 'package:app_grupal/helpers/constants.dart';
 import 'package:app_grupal/widgets/custom_app_bar.dart';
 import 'package:app_grupal/widgets/shake_transition.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 
 
-class InfoPage extends StatelessWidget {
+class InfoPage extends StatefulWidget {
+  @override
+  _InfoPageState createState() => _InfoPageState();
+}
+
+class _InfoPageState extends State<InfoPage> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
-  
+  String versionApp = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getVersionInfo();
+  }
+
+  getVersionInfo() async{
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      versionApp = packageInfo.version;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
@@ -49,7 +69,7 @@ class InfoPage extends StatelessWidget {
     return Container(
       child: Text('''\n\n
 Aplicación móvil para créditos grupales.
-versión 1.0
+versión $versionApp
 2021
       '''.toUpperCase(), style: Constants.subtituloStyle, textAlign: TextAlign.center),
       width: double.infinity,
@@ -79,5 +99,4 @@ versión 1.0
       ),
     );*/
   }
-
 }

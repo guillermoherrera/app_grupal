@@ -37,7 +37,7 @@ class _GruposPageState extends State<GruposPage> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<dynamic> _grupos = List();
   bool _cargando = true;
-  bool _showIcon = true;
+  bool _showIcon = false;
 
   @override
   void initState() {
@@ -47,6 +47,7 @@ class _GruposPageState extends State<GruposPage> {
 
   _buscarGrupos()async{
     await Future.delayed(Duration(milliseconds: 1000));
+    setState(() {_showIcon = true;});
     _grupos = widget.params['opcion'] == 'captura'? await DBProvider.db.getGruposCreados() : await _vcapiProvider.consultaGrupos(snackBar: _scaffoldKey);
     _cargando = false;
     if(this.mounted) setState((){});

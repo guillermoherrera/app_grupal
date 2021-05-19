@@ -50,7 +50,7 @@ class _GrupoPageState extends State<GrupoPage> {
   Map<String, dynamic> userInfo;
   List<dynamic> _integrantes = [];
   bool _cargando = true;
-  bool _showIcon = true;
+  bool _showIcon = false;
   double _capitalTotal = 0;
   double _importeTotal = 0;
   int _validaIntegrantesCant = 100;
@@ -72,6 +72,7 @@ class _GrupoPageState extends State<GrupoPage> {
   _buscarIntegrantes()async{
     userInfo = await _sharedActions.getUserInfo();
     await Future.delayed(Duration(milliseconds: 1000));
+    setState(() {_showIcon = true;});
     _validaIntegrantesCant = await DBProvider.db.getCatIntegrantesCant();
     _integrantes = widget.params['opcion'] == 'captura' ? await DBProvider.db.getSolicitudesByGrupo(widget.params['idGrupo']) : await _vcapiProvider.consultaIntegrantes(widget.params['idGrupo'], snackBar: _scaffoldKey);
     getCapitalTotal();
